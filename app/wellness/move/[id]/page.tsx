@@ -40,12 +40,14 @@ export default function MoveDetailPage() {
 
       {move && (
         <article className="mt-4">
-          {/* cartoon girl demonstrating the move, at the top */}
-          <div className="flex flex-col items-center rounded-3xl bg-sage-soft/60 p-6 text-center">
-            <div className="flex h-44 w-44 items-center justify-center">
-              <MoveVisual id={move.id} icon={move.icon} size={176} />
+          {/* cartoon girl demonstrating the move, on a soft glow halo (like the landing hero) */}
+          <div className="py-4 text-center">
+            <div className="hero-rings relative mx-auto flex h-56 w-56 items-center justify-center">
+              <div className="relative z-10 flex items-center justify-center">
+                <MoveVisual id={move.id} icon={move.icon} size={200} />
+              </div>
             </div>
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-3 flex items-center justify-center gap-2">
               <h1 className="font-display text-2xl font-bold text-plum">{pick("name")}</h1>
               <SpeakButton text={`${pick("name")}. ${pick("how")}. ${pick("why")}`} />
             </div>

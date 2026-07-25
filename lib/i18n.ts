@@ -24,6 +24,8 @@ export const STRINGS = {
   "nav.hotline": { bn: "হটলাইন", en: "Hotline" },
   "nav.faq": { bn: "প্রশ্নোত্তর", en: "FAQ" },
   "nav.report": { bn: "রিপোর্ট", en: "Report" },
+  "tracker.reportTitle": { bn: "রিপোর্ট বুঝুন", en: "Understand a test report" },
+  "tracker.reportSub": { bn: "রিপোর্টের মান লিখুন, সখী সহজ ভাষায় বোঝাবে", en: "Type a lab value — Shokhi explains it simply" },
   "nav.about": { bn: "সম্পর্কে", en: "About" },
   "nav.profile": { bn: "আমার প্রোফাইল", en: "My Profile" },
   "nav.menu": { bn: "মেনু", en: "Menu" },

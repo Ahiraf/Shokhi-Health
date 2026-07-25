@@ -53,5 +53,8 @@ export function useTheme(): ThemeCtx {
   return ctx;
 }
 
-/** Runs before paint to set the theme class, avoiding a light→dark flash. */
-export const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('${STORE_KEY}');if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+/** Runs before paint to set the theme class, avoiding a light→dark flash.
+ *  Default is LIGHT for everyone on first visit (we do NOT follow the OS setting); dark is
+ *  applied only when the user explicitly chose it before, and that choice persists across
+ *  reloads via localStorage. */
+export const THEME_INIT_SCRIPT = `(function(){try{if(localStorage.getItem('${STORE_KEY}')==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
