@@ -157,7 +157,7 @@ to menopause — as **one warm companion**:
 | **Voice input + read-aloud** | Browser-native Bangla voice input and fast female-preferred read-aloud | `/chat` · FAQ · guides |
 | **Guides, myths, and FAQ** | Trusted explainers with sources and listen buttons | `/guides` · `/myths` · `/faq` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
-| **Voice help** | Speak through a supported browser and listen to Shokhi’s guidance | `/hotline` |
+| **Voice help** | Speak through a supported browser and listen to Shokhi’s guidance | `/chat` |
 
 The **safety model is identical everywhere**: every urgency decision is made by
 deterministic rules in `triage.ts`/`cycle.ts`, never by the LLM; Gemma only understands
@@ -338,7 +338,7 @@ The Next.js app lives at the **repo root** (deploys to Vercel with no root-direc
 Shokhi/
 ├── app/
 │   ├── (pages)            # landing, chat, tracker, guides, learn, myths, wellness,
-│   │                      #   hotline, about, profile — one route per feature, bilingual
+│   │                      #   about, profile — one route per feature, bilingual
 │   └── api/               # the backend, as Next.js route handlers:
 │                          #   message, myth, guide, guides/[id], knowledge,
 │                          #   cycle/analyze, health

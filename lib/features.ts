@@ -87,15 +87,6 @@ export const FEATURES: Feature[] = [
     accent: "apricot",
   },
   {
-    href: "/hotline",
-    icon: "phone",
-    title_bn: "ভয়েস হটলাইন",
-    title_en: "Voice hotline",
-    desc_bn: "ফোন করে বাংলায় বলুন, পরামর্শ শুনুন — পড়তে হবে না।",
-    desc_en: "Call, speak in Bangla, and listen to the advice — no reading needed.",
-    accent: "rose",
-  },
-  {
     href: "/about",
     icon: "shield",
     title_bn: "নিরাপত্তা ও তথ্য",

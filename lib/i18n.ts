@@ -21,7 +21,6 @@ export const STRINGS = {
   "nav.learn": { bn: "রোগ-জ্ঞান", en: "Learn" },
   "nav.myths": { bn: "ভুল ধারণা", en: "Myths" },
   "nav.wellness": { bn: "সুস্থতা", en: "Wellness" },
-  "nav.hotline": { bn: "হটলাইন", en: "Hotline" },
   "nav.faq": { bn: "প্রশ্নোত্তর", en: "FAQ" },
   "nav.report": { bn: "রিপোর্ট", en: "Report" },
   "nav.learn.conditions": { bn: "রোগ সম্পর্কে জানুন", en: "Learn about conditions" },
@@ -92,13 +91,6 @@ export const STRINGS = {
  bn:"জরুরি সিদ্ধান্ত সবসময় নির্দিষ্ট নিয়ম দিয়ে নেওয়া হয়, AI-এর অনুমানে নয় — তাই সখী কখনো কোনো জরুরি অবস্থাকে হালকা করে দেখে না।",
  en:"Urgent decisions are always made by fixed rules, never by AI guesswork — so Shokhi never under-plays an emergency.",
   },
-"home.hotlineTitle": { bn:"পড়তে পারেন না? কণ্ঠে বলুন", en:"Speak instead of typing"},
-  "home.hotlineDesc": {
-    bn: "সমর্থিত ব্রাউজারে বাংলায় বলুন, সখীর উত্তর শুনুন।",
-    en: "Speak Bangla in a supported browser and listen to Shokhi’s reply.",
-  },
-  "home.hotlineCta": { bn: "হটলাইন সম্পর্কে", en: "About the hotline" },
-
   // --- chat ----------------------------------------------------------------
   "chat.introTitle": { bn: "আপনার শরীরের কথা বলুন", en: "Tell me about your body" },
   "chat.introDesc": {
@@ -343,28 +335,6 @@ export const STRINGS = {
   "pad.footer": {
  bn:"রিমাইন্ডার এই ফোনেই থাকে। অ্যাপ খোলা থাকলে সময় গুনবে; অনুমতি দিলে নোটিফিকেশনও পাবেন।",
  en:"The reminder stays on this phone. It counts down while the app is open; allow notifications and you'll be pinged too.",
-  },
-
-  // --- hotline -------------------------------------------------------------
-  "hotline.title": { bn: "ভয়েস হটলাইন", en: "Voice hotline" },
-  "hotline.sub": {
-    bn: "মাইক্রোফোনে বাংলায় বলুন, সখীর নিরাপদ পরামর্শ শুনুন।",
-    en: "Speak into the microphone and listen to Shokhi’s safe guidance.",
-  },
-  "hotline.anyPhone": { bn: "এখনই ব্যবহার করুন · মাইক্রোফোন প্রস্তুত রাখুন", en: "Use it now · keep your microphone ready" },
-  "hotline.brand": { bn: "সখী ভয়েস সহায়তা", en: "Shokhi Voice Help" },
-  "hotline.brandDesc": {
-    bn: "মাইক্রোফোনে কথা বলুন — সখী আপনার কথা বুঝে বাংলায় নিরাপদ পরামর্শ দেবে।",
-    en: "Speak into the microphone — Shokhi understands and gives safe guidance aloud.",
-  },
-"hotline.needEmergency": { bn:"এখনই জরুরি প্রয়োজন?", en:"Need help right now?"},
-  "hotline.emergencyLine": {
-    bn: "জাতীয় জরুরি সেবা ৯৯৯ · স্বাস্থ্য বাতায়ন ১৬২৬৩",
-    en: "National emergency 999 · Health hotline 16263",
-  },
-  "hotline.preferText": {
- bn:"এখন লিখে পরামর্শ নিতে চান? পরামর্শে যান",
- en:"Prefer to type? Go to the chat",
   },
 
   // --- about ---------------------------------------------------------------
