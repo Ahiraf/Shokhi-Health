@@ -86,13 +86,13 @@ toggle. The resulting text goes through the **same Gemma 4 + deterministic-triag
 as typed input. Browsers without recording support can fall back to device-native speech
 recognition.
 
-Read-aloud uses Gemini TTS with a female voice and caches audio
-per message. If no TTS key is configured or the service is unavailable, it falls back to the
-device's built-in SpeechSynthesis engine so the written answer remains available too.
+Read-aloud uses Gemini TTS with a female voice and caches audio per message. If the TTS
+service is unavailable, Shokhi keeps the written answer and asks the user to retry instead of
+silently switching to a robotic device voice.
 
-Report photos use a standard OCR endpoint to extract text first. Only that extracted text is
-sent to Gemma 4 for the simple explanation; the image itself is never interpreted by another
-generative model.
+Report photos are sent directly to multimodal Gemma 4, which reads the visible test names,
+values, units and reference ranges and explains them in simple language. Unclear values are
+marked as uncertain rather than guessed; the result is general information, not a diagnosis.
 
 Other supporting (non-generative, allowed) tools: the RAG corpus + embeddings, a knowledge
 base of red flags / conditions / myths, and the two logistic-regression risk classifiers.
@@ -117,7 +117,7 @@ Deterministic mock backend (no-key / offline mode)
 ```
 
 This is deliberately **Gemma 4 only** for generated health guidance — there is no alternate
-LLM hidden behind the fallback. Browser speech, OCR, non-generative embeddings, deterministic
+LLM hidden behind the fallback. Browser speech, image understanding, non-generative embeddings, deterministic
 triage, and the mock backend remain supporting paths permitted by the hackathon rules.
 
 ---
@@ -142,7 +142,7 @@ fallback to **16263 / 999**.
 | ----- | ---------- |
 | Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
 | Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
-| AI | Google Gemma 4 for language · standard browser speech/OCR support · non-generative embeddings |
+| AI | Google Gemma 4 for language and report-image understanding · Gemini speech adapters · non-generative embeddings |
 | Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
 | Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
 | Retrieval | Local Markdown corpus · precomputed embeddings · grounded RAG responses |
@@ -164,7 +164,7 @@ to menopause — as **one warm companion**:
 | **Real-time safe triage** | Free-form symptoms become urgency, red flags, and next steps | `/chat` · `lib/server/triage.ts` |
 | **AI health advisor** | Simple, spoken-style explanations grounded in Gemma 4 | `/chat` |
 | **Period tracker** | Private cycle logs, predictions, calendar, and pattern hints | `/tracker` |
-| **Report reader** | Type values or OCR a report photo, then receive a simple explanation | `/report` |
+| **Report reader** | Type values or upload a report photo for a simple Gemma explanation | `/report` |
 | **Voice input + read-aloud** | Browser-native Bangla voice input and fast female-preferred read-aloud | `/chat` · FAQ · guides |
 | **Guides, myths, and FAQ** | Trusted explainers with sources and listen buttons | `/guides` · `/myths` · `/faq` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
@@ -249,7 +249,7 @@ retrieval — so RAG makes the *information* richer without ever affecting safet
 TypeScript equivalent, so the whole pipeline runs in this one Next.js app — **no Python, no
 separate service.**
 
-**Rules compliance.** Browser speech, OCR, embeddings and vector search are **supporting,
+**Rules compliance.** Browser speech, image understanding, embeddings and vector search are **supporting,
 non-generative** techniques, which the hackathon rules explicitly permit. **Gemma 4 remains
 the only LLM that generates answers**.
 
@@ -386,7 +386,6 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 |---|---|---|
 | `GOOGLE_API_KEY` | — | Google AI Studio key for live Gemma 4. Absent → deterministic mock backend. |
 | `GOOGLE_API_KEY_2`, `_3` | — | Optional second and third keys for automatic quota/access fallback. |
-| `GOOGLE_CLOUD_VISION_API_KEY` | — | Optional Google Cloud Vision OCR key for report-photo text extraction; falls back to the Google key list. |
 | `GEMINI_TTS_MODEL` | `gemini-2.5-flash-preview-tts` | Optional Gemini TTS model override for natural female Bangla/English read-aloud. |
 | `SHOKHI_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Gemma 4 model on AI Studio (e.g. `gemma-4-31b-it`). |
 | `SHOKHI_BACKEND` | auto | Force `gemini` or `mock`. Default: `gemini` if a key is present, else `mock`. |

@@ -128,7 +128,7 @@ export async function composeStream(
   return full;
 }
 
-/** OCR a REPORT IMAGE and stream Gemma's explanation. Calls onDelta per chunk. */
+/** Send a REPORT IMAGE to multimodal Gemma and stream its explanation. */
 export async function reportImageStream(
   file: File,
   lang: "bn" | "en",

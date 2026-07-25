@@ -79,9 +79,9 @@ hallucination**. This is the responsible pattern for health AI: *LLM for languag
 deterministic logic for safety.* Gemma stays core (natural language), wrapped in a guardrail.
 
 **Voice is supported** for women who cannot type: supported browsers recognize spoken Bangla
-locally and send only the resulting text through the same pipeline. Read-aloud uses the device's
-native SpeechSynthesis engine, with a female voice preferred when available. Report photos go
-through standard OCR first; Gemma 4 explains the extracted text. Other supporting,
+locally and send only the resulting text through the same pipeline. Read-aloud uses Gemini TTS.
+Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
+Other supporting,
 non-generative tools assist Gemma — a curated knowledge base of red flags/conditions/myths,
 embeddings + cosine search for RAG, and two exported ML risk classifiers. **Gemma 4 is the only
 LLM in the system.**
@@ -91,7 +91,7 @@ LLM in the system.**
 Hosted Gemma 4 calls rotate through up to three Google AI Studio keys when quota, access,
 rate-limit, or transient service errors occur. If no hosted key works, the deterministic mock
 backend keeps the prototype usable offline. This is a reliability layer, not a second LLM:
-guidance always comes from Gemma 4; browser speech, OCR, embeddings, rules, and traditional ML
+guidance always comes from Gemma 4; browser speech, image understanding, embeddings, rules, and traditional ML
 are non-generative support.
 
 ## System architecture: one brain, many front doors

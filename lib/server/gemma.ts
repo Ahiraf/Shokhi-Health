@@ -28,6 +28,8 @@ export interface Backend {
   explainTriageStream(triage: any, lang: Lang): AsyncGenerator<string>;
   /** Generic on-demand generation for personalised features (notes, explanations, etc.). */
   composeStream(system: string, user: string, lang: Lang, fallback: string): AsyncGenerator<string>;
+  /** Read and explain a medical report image using Gemma's multimodal input. */
+  analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang): Promise<string>;
 }
 
 const pickField = (obj: any, base: string, lang: Lang) =>
@@ -270,6 +272,12 @@ class MockBackend implements Backend {
     for (const line of (fallback || "").split("\n")) yield line + "\n";
   }
 
+  async analyzeReportImage(_bytes: ArrayBuffer, _mime: string, lang: Lang): Promise<string> {
+    return lang === "en"
+      ? "I couldn't read the uploaded image clearly. Please type the test name, result, unit and reference range, or show the report to a doctor or health worker."
+      : "আপলোড করা ছবিটি পরিষ্কারভাবে পড়া গেল না। পরীক্ষার নাম, ফল, একক ও স্বাভাবিক সীমা লিখে দিন, অথবা রিপোর্টটি একজন ডাক্তার বা স্বাস্থ্যকর্মীকে দেখান।";
+  }
+
 }
 
 // --- Gemini backend (hosted Gemma 4) with multi-key quota fallback ------------
@@ -288,11 +296,33 @@ export function geminiKeys(): string[] {
   return keys;
 }
 
-function isRetryable(err: unknown): boolean {
+export function isRetryableGeminiError(err: unknown): boolean {
   const msg = String((err as any)?.message ?? err).toLowerCase();
   return ["429", "quota", "resource_exhausted", "rate limit", "too many requests",
     "503", "overloaded", "service unavailable", "500", "internal server error",
     "invalid api key", "api_key_invalid", "permission_denied", "401", "403"].some((m) => msg.includes(m));
+}
+
+/** Run a Google API operation against every configured key when quota/access fails. */
+export async function withGeminiKeyFallback<T>(
+  operation: (key: string, index: number) => Promise<T>,
+): Promise<T> {
+  const keys = geminiKeys();
+  if (!keys.length) throw new Error("No Google API keys configured.");
+
+  let lastError: unknown;
+  for (let i = 0; i < keys.length; i++) {
+    try {
+      const result = await operation(keys[i], i);
+      if (i > 0) console.log(`[gemini] succeeded with API key #${i + 1}`);
+      return result;
+    } catch (error) {
+      lastError = error;
+      if (!isRetryableGeminiError(error) || i === keys.length - 1) throw error;
+      console.warn(`[gemini] API key #${i + 1} exhausted; trying key #${i + 2}`);
+    }
+  }
+  throw new Error(`All Google API keys exhausted. Last error: ${lastError}`);
 }
 
 const parseJson = (text: string): Profile => {
@@ -330,7 +360,7 @@ class GeminiBackend implements Backend {
         return r;
       } catch (err) {
         lastErr = err;
-        if (isRetryable(err) && i < this.keys.length - 1) {
+        if (isRetryableGeminiError(err) && i < this.keys.length - 1) {
           console.log(`[gemini] key #${i + 1} exhausted, falling back…`);
           continue;
         }
@@ -393,6 +423,29 @@ class GeminiBackend implements Backend {
   }
   composeStream(system: string, user: string, lang: Lang, _fallback: string) {
     return this.generateStream(P.withLanguage(system, lang), user, 0.5);
+  }
+  async analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang): Promise<string> {
+    const prompt = lang === "en"
+      ? "Read this medical or laboratory report image carefully. Explain only what is visibly readable. List each visible test name, result, unit and the reference range shown on the report. For each result, say whether it appears within, below or above the reference range shown, while noting that ranges vary by laboratory. If anything is blurry or uncertain, say so and do not guess. Use simple, kind language. Do not diagnose, prescribe medicines or doses, or replace a doctor. If a clearly concerning result is visible, advise prompt medical review. End by reminding the person to confirm the report with a doctor or qualified health worker."
+      : "এই চিকিৎসা বা ল্যাব রিপোর্টের ছবিটি মন দিয়ে পড়ুন। ছবিতে স্পষ্ট দেখা যাচ্ছে এমন তথ্যই ব্যাখ্যা করুন। প্রতিটি দেখা যাওয়া পরীক্ষার নাম, ফল, একক এবং রিপোর্টে লেখা স্বাভাবিক সীমা তালিকা করুন। প্রতিটি ফল রিপোর্টের ওই সীমার মধ্যে, কম না বেশি—সহজ ভাষায় বলুন; মনে করিয়ে দিন যে ল্যাবভেদে সীমা বদলাতে পারে। কোনো অংশ ঝাপসা বা অনিশ্চিত হলে তা স্পষ্ট বলুন, অনুমান করবেন না। সহজ, কোমল ভাষা ব্যবহার করুন। রোগ নির্ণয়, ওষুধ বা ডোজ দেবেন না এবং ডাক্তারের বিকল্প হবেন না। কোনো স্পষ্টভাবে উদ্বেগজনক ফল দেখা গেলে দ্রুত ডাক্তার বা স্বাস্থ্যকর্মীর পরামর্শ নিতে বলুন। শেষে রিপোর্টটি একজন ডাক্তার বা যোগ্য স্বাস্থ্যকর্মীর সঙ্গে নিশ্চিত করতে বলুন।";
+    const response: any = await this.withFallback((c) => c.models.generateContent({
+      model: this.model,
+      contents: [{
+        role: "user",
+        // Gemma 4's image guidance recommends putting the image before the text.
+        parts: [
+          { inlineData: { mimeType: mime.split(";")[0], data: Buffer.from(bytes).toString("base64") } },
+          { text: prompt },
+        ],
+      }],
+      config: {
+        maxOutputTokens: 700,
+        thinkingConfig: { thinkingLevel: "minimal" },
+      },
+    }));
+    const text = (response.text ?? "").trim();
+    if (!text) throw new Error("Gemma returned no report analysis.");
+    return text;
   }
   async safetyCheck(message: string): Promise<SafetyResult> {
     try {

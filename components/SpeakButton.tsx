@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { speak as browserSpeak, stopSpeaking as browserStop, warmVoices } from "@/lib/speak";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
 
@@ -23,7 +22,7 @@ function loadAudio(text: string, lang: string): Promise<Blob> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text, lang }),
   }).then((res) => {
-    if (!res.ok) throw new Error("tts");
+    if (!res.ok) throw new Error(`tts:${res.status}`);
     return res.blob();
   }).then((blob) => {
     audioCache.set(key, blob);
@@ -38,8 +37,9 @@ function loadAudio(text: string, lang: string): Promise<Blob> {
 }
 
 /**
- * Natural female neural read-aloud when configured, with browser SpeechSynthesis as an offline
- * fallback. Audio is cached per message so repeated listens start immediately.
+ * Natural Gemini neural read-aloud. We do not silently fall back to the browser voice: that
+ * voice is robotic on many devices and makes it look like the selected natural voice failed.
+ * Audio is cached per message so repeated listens start immediately.
  */
 export default function SpeakButton({
   text,
@@ -53,22 +53,15 @@ export default function SpeakButton({
   withLabel?: boolean;
 }) {
   const { t, lang } = useLang();
-  const [state, setState] = useState<"idle" | "loading" | "playing">("idle");
+  const [state, setState] = useState<"idle" | "loading" | "playing" | "error">("idle");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
   useEffect(() => {
-    warmVoices();
     return () => {
-      browserStop();
       audioRef.current?.pause();
       if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     };
   }, [text, lang]);
-
-  function fallback() {
-    const ok = browserSpeak(text, lang, () => setState("idle"));
-    setState(ok ? "playing" : "idle");
-  }
 
   async function play() {
     setState("loading");
@@ -85,19 +78,24 @@ export default function SpeakButton({
         audioRef.current = null;
         audioUrlRef.current = null;
       };
-      player.onerror = fallback;
+      player.onerror = () => {
+        setState("error");
+        player.pause();
+        URL.revokeObjectURL(url);
+        audioRef.current = null;
+        audioUrlRef.current = null;
+      };
       audioRef.current = player;
       audioUrlRef.current = url;
       await player.play();
       setState("playing");
     } catch {
-      fallback();
+      setState("error");
     }
   }
 
   function toggle() {
-    if (state !== "idle") {
-      browserStop();
+    if (state === "loading" || state === "playing") {
       audioRef.current?.pause();
       setState("idle");
       return;
@@ -112,7 +110,13 @@ export default function SpeakButton({
   if (!text.trim()) return null;
 
   const dim = size === "sm" ? "h-7 w-7" : "h-8 w-8";
-  const label = state === "playing" ? t("common.stopListen") : state === "loading" ? t("common.loading") : t("common.listen");
+  const label = state === "playing"
+    ? t("common.stopListen")
+    : state === "loading"
+      ? t("common.loading")
+      : state === "error"
+        ? t("common.voiceUnavailable")
+        : t("common.listen");
 
   return (
     <button
@@ -123,7 +127,7 @@ export default function SpeakButton({
       aria-label={label}
       title={label}
       className={`inline-flex ${dim} ${withLabel ? "w-auto gap-1.5 px-2" : "shrink-0 justify-center"} items-center rounded-full ring-1 ring-rose-soft transition
-        ${state !== "idle" ? "animate-pulse bg-rose text-accentink" : "bg-surface text-rose-deep hover:bg-rose-mist"} ${className}`}
+        ${state === "playing" || state === "loading" ? "animate-pulse bg-rose text-accentink" : "bg-surface text-rose-deep hover:bg-rose-mist"} ${className}`}
     >
       <Icon name={state === "playing" ? "stop" : "volume"} size={size === "sm" ? 13 : 15} />
       {withLabel && <span className="text-xs font-semibold">{label}</span>}

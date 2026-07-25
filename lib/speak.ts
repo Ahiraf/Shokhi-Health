@@ -11,11 +11,14 @@ export function ttsSupported(): boolean {
 /** Strip markdown, links and emoji so the speech reads cleanly. */
 function cleanForSpeech(text: string): string {
   return text
+    .replace(/(?:📚\s*)?(?:সূত্র|sources?|references?):[\s\S]*$/i, "")
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // [label](url) → label
     .replace(/https?:\/\/\S+/g, "") // bare URLs
     .replace(/[*_#>`~]/g, "") // markdown syntax
     .replace(/[•▪◦·]/g, " ") // bullets
     .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{FE0F}\u{200D}]/gu, "") // emoji
+    .replace(/\r\n?/g, "\n")
+    .replace(/\n+/g, ". ")
     .replace(/\s+/g, " ")
     .trim();
 }

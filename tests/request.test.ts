@@ -6,6 +6,7 @@ import {
   readProfile,
   readText,
 } from "../lib/server/request";
+import { withGeminiKeyFallback } from "../lib/server/gemma";
 
 describe("API request guards", () => {
   it("rejects empty and oversized required text", () => {
@@ -27,5 +28,30 @@ describe("API request guards", () => {
       age: 24,
       cycles_irregular: true,
     });
+  });
+});
+
+describe("Google API key fallback", () => {
+  it("moves to the next configured key after a quota error", async () => {
+    const previous = [process.env.GOOGLE_API_KEY, process.env.GOOGLE_API_KEY_2, process.env.GOOGLE_API_KEY_3];
+    process.env.GOOGLE_API_KEY = "test-key-1";
+    process.env.GOOGLE_API_KEY_2 = "test-key-2";
+    process.env.GOOGLE_API_KEY_3 = "test-key-3";
+    const calls: number[] = [];
+    try {
+      const result = await withGeminiKeyFallback(async (_key, index) => {
+        calls.push(index);
+        if (index === 0) throw new Error("429 quota exceeded");
+        return "ok";
+      });
+      expect(result).toBe("ok");
+      expect(calls).toEqual([0, 1]);
+    } finally {
+      ["GOOGLE_API_KEY", "GOOGLE_API_KEY_2", "GOOGLE_API_KEY_3"].forEach((name, index) => {
+        const value = previous[index];
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      });
+    }
   });
 });
