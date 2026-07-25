@@ -7,6 +7,8 @@ type SpeechRecognitionInstance = {
   lang: string;
   interimResults: boolean;
   continuous: boolean;
+  maxAlternatives: number;
+  onstart: (() => void) | null;
   onresult: ((event: any) => void) | null;
   onerror: ((event: any) => void) | null;
   onend: (() => void) | null;
@@ -43,7 +45,11 @@ export default function Composer({
   function startRecording() {
     if (recognitionRef.current) return;
     setVoiceError("");
-    const Recognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition as SpeechRecognitionConstructor | undefined;
+    const speechWindow = window as Window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
     if (!Recognition) {
       setVoiceError(t("composer.voiceNoSupport"));
       return;
@@ -51,7 +57,9 @@ export default function Composer({
     const recognition = new Recognition();
     recognition.lang = lang === "bn" ? "bn-BD" : "en-US";
     recognition.interimResults = true;
-    recognition.continuous = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => setRecording(true);
     recognition.onresult = (event: any) => {
       let transcript = "";
       for (let i = event.resultIndex; i < event.results.length; i++) transcript += event.results[i][0]?.transcript || "";
@@ -67,8 +75,13 @@ export default function Composer({
       setRecording(false);
     };
     recognitionRef.current = recognition;
-    recognition.start();
-    setRecording(true);
+    try {
+      recognition.start();
+    } catch {
+      recognitionRef.current = null;
+      setRecording(false);
+      setVoiceError(t("composer.transcribeFailed"));
+    }
   }
 
   function toggleVoice() {
