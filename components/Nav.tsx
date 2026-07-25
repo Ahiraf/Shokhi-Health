@@ -18,8 +18,19 @@ export default function Nav() {
   const { t, lang, toggle } = useLang();
   const { theme, toggle: toggleTheme } = useTheme();
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+  // Active = the LONGEST matching nav link, so /tracker doesn't stay lit on /tracker/reminder
+  // (its sibling is a more specific match), while /wellness still lights on /wellness/move/x.
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    const matches = pathname === href || pathname.startsWith(href + "/");
+    if (!matches) return false;
+    return !NAV_LINKS.some(
+      (l) =>
+        l.href !== href &&
+        l.href.startsWith(href + "/") &&
+        (pathname === l.href || pathname.startsWith(l.href + "/")),
+    );
+  };
 
   const themeLabel = t(theme === "dark" ? "nav.lightMode" : "nav.darkMode");
   const themeButton = (

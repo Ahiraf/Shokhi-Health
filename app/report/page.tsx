@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLang } from "@/components/LanguageProvider";
-import { composeStream } from "@/lib/api";
+import { composeStream, reportImageStream } from "@/lib/api";
 import { detectCriticalLab } from "@/lib/server/personal";
 import PageHeader from "@/components/PageHeader";
 import SpeakButton from "@/components/SpeakButton";
@@ -16,6 +16,8 @@ export default function ReportPage() {
   const [loading, setLoading] = useState(false);
   const [critical, setCritical] = useState<ReturnType<typeof detectCriticalLab> | null>(null);
   const [error, setError] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   async function run() {
     if (!input.trim() || loading) return;
@@ -32,12 +34,27 @@ export default function ReportPage() {
     }
   }
 
+  async function runImage(file: File) {
+    setLoading(true);
+    setError(false);
+    setText("");
+    setCritical(null); // can't reliably parse a photo deterministically; the model flags in-text
+    setPreview(URL.createObjectURL(file));
+    try {
+      await reportImageStream(file, lang, (c) => setText((p) => p + c));
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-5 py-10">
       <PageHeader
         icon="🩺"
         title={en ? "Understand a test report" : "রিপোর্ট বুঝুন"}
-        sub={en ? "Type a value from your lab report and Shokhi explains it in simple words. General information — always confirm with a doctor." : "রিপোর্টের কোনো মান লিখুন, সখী সহজ ভাষায় বুঝিয়ে দেবে। এটি সাধারণ তথ্য — সবসময় ডাক্তারের সাথে নিশ্চিত করুন।"}
+        sub={en ? "Type a value OR upload a photo of your report — Shokhi explains it in simple words. General information; always confirm with a doctor." : "রিপোর্টের মান লিখুন অথবা রিপোর্টের ছবি আপলোড করুন — সখী সহজ ভাষায় বুঝিয়ে দেবে। এটি সাধারণ তথ্য; সবসময় ডাক্তারের সাথে নিশ্চিত করুন।"}
       />
 
       <div className="mt-8 space-y-3">
@@ -48,14 +65,39 @@ export default function ReportPage() {
           placeholder={en ? "e.g. Hemoglobin 9.5, TSH 4.2 …" : "যেমন: হিমোগ্লোবিন ৯.৫, টিএসএইচ ৪.২ …"}
           className="w-full rounded-2xl border border-rose-soft bg-surface px-4 py-3 text-plum outline-none focus:ring-2 focus:ring-rose/40"
         />
-        <button
-          onClick={run}
-          disabled={!input.trim() || loading}
-          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-rose to-rose-deep px-5 py-2.5 font-semibold text-accentink shadow-soft transition hover:brightness-105 disabled:opacity-50"
-        >
-          <Icon name="sparkle" size={16} />
-          {loading ? (en ? "Shokhi is reading…" : "সখী পড়ছে…") : en ? "Explain this" : "বুঝিয়ে দিন"}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={run}
+            disabled={!input.trim() || loading}
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-rose to-rose-deep px-5 py-2.5 font-semibold text-accentink shadow-soft transition hover:brightness-105 disabled:opacity-50"
+          >
+            <Icon name="sparkle" size={16} />
+            {loading ? (en ? "Shokhi is reading…" : "সখী পড়ছে…") : en ? "Explain this" : "বুঝিয়ে দিন"}
+          </button>
+
+          {/* upload a photo of the report — for women who can't read the terms */}
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-full bg-surface px-5 py-2.5 font-semibold text-rose-deep ring-1 ring-rose-soft transition hover:bg-rose-mist disabled:opacity-50"
+          >
+            <Icon name="upload" size={16} />
+            {en ? "Upload a photo" : "ছবি আপলোড করুন"}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) runImage(f); e.target.value = ""; }}
+            className="hidden"
+          />
+        </div>
+
+        {preview && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={preview} alt="report" className="mt-1 max-h-56 rounded-2xl ring-1 ring-rose-soft" />
+        )}
       </div>
 
       {/* deterministic critical banner — never softened by the LLM */}

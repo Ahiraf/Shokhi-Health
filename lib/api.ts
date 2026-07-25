@@ -128,6 +128,41 @@ export async function composeStream(
   return full;
 }
 
+/** Stream an explanation of a REPORT IMAGE over SSE. Calls onDelta per chunk; returns full text. */
+export async function reportImageStream(
+  file: File,
+  lang: "bn" | "en",
+  onDelta: (chunk: string) => void
+): Promise<string> {
+  const form = new FormData();
+  form.append("image", file);
+  form.append("lang", lang);
+  const res = await fetch(`${BASE}/api/report-image`, { method: "POST", body: form });
+  if (!res.ok || !res.body) throw new Error(`report-image failed: ${res.status}`);
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let full = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let sep: number;
+    while ((sep = buffer.indexOf("\n\n")) !== -1) {
+      const block = buffer.slice(0, sep);
+      buffer = buffer.slice(sep + 2);
+      const lines = block.split("\n");
+      const event = lines.find((l) => l.startsWith("event:"))?.slice(6).trim();
+      const dataLine = lines.find((l) => l.startsWith("data:"))?.slice(5).trim();
+      if (!event || dataLine === undefined) continue;
+      const parsed = JSON.parse(dataLine);
+      if (event === "delta") { full += parsed; onDelta(parsed as string); }
+      else if (event === "error") throw new Error(parsed.detail || "report-image error");
+    }
+  }
+  return full;
+}
+
 export async function getGuides(): Promise<GuideCard[]> {
   const res = await fetch(`${BASE}/api/guides`);
   if (!res.ok) throw new Error("guides failed");
