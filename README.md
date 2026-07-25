@@ -16,6 +16,16 @@ what may be happening, what to do next, and when to contact a real health profes
 > Shokhi is a **health companion, not a doctor**. It gives an initial sense and safe
 > guidance; a qualified doctor confirms any diagnosis. Emergencies → **999**.
 
+## 🔒 Privacy
+
+> No account required. Your profile and tracker data stay on your device. Chat and voice messages are securely processed by Shokhi and Gemini to generate replies. Please do not share your name, phone number, address, or identifying details.
+
+Gemma 4 is Shokhi's core generative health model. In the statement above, Gemini refers to
+the Google AI services used by supporting features: Advice voice transcription, read-aloud
+TTS, and optional RAG embeddings. Shokhi does not currently use an account system or a
+database for user profiles, tracker logs, or chat history; hosting and AI providers may
+still process request data according to their own retention and logging policies.
+
 ## 🎬 Demo
 
 The app runs as a single Next.js project with no login required. Add the hosted URL and
@@ -68,12 +78,13 @@ rules, not the model**, so Gemma can **never under-triage an emergency** because
 hallucination. This is the standard safe pattern for health AI: *LLM for language,
 deterministic logic for safety-critical decisions.*
 
-### 🎙️ Voice input and output — fast, private, and device-native
+### 🎙️ Voice input and output — fast, private, and device-aware
 
-A woman can **speak** her symptoms instead of typing. Supported browsers use their built-in
-speech recognition directly, with Bangla (`bn-BD`) or English selected from the language toggle.
-The resulting text goes through the **same Gemma 4 + deterministic-triage pipeline** as typed
-input; no audio is uploaded to a model server.
+A woman can **speak** her symptoms instead of typing. On the Advice page, a short recording is
+sent to Gemini speech-to-text with Bangla (`bn-BD`) or English selected from the language
+toggle. The resulting text goes through the **same Gemma 4 + deterministic-triage pipeline**
+as typed input. Browsers without recording support can fall back to device-native speech
+recognition.
 
 Read-aloud uses Gemini TTS with a female voice and caches audio
 per message. If no TTS key is configured or the service is unavailable, it falls back to the

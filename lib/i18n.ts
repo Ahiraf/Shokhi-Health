@@ -38,6 +38,7 @@ export const STRINGS = {
   "nav.langLabel": { bn: "English", en: "বাংলা" }, // shows the language you can switch TO
   "nav.darkMode": { bn: "ডার্ক মোড", en: "Dark mode" },
   "nav.lightMode": { bn: "লাইট মোড", en: "Light mode" },
+  "privacy.badge": { bn: "গোপনীয়তা আগে · সাইন-আপের দরকার নেই", en: "Privacy First / No Sign-up Required" },
 
   // --- footer --------------------------------------------------------------
   "footer.tagline": {

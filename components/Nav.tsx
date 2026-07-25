@@ -182,6 +182,17 @@ export default function Nav() {
         </div>
       </nav>
 
+      <div className="border-t border-rose-soft/40 px-5 py-1.5 text-center">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full bg-sage-soft/80 px-3 py-1 text-[11px] font-semibold text-sage-deep ring-1 ring-sage-deep/10"
+          title={t("privacy.badge")}
+          aria-label={t("privacy.badge")}
+        >
+          <Icon name="lock" size={12} />
+          Privacy First / No Sign-up Required
+        </span>
+      </div>
+
       {/* mobile menu — all pages flattened (dropdowns expanded) */}
       {open && (
         <ul className="grid grid-cols-2 gap-1.5 px-5 pb-4 md:hidden">
