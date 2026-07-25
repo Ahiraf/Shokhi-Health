@@ -167,6 +167,14 @@ export const STRINGS = {
     bn: "এই বিষয়ে আরও কিছু জানতে চান?",
     en: "Want to know more on this topic?",
   },
+  "guides.searchLabel": { bn: "গাইড খুঁজুন", en: "Search guides" },
+  "guides.searchPlaceholder": { bn: "বিষয় বা গাইড খুঁজুন…", en: "Search a topic or guide…" },
+  "guides.sourcesTitle": { bn: "বিশ্বস্ত সূত্রের বিষয়", en: "Trusted-source topics" },
+  "guides.sourcesSub": {
+    bn: "WHO, DGFP ও বাংলাদেশের স্বাস্থ্য নির্দেশনা থেকে আরও বিষয় জানুন।",
+    en: "Explore more topics grounded in WHO, DGFP, and Bangladesh health guidance.",
+  },
+  "guides.noResults": { bn: "মিলেছে এমন কোনো গাইড নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching guides found. Try another search." },
 
   // --- learn ---------------------------------------------------------------
   "learn.title": { bn: "রোগ সম্পর্কে জানুন", en: "Learn about conditions" },
@@ -175,6 +183,14 @@ export const STRINGS = {
     en: "Common women's-health conditions in plain language — signs, home care, and when to see a doctor.",
   },
   "learn.error": { bn: "তথ্য আনা গেল না।", en: "Couldn't load the information." },
+  "learn.searchLabel": { bn: "বিষয় খুঁজুন", en: "Search topics" },
+  "learn.searchPlaceholder": { bn: "রোগ বা স্বাস্থ্য বিষয় খুঁজুন…", en: "Search a condition or health topic…" },
+  "learn.sourcesTitle": { bn: "বিশ্বস্ত সূত্র থেকে আরও জানুন", en: "Learn from trusted sources" },
+  "learn.sourcesSub": {
+    bn: "WHO ও বাংলাদেশের স্বাস্থ্য সংস্থার তথ্যের ভিত্তিতে সহজ ব্যাখ্যা।",
+    en: "Simple explanations grounded in WHO and Bangladesh health sources.",
+  },
+  "learn.noResults": { bn: "মিলেছে এমন কোনো বিষয় নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching topics found. Try another search." },
 "learn.backAll": { bn:"সব বিষয়", en:"All topics"},
   "learn.notFound": { bn: "এই বিষয়টি পাওয়া গেল না।", en: "This topic wasn't found." },
 "learn.whatYouCanDo": { bn:"যা করতে পারেন", en:"What you can do"},

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang } from "./LanguageProvider";
 
 type SpeechRecognitionInstance = {
@@ -27,8 +27,12 @@ export default function Composer({
   const { t, lang } = useLang();
   const [text, setText] = useState("");
   const [recording, setRecording] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
   const [voiceError, setVoiceError] = useState("");
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   function submit() {
     const val = text.trim();
@@ -38,11 +42,33 @@ export default function Composer({
   }
 
   function stopRecording() {
+    if (recorderRef.current?.state === "recording") {
+      recorderRef.current.stop();
+      setRecording(false);
+      return;
+    }
     recognitionRef.current?.stop();
     setRecording(false);
   }
 
-  function startRecording() {
+  async function transcribe(blob: Blob) {
+    setTranscribing(true);
+    try {
+      const form = new FormData();
+      form.append("audio", blob, "advice.webm");
+      form.append("lang", lang);
+      const response = await fetch("/api/transcribe", { method: "POST", body: form });
+      const data = await response.json() as { transcript?: string };
+      if (!response.ok || !data.transcript?.trim()) throw new Error("transcription failed");
+      setText(data.transcript.trim());
+    } catch {
+      setVoiceError(t("composer.transcribeFailed"));
+    } finally {
+      setTranscribing(false);
+    }
+  }
+
+  async function startBrowserFallback() {
     if (recognitionRef.current) return;
     setVoiceError("");
     const speechWindow = window as Window & {
@@ -84,26 +110,77 @@ export default function Composer({
     }
   }
 
+  async function startRecording() {
+    setVoiceError("");
+    // Gemini transcription is the primary Advice voice path. Browser recognition remains a
+    // local fallback for browsers that do not expose MediaRecorder or microphone access.
+    if (typeof navigator.mediaDevices?.getUserMedia === "function" && typeof MediaRecorder !== "undefined") {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const preferred = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg"].find((type) => MediaRecorder.isTypeSupported(type));
+        const recorder = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
+        audioChunksRef.current = [];
+        streamRef.current = stream;
+        recorderRef.current = recorder;
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunksRef.current.push(event.data);
+        };
+        recorder.onstart = () => setRecording(true);
+        recorder.onstop = () => {
+          stream.getTracks().forEach((track) => track.stop());
+          streamRef.current = null;
+          recorderRef.current = null;
+          const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || "audio/webm" });
+          audioChunksRef.current = [];
+          if (blob.size > 0) void transcribe(blob);
+          else setVoiceError(t("composer.voiceNoSpeech"));
+        };
+        recorder.onerror = () => {
+          stream.getTracks().forEach((track) => track.stop());
+          recorderRef.current = null;
+          streamRef.current = null;
+          setRecording(false);
+          setVoiceError(t("composer.micFailed"));
+        };
+        recorder.start();
+        return;
+      } catch (error: any) {
+        if (error?.name === "NotAllowedError" || error?.name === "PermissionDeniedError") {
+          setVoiceError(t("composer.micDenied"));
+          return;
+        }
+        // Try the local browser recognizer if audio recording is not available on this device.
+      }
+    }
+    await startBrowserFallback();
+  }
+
+  useEffect(() => () => {
+    recorderRef.current?.stop();
+    recognitionRef.current?.stop();
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+  }, []);
+
   function toggleVoice() {
-    if (busy) return;
+    if (busy || transcribing) return;
     if (recording) stopRecording();
     else void startRecording();
   }
 
-  const micIcon = recording ? "⏹" : "🎙";
-  const micTitle = recording ? t("composer.listening") : t("composer.voiceTitle");
+  const micIcon = transcribing ? "…" : recording ? "⏹" : "🎙";
+  const micTitle = transcribing ? t("composer.transcribing") : recording ? t("composer.listening") : t("composer.voiceTitle");
 
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-end gap-2">
         <button
           onClick={toggleVoice}
-          disabled={busy}
+          disabled={busy || transcribing}
           title={micTitle}
           aria-label={micTitle}
           aria-pressed={recording}
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xl shadow-soft transition
-            ${recording ? "animate-pulse bg-red-500 text-white" : "bg-surface text-rose ring-1 ring-rose-soft hover:bg-rose-mist"}
+            ${recording ? "animate-pulse bg-red-500 text-white" : transcribing ? "bg-rose-mist text-rose" : "bg-surface text-rose ring-1 ring-rose-soft hover:bg-rose-mist"}
             disabled:cursor-not-allowed disabled:opacity-50`}
         >
           {micIcon}
@@ -133,11 +210,11 @@ export default function Composer({
         </div>
       </div>
 
-      {(recording || voiceError) && (
+      {(recording || transcribing || voiceError) && (
         <p className="px-1 text-xs leading-snug text-plum/55">
           {voiceError
             ? voiceError
-            : t("composer.listening")}
+            : transcribing ? t("composer.transcribing") : t("composer.listening")}
         </p>
       )}
     </div>
