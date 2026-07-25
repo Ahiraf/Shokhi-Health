@@ -12,7 +12,7 @@ const MONTHS_BN = ["জানু","ফেব","মার্চ","এপ্রি
 /**
  * All-time period visualisation (never capped at N months):
  *   1) a GitHub-contribution-style heatmap of EVERY logged period day, and
- *   2) a bar graph of EVERY completed cycle's length with the normal 21–35 day band.
+ *   2) a labeled line graph of EVERY completed cycle's length with the normal 21–35 day band.
  * Both scroll horizontally so the full history is always visible.
  */
 export default function CycleTrends({
@@ -63,7 +63,19 @@ export default function CycleTrends({
     return marks;
   }, [weeks, months, lang]);
 
-  const maxLen = Math.max(40, ...cycles.map((c) => c.length));
+  const chartWidth = Math.max(520, cycles.length * 86 + 72);
+  const chartHeight = 260;
+  const plot = { left: 38, right: 42, top: 18, bottom: 58 };
+  const yMin = 15;
+  const yMax = Math.max(55, Math.ceil(Math.max(...cycles.map((c) => c.length), 55) / 10) * 10);
+  const plotWidth = chartWidth - plot.left - plot.right;
+  const plotHeight = chartHeight - plot.top - plot.bottom;
+  const xFor = (index: number) => cycles.length === 1
+    ? plot.left + plotWidth / 2
+    : plot.left + (index / (cycles.length - 1)) * plotWidth;
+  const yFor = (value: number) => plot.top + ((yMax - value) / (yMax - yMin)) * plotHeight;
+  const points = cycles.map((cycle, index) => `${xFor(index)},${yFor(cycle.length)}`).join(" ");
+  const ticks = Array.from({ length: Math.floor((yMax - yMin) / 10) + 1 }, (_, index) => yMin + index * 10);
 
   return (
     <div className="space-y-5">
@@ -104,31 +116,75 @@ export default function CycleTrends({
         )}
       </div>
 
-      {/* 2) all-time cycle-length bars */}
+      {/* 2) all-time cycle-length line chart */}
       <div>
         <p className="mb-2 text-sm font-semibold text-rose-deep">{t("tracker.trendTitle")}</p>
         {cycles.length === 0 ? (
           <p className="text-xs text-rose-deep/50">{t("tracker.trendNeedTwo")}</p>
         ) : (
           <div className="overflow-x-auto pb-1">
-            <div className="relative flex items-end gap-1.5" style={{ height: 140, minWidth: cycles.length * 28 }}>
-              {/* normal-range band (21–35 days) */}
-              <div
-                className="pointer-events-none absolute inset-x-0 bg-emerald-100/50"
-                style={{ bottom: `${(21 / maxLen) * 100}%`, top: `${(1 - 35 / maxLen) * 100}%` }}
+            <svg
+              role="img"
+              aria-label={t("tracker.trendTitle")}
+              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+              width={chartWidth}
+              height={chartHeight}
+              className="max-w-none overflow-visible"
+            >
+              <rect
+                x={plot.left}
+                y={yFor(35)}
+                width={plotWidth}
+                height={yFor(21) - yFor(35)}
+                fill="rgb(var(--c-sage-soft))"
+                opacity="0.72"
               />
-              {cycles.map((c, i) => {
-                const h = Math.max(6, (c.length / maxLen) * 130);
-                const color = c.length < 21 ? "bg-amber-400" : c.length > 35 ? "bg-rose-deep" : "bg-rose";
+              {ticks.map((tick) => (
+                <g key={tick}>
+                  <line
+                    x1={plot.left}
+                    x2={chartWidth - plot.right}
+                    y1={yFor(tick)}
+                    y2={yFor(tick)}
+                    stroke="rgb(var(--c-rose-soft))"
+                    strokeOpacity="0.7"
+                  />
+                  <text x={plot.left - 8} y={yFor(tick) + 4} textAnchor="end" fontSize="11" fill="rgb(var(--c-rose-deep))">
+                    {num(tick)}
+                  </text>
+                </g>
+              ))}
+              <polyline
+                points={points}
+                fill="none"
+                stroke="rgb(var(--c-rose-deep))"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {cycles.map((cycle, index) => {
+                const x = xFor(index);
+                const y = yFor(cycle.length);
                 return (
-                  <div key={i} className="relative z-10 flex flex-col items-center justify-end" style={{ width: 22 }}>
-                    <span className="mb-0.5 text-[9px] font-medium text-rose-deep/70">{num(c.length)}</span>
-                    <div className={`w-full rounded-t ${color}`} style={{ height: h }} title={c.start} />
-                    <span className="mt-0.5 w-full truncate text-center text-[8px] text-rose-deep/45">{c.start.slice(5)}</span>
-                  </div>
+                  <g key={cycle.start}>
+                    <circle cx={x} cy={y} r="6" fill="rgb(var(--c-rose-deep))" stroke="rgb(var(--c-surface))" strokeWidth="3" />
+                    <text x={x} y={y - 12} textAnchor="middle" fontSize="12" fontWeight="700" fill="rgb(var(--c-rose-deep))">
+                      {num(cycle.length)}
+                    </text>
+                    <text x={x} y={chartHeight - 33} textAnchor="middle" fontSize="11" fill="rgb(var(--c-plum-soft))">
+                      <tspan x={x} dy="0">{cycle.start.slice(5)}</tspan>
+                      <tspan x={x} dy="14">{num(cycle.start.slice(0, 4))}</tspan>
+                    </text>
+                  </g>
                 );
               })}
-            </div>
+              <text x={chartWidth - 6} y={plot.top + plotHeight / 2} textAnchor="middle" fontSize="11" fill="rgb(var(--c-plum-soft))" transform={`rotate(90 ${chartWidth - 6} ${plot.top + plotHeight / 2})`}>
+                {lang === "en" ? "Cycle length, days" : "চক্রের দৈর্ঘ্য, দিন"}
+              </text>
+              <text x={plot.left + plotWidth / 2} y={chartHeight - 3} textAnchor="middle" fontSize="11" fill="rgb(var(--c-plum-soft))">
+                {lang === "en" ? "Cycle start date" : "চক্র শুরুর তারিখ"}
+              </text>
+            </svg>
           </div>
         )}
         <p className="mt-1.5 text-[10px] text-rose-deep/50">{t("tracker.trendBand")}</p>
