@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { NAV } from "@/lib/nav";
+import { NAV_LINKS } from "@/lib/nav";
 import { useLang } from "./LanguageProvider";
 
 /** Site footer — links, emergency numbers, and the safety disclaimer. */
@@ -21,7 +21,7 @@ export default function Footer() {
           <div>
             <p className="mb-2 text-xs font-semibold text-plum/45">{t("footer.pages")}</p>
             <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5">
-              {NAV.filter((n) => n.href !== "/").map((n) => (
+              {NAV_LINKS.filter((n) => n.href !== "/").map((n) => (
                 <li key={n.href}>
                   <Link href={n.href} className="text-sm text-plum/70 hover:text-rose">
                     {t(n.key)}

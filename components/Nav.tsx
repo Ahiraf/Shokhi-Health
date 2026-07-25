@@ -4,20 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { NAV } from "@/lib/nav";
+import { NAV, NAV_LINKS } from "@/lib/nav";
 import { useLang } from "./LanguageProvider";
 import { useTheme } from "./ThemeProvider";
 import NotificationBell from "./NotificationBell";
+import Icon from "./Icon";
 
-/** Sticky top navigation shared across every page, with a mobile menu. */
+/** Sticky top navigation shared across every page, with dropdown groups + a mobile menu. */
 export default function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState<string | null>(null); // open dropdown group (desktop)
   const { t, lang, toggle } = useLang();
   const { theme, toggle: toggleTheme } = useTheme();
 
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
 
   const themeLabel = t(theme === "dark" ? "nav.lightMode" : "nav.darkMode");
   const themeButton = (
@@ -89,20 +91,57 @@ export default function Nav() {
 
         {/* desktop links */}
         <ul className="hidden items-center gap-1 md:flex">
-          {NAV.map((n) => (
-            <li key={n.href}>
-              <Link
-                href={n.href}
-                className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
-                  isActive(n.href)
-                    ? "bg-rose text-accentink"
-                    : "text-plum/60 hover:bg-blush hover:text-plum"
-                }`}
+          {NAV.map((n) =>
+            "children" in n ? (
+              <li
+                key={n.key}
+                className="relative"
+                onMouseEnter={() => setMenu(n.key)}
+                onMouseLeave={() => setMenu(null)}
               >
-                {t(n.key)}
-              </Link>
-            </li>
-          ))}
+                <button
+                  onClick={() => setMenu((m) => (m === n.key ? null : n.key))}
+                  aria-expanded={menu === n.key}
+                  className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold transition ${
+                    n.children.some((c) => isActive(c.href))
+                      ? "bg-rose text-accentink"
+                      : "text-plum/60 hover:bg-blush hover:text-plum"
+                  }`}
+                >
+                  {t(n.key)}
+                  <Icon name="chevron" size={13} className={`rotate-90 transition ${menu === n.key ? "-scale-y-100" : ""}`} />
+                </button>
+                {menu === n.key && (
+                  <ul className="absolute left-0 top-full z-50 mt-1 min-w-[13rem] rounded-2xl bg-surface p-1.5 shadow-lift ring-1 ring-rose-soft">
+                    {n.children.map((c) => (
+                      <li key={c.href}>
+                        <Link
+                          href={c.href}
+                          onClick={() => setMenu(null)}
+                          className={`block rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                            isActive(c.href) ? "bg-rose text-accentink" : "text-plum/70 hover:bg-blush hover:text-plum"
+                          }`}
+                        >
+                          {t(c.key)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ) : (
+              <li key={n.href}>
+                <Link
+                  href={n.href}
+                  className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
+                    isActive(n.href) ? "bg-rose text-accentink" : "text-plum/60 hover:bg-blush hover:text-plum"
+                  }`}
+                >
+                  {t(n.key)}
+                </Link>
+              </li>
+            )
+          )}
           <li className="ml-1"><NotificationBell /></li>
           <li>{profileButton}</li>
           <li>{themeButton}</li>
@@ -128,10 +167,10 @@ export default function Nav() {
         </div>
       </nav>
 
-      {/* mobile menu */}
+      {/* mobile menu — all pages flattened (dropdowns expanded) */}
       {open && (
         <ul className="grid grid-cols-2 gap-1.5 px-5 pb-4 md:hidden">
-          {NAV.map((n) => (
+          {NAV_LINKS.map((n) => (
             <li key={n.href}>
               <Link
                 href={n.href}
