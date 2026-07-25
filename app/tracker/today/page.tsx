@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
+import PageIntro from "@/components/PageIntro";
 import PersonalToday from "@/components/PersonalToday";
 import WellnessTip from "@/components/WellnessTip";
 import { useLang } from "@/components/LanguageProvider";
@@ -14,7 +14,7 @@ export default function TrackerTodayPage() {
         {lang === "en" ? "← Tracker" : "← ট্র্যাকার"}
       </Link>
       <div className="mt-4">
-        <PageHeader icon="✨" title={t("nav.tracker.today")} sub={lang === "en" ? "A gentle plan for today, made just for you." : "আজকের জন্য একটি মৃদু পরামর্শ, শুধু আপনার জন্য।"} />
+        <PageIntro icon="✨" title={t("nav.tracker.today")} sub={lang === "en" ? "A gentle plan for today, made just for you." : "আজকের জন্য একটি মৃদু পরামর্শ, শুধু আপনার জন্য।"} variant="today" side="left" size={140} />
       </div>
       <div className="mt-8 space-y-5">
         <PersonalToday />

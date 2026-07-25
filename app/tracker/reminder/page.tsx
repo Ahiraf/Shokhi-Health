@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
+import PageIntro from "@/components/PageIntro";
 import PadReminder from "@/components/PadReminder";
 import { useLang } from "@/components/LanguageProvider";
 
@@ -13,7 +13,7 @@ export default function TrackerReminderPage() {
         {lang === "en" ? "← Tracker" : "← ট্র্যাকার"}
       </Link>
       <div className="mt-4">
-        <PageHeader icon="⏰" title={t("nav.tracker.pad")} sub={lang === "en" ? "A gentle nudge to change your pad every 4–6 hours." : "প্রতি ৪–৬ ঘণ্টায় প্যাড বদলানোর মৃদু মনে করানো।"} />
+        <PageIntro icon="⏰" title={t("nav.tracker.pad")} sub={lang === "en" ? "A gentle nudge to change your pad every 4–6 hours." : "প্রতি ৪–৬ ঘণ্টায় প্যাড বদলানোর মৃদু মনে করানো।"} variant="reminder" side="left" size={140} />
       </div>
       <div className="mt-8">
         <PadReminder />

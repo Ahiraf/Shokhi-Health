@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useLang } from "@/components/LanguageProvider";
 import { composeStream, reportImageStream } from "@/lib/api";
 import { detectCriticalLab } from "@/lib/server/personal";
-import PageHeader from "@/components/PageHeader";
+import PageIntro from "@/components/PageIntro";
 import SpeakButton from "@/components/SpeakButton";
 import Icon from "@/components/Icon";
 
@@ -51,10 +51,13 @@ export default function ReportPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-10">
-      <PageHeader
+      <PageIntro
         icon="🩺"
         title={en ? "Understand a test report" : "রিপোর্ট বুঝুন"}
         sub={en ? "Type a value OR upload a photo of your report — Shokhi explains it in simple words. General information; always confirm with a doctor." : "রিপোর্টের মান লিখুন অথবা রিপোর্টের ছবি আপলোড করুন — সখী সহজ ভাষায় বুঝিয়ে দেবে। এটি সাধারণ তথ্য; সবসময় ডাক্তারের সাথে নিশ্চিত করুন।"}
+        variant="report"
+        side="left"
+        size={140}
       />
 
       <div className="mt-8 space-y-3">
