@@ -42,9 +42,9 @@ export default function MoveDetailPage() {
         <article className="mt-4">
           {/* cartoon girl demonstrating the move, on a soft glow halo (like the landing hero) */}
           <div className="py-4 text-center">
-            <div className="hero-rings relative mx-auto flex h-56 w-56 items-center justify-center">
+            <div className="hero-rings relative mx-auto flex h-72 w-72 items-center justify-center">
               <div className="relative z-10 flex items-center justify-center">
-                <MoveVisual id={move.id} icon={move.icon} size={200} />
+                <MoveVisual id={move.id} icon={move.icon} size={260} />
               </div>
             </div>
             <div className="mt-3 flex items-center justify-center gap-2">
