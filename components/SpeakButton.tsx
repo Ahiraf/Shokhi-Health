@@ -6,7 +6,47 @@ import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
 
 const audioCache = new Map<string, Blob>();
+const audioRequests = new Map<string, Promise<Blob>>();
 const MAX_CACHED_AUDIO = 20;
+
+function cacheKey(text: string, lang: string): string {
+  return `${lang}:${text}`;
+}
+
+function loadAudio(text: string, lang: string): Promise<Blob> {
+  const key = cacheKey(text, lang);
+  const cached = audioCache.get(key);
+  if (cached) return Promise.resolve(cached);
+
+  const existing = audioRequests.get(key);
+  if (existing) return existing;
+
+  const request = fetch("/api/tts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, lang }),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("tts");
+      return res.blob();
+    })
+    .then((blob) => {
+      if (audioCache.size >= MAX_CACHED_AUDIO) {
+        const oldest = audioCache.keys().next().value;
+        if (typeof oldest === "string") audioCache.delete(oldest);
+      }
+      audioCache.set(key, blob);
+      audioRequests.delete(key);
+      return blob;
+    })
+    .catch((error) => {
+      audioRequests.delete(key);
+      throw error;
+    });
+
+  audioRequests.set(key, request);
+  return request;
+}
 
 /**
  * "Listen" button. Primary path: GOOGLE neural TTS (/api/tts) — fluent, correctly-pronounced
@@ -48,22 +88,7 @@ export default function SpeakButton({
   async function play() {
     setState("loading");
     try {
-      const cacheKey = `${lang}:${text}`;
-      let blob = audioCache.get(cacheKey);
-      if (!blob) {
-        const res = await fetch("/api/tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, lang }),
-        });
-        if (!res.ok) throw new Error("tts");
-        blob = await res.blob();
-        if (audioCache.size >= MAX_CACHED_AUDIO) {
-          const oldest = audioCache.keys().next().value;
-          if (oldest) audioCache.delete(oldest);
-        }
-        audioCache.set(cacheKey, blob);
-      }
+      const blob = await loadAudio(text, lang);
       const url = URL.createObjectURL(blob);
       urlRef.current = url;
       const audio = new Audio(url);
@@ -87,6 +112,10 @@ export default function SpeakButton({
     void play();
   }
 
+  function prefetch() {
+    if (state === "idle" && !audioCache.has(cacheKey(text, lang))) void loadAudio(text, lang).catch(() => {});
+  }
+
   if (!text.trim()) return null;
 
   const dim = size === "sm" ? "h-7 w-7" : "h-8 w-8";
@@ -95,6 +124,9 @@ export default function SpeakButton({
   return (
     <button
       onClick={toggle}
+      onMouseEnter={prefetch}
+      onFocus={prefetch}
+      onTouchStart={prefetch}
       aria-label={label}
       title={label}
       className={`inline-flex ${dim} shrink-0 items-center justify-center rounded-full ring-1 ring-rose-soft transition

@@ -14,7 +14,7 @@ export default function TrackerTodayPage() {
         {lang === "en" ? "← Tracker" : "← ট্র্যাকার"}
       </Link>
       <div className="mt-4">
-        <PageIntro icon="✨" title={t("nav.tracker.today")} sub={lang === "en" ? "A gentle plan for today, made just for you." : "আজকের জন্য একটি মৃদু পরামর্শ, শুধু আপনার জন্য।"} variant="today" side="left" size={190} />
+        <PageIntro icon="✨" title={t("nav.tracker.today")} sub={lang === "en" ? "A gentle plan for today, made just for you." : "আজকের জন্য একটি মৃদু পরামর্শ, শুধু আপনার জন্য।"} variant="today" side="left" size={220} mascotClassName="drop-shadow-[0_2px_3px_rgba(72,40,48,0.38)]" />
       </div>
       <div className="mt-8 space-y-5">
         <PersonalToday />
