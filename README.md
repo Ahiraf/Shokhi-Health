@@ -75,7 +75,7 @@ speech recognition directly, with Bangla (`bn-BD`) or English selected from the 
 The resulting text goes through the **same Gemma 4 + deterministic-triage pipeline** as typed
 input; no audio is uploaded to a model server.
 
-Read-aloud prefers standard Google Cloud neural TTS with a female Bangla voice and caches audio
+Read-aloud uses Gemini TTS with a female voice and caches audio
 per message. If no TTS key is configured or the service is unavailable, it falls back to the
 device's built-in SpeechSynthesis engine so the written answer remains available too.
 
@@ -376,7 +376,7 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 | `GOOGLE_API_KEY` | — | Google AI Studio key for live Gemma 4. Absent → deterministic mock backend. |
 | `GOOGLE_API_KEY_2`, `_3` | — | Optional second and third keys for automatic quota/access fallback. |
 | `GOOGLE_CLOUD_VISION_API_KEY` | — | Optional Google Cloud Vision OCR key for report-photo text extraction; falls back to the Google key list. |
-| `GOOGLE_CLOUD_TTS_API_KEY` | — | Optional Google Cloud TTS key for natural female Bangla/English read-aloud; falls back to browser speech. |
+| `GEMINI_TTS_MODEL` | `gemini-2.5-flash-preview-tts` | Optional Gemini TTS model override for natural female Bangla/English read-aloud. |
 | `SHOKHI_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Gemma 4 model on AI Studio (e.g. `gemma-4-31b-it`). |
 | `SHOKHI_BACKEND` | auto | Force `gemini` or `mock`. Default: `gemini` if a key is present, else `mock`. |
 | `SHOKHI_LLM_EXTRACT` | off | Optional Gemma symptom extraction; leave off for the faster deterministic intake path. |

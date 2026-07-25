@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const audio = await synthesize(text, readLanguage(body.lang));
     return new NextResponse(audio, {
       headers: {
-        "Content-Type": "audio/mpeg",
+        "Content-Type": "audio/wav",
         "Content-Length": String(audio.length),
         "Cache-Control": "public, max-age=86400",
       },

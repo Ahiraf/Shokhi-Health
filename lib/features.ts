@@ -104,4 +104,22 @@ export const FEATURES: Feature[] = [
     desc_en: "Emergency numbers, danger signs, and about Shokhi.",
     accent: "sage",
   },
+  {
+    href: "/tracker/today",
+    icon: "flower",
+    title_bn: "আজকের যত্ন",
+    title_en: "Today’s care",
+    desc_bn: "আজকের চক্র অনুযায়ী সহজ যত্ন, খাবার ও চলাফেরার পরামর্শ।",
+    desc_en: "Simple care, food and movement tips for your cycle today.",
+    accent: "rose",
+  },
+  {
+    href: "/faq",
+    icon: "help",
+    title_bn: "প্রশ্নোত্তর",
+    title_en: "Common questions",
+    desc_bn: "মাসিক, ব্যথা, গর্ভকাল ও নারীস্বাস্থ্য নিয়ে সহজ উত্তর।",
+    desc_en: "Simple answers about periods, pain, pregnancy and women’s health.",
+    accent: "apricot",
+  },
 ];
