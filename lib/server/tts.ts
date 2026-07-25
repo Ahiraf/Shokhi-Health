@@ -1,13 +1,40 @@
-// High-quality read-aloud with GOOGLE's neural TTS (Gemini TTS), using the same GOOGLE_API_KEY
-// as the rest of the app — NO OpenAI. The browser's built-in SpeechSynthesis is device-dependent
-// and for Bangla often sounds robotic/"trembling"; this synthesizes a fluent, correctly-pronounced
-// voice server-side. The client uses it and falls back to the browser voice if it's unavailable.
+// High-quality read-aloud with Google's neural TTS (Gemini TTS), using the same GOOGLE_API_KEY
+// as the rest of the app. The browser's built-in SpeechSynthesis is device-dependent, so the
+// server voice is the primary path and the browser remains an offline fallback.
 
 import { geminiKeys } from "./gemma";
 
 const TTS_MODEL = process.env.SHOKHI_TTS_MODEL || "gemini-2.5-flash-preview-tts";
-// warm, gentle female voices; Kore = calm, Aoede = bright. Configurable.
-const VOICE = process.env.SHOKHI_TTS_VOICE || "Kore";
+// Achird is friendly and conversational; override it when testing another supported voice.
+const VOICE = process.env.SHOKHI_TTS_VOICE || "Achird";
+
+function cleanTranscript(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/[\*_#>`~]/g, "")
+    .replace(/[•▪◦·]/g, " ")
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{FE0F}\u{200D}]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function promptFor(text: string, lang: "bn" | "en"): string {
+  const transcript = cleanTranscript(text).slice(0, 1500);
+  if (lang === "bn") {
+    return [
+      "Audio profile: a warm, natural adult woman from Bangladesh who is a native Bangla speaker.",
+      "Scene: she is speaking directly and kindly to a woman who may not be able to read.",
+      "Director's notes: use natural Bangladeshi Bengali pronunciation (bn-BD), not an English or Indian Bengali accent. Speak conversationally, clearly, gently, and unhurriedly, with short natural pauses. Sound human and reassuring, not like a navigation system or a newsreader. Do not translate, summarize, or add words.",
+      `Transcript: ${transcript}`,
+    ].join("\n");
+  }
+  return [
+    "Audio profile: a warm, natural adult woman speaking clearly and kindly.",
+    "Director's notes: conversational pace, gentle pauses, reassuring tone, never robotic or like a navigation system. Do not translate, summarize, or add words.",
+    `Transcript: ${transcript}`,
+  ].join("\n");
+}
 
 /** Wrap raw signed-16-bit little-endian PCM in a minimal WAV header so browsers can play it. */
 function wav(pcm: Buffer, sampleRate: number, channels = 1, bits = 16): Buffer {
@@ -36,8 +63,7 @@ export async function synthesize(text: string, lang: "bn" | "en"): Promise<Buffe
   if (!keys.length) throw new Error("No GOOGLE_API_KEY for TTS.");
   const { GoogleGenAI } = await import("@google/genai");
 
-  const style = lang === "bn" ? "শান্ত, যত্নশীল ও স্পষ্ট কণ্ঠে ধীরে ধীরে বলুন: " : "Say this warmly, clearly and calmly: ";
-  const prompt = style + text.slice(0, 1500);
+  const prompt = promptFor(text, lang);
 
   let lastErr: unknown;
   for (const key of keys) {

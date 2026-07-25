@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
+import SpeakButton from "./SpeakButton";
 
 const STORE_KEY = "shokhi_pad_reminder";
 const BN = "০১২৩৪৫৬৭৮৯";
@@ -81,7 +82,10 @@ export default function PadReminder() {
 
   return (
     <div className="mt-4 rounded-2xl bg-surface/70 p-4 ring-1 ring-rose-soft">
-      <h2 className="flex items-center gap-2 text-base font-bold text-rose-deep"><Icon name="clock" size={18} /> {t("pad.title")}</h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-base font-bold text-rose-deep"><Icon name="clock" size={18} /> {t("pad.title")}</h2>
+        <SpeakButton text={`${t("pad.title")}. ${t("pad.intro")} ${t("pad.footer")}`} size="sm" />
+      </div>
       <p className="mt-1 text-sm text-rose-deep/70">{t("pad.intro")}</p>
 
       {!active && !done && (

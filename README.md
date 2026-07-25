@@ -21,53 +21,11 @@ You describe how you feel — by **typing or speaking in Bangla** — and Shokhi
 
 ---
 
-## 🧭 Why Shokhi? The gap in what already exists
+## 🧭 Shokhi's focus
 
-The *idea* of digital menstrual health in Bangladesh is not new — but the existing tools
-leave the women who need help most **unserved**. Shokhi is a different **implementation**
-that targets exactly those gaps.
-
-### Limitations of existing solutions
-
-**Ananya (WaterAid Bangladesh)** — a period **tracker** + cycle prediction + static
-informational articles (Android app, Bangla/English):
-- ❌ **No AI / no reasoning** — canned, one-size-fits-all content; it can't understand or
-  respond to a woman's actual symptom description.
-- ❌ **Requires a smartphone + literacy** — you must be able to install an Android app and
-  **read** articles. This excludes low-literacy and rural women — the highest-need group.
-- ❌ **No clinical triage** — it cannot tell a dangerous red flag from normal cramps.
-- ❌ **No PCOS / endometriosis / PMS support** — it is a tracker, not a health advisor.
-- ❌ **No voice** — nothing for women who cannot read text.
-
-**Probahini (WaterAid + Acme AI)** — a messenger-based **FAQ chatbot** (Bangla/English):
-- ❌ **Scripted, rule-tree conversation** — guided FAQs and myth-busting, but it does not
-  *reason* over free-form, messy, real-life symptom descriptions.
-- ❌ **Still needs a smartphone, a messaging app, and the ability to read & type.**
-- ❌ **No personalized triage** — no "go to hospital now" vs. "safe self-care" decisioning.
-
-**The research is blunt about who gets left out:**
-- Rural and less-educated women — who are more likely to be **illiterate** — often have only
-  **basic button phones** and **cannot read SMS or app text**; studies find they need
-  **voice, in Bangla, ideally via a hotline**.
-- **PCOS prevalence in Bangladesh is ~51%**, higher in rural areas, with 50–60% reporting
-  depression / anxiety / insomnia — yet **no existing app offers PCOS/endometriosis
-  symptom triage**.
-
-### How Shokhi is different (the ownable implementation)
-
-| | Ananya | Probahini | **Shokhi** |
-|---|:---:|:---:|:---:|
-| Understands free-form Bangla symptoms | ❌ | ⚠️ scripted | ✅ **Gemma 4 reasoning** |
-| Clinical red-flag / emergency triage | ❌ | ❌ | ✅ **deterministic safety layer** |
-| PCOS / PMS / endometriosis guidance | ❌ | ❌ | ✅ |
-| Voice-first (speak & hear Bangla) | ❌ | ❌ | ✅ (+ IVR-hotline roadmap) |
-| Serves low-literacy / rural women | ❌ | ❌ | ✅ **designed for them first** |
-| Works without installing an app | ❌ | ⚠️ | ✅ web / any browser |
-| Adapts across urban teen → rural woman | ❌ | ❌ | ✅ |
-
-*Sources: WaterAid Bangladesh (Ananya / Probahini); Heliyon voice-bot study on marginalized
-women's healthcare access; Reproductive Health (BMC) on mobile-phone use among low-income
-women; medRxiv 2025 on PCOS prevalence & psychological distress in Bangladesh.*
+Shokhi is designed as a warm, Bangla-first health companion for menstrual health, PCOS,
+PMS, and endometriosis, with voice input, low-literacy guidance, and a deterministic safety
+layer beneath the AI responses.
 
 ---
 
@@ -131,6 +89,28 @@ Chrome, unlike the browser's built-in Web Speech API.
 Other supporting (non-generative, allowed) tools: the RAG corpus + embeddings, a knowledge
 base of red flags / conditions / myths, and the two logistic-regression risk classifiers.
 
+## 🔁 Three-key API fallback (reliability by design)
+
+Hosted AI calls rotate through up to three Google AI Studio keys. If a key hits a quota,
+permission, rate-limit, or transient service error, Shokhi automatically tries the next key:
+
+```
+GOOGLE_API_KEY       (#1)
+        │ quota / access / service error
+        ▼
+GOOGLE_API_KEY_2     (#2)
+        │ quota / access / service error
+        ▼
+GOOGLE_API_KEY_3     (#3)
+        │ no usable key
+        ▼
+Deterministic mock backend (no-key / offline mode)
+```
+
+The same key rotation supports Gemma text generation, speech-to-text, report-image reading,
+embeddings, and neural text-to-speech. The deterministic triage and mock backend remain
+available without any API key.
+
 ---
 
 ## 🚪 One brain, many front doors (reaching *all* women)
@@ -148,6 +128,19 @@ core* can power the web app **and** a future phone hotline. The web app already 
 identical triage runs); the planned IVR path can reuse that core behind a Twilio/Exotel phone
 number with a separate speech-to-text and text-to-speech adapter, always with a spoken
 fallback to **16263 / 999**.
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+| ----- | ---------- |
+| Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
+| Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
+| AI | Google Gemma 4 · Gemini multimodal models for speech, report images, embeddings, and TTS |
+| Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
+| Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
+| Retrieval | Local Markdown corpus · precomputed embeddings · grounded RAG responses |
+| Testing | Vitest |
+| Deployment | Vercel |
 
 ---
 
@@ -319,7 +312,7 @@ npm run dev                          # open http://localhost:3001
 - **Without a key** the app runs on a **deterministic mock backend** — the full flow works
   offline, just with keyword-based (not real Gemma) understanding.
 - **For live Gemma 4**, put a Google AI Studio key in `.env.local` as `GOOGLE_API_KEY`
-  (optionally `GOOGLE_API_KEY_2`/`_3` for quota fallback). The server auto-selects Gemma.
+  (optionally `GOOGLE_API_KEY_2`/`_3` for three-key quota fallback). The server auto-selects Gemma.
 
 Run the **safety tests** (Vitest — verifies emergencies are never downgraded, the ML signal
 never overrides urgency, and RAG degrades gracefully):
@@ -378,7 +371,7 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 | Env var | Default | Meaning |
 |---|---|---|
 | `GOOGLE_API_KEY` | — | Google AI Studio key for live Gemma 4. Absent → deterministic mock backend. |
-| `GOOGLE_API_KEY_2`, `_3` | — | Optional extra keys (other Google accounts) for automatic quota fallback. |
+| `GOOGLE_API_KEY_2`, `_3` | — | Optional second and third keys for automatic quota/access fallback. |
 | `SHOKHI_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Gemma 4 model on AI Studio (e.g. `gemma-4-31b-it`). |
 | `SHOKHI_BACKEND` | auto | Force `gemini` or `mock`. Default: `gemini` if a key is present, else `mock`. |
 | `SHOKHI_LLM_EXTRACT` | off | Optional Gemma symptom extraction; leave off for the faster deterministic intake path. |
@@ -391,7 +384,7 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 The Gemma backend sits behind **one swappable interface** (`lib/server/gemma.ts` —
 today `mock` and hosted `gemini`). A **local Gemma 4** backend (e.g. via Ollama) can drop
 into that same interface with zero changes to the rest of the app — which unlocks a future
-the existing apps cannot reach:
+for offline, local health support:
 
 - **Hosted (API key) — reach the whole country over the internet.** The cloud runs Gemma 4;
   any woman opens the web link from any browser. *This is the near-term product.*

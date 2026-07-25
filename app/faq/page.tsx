@@ -3,6 +3,7 @@
 import Link from "next/link";
 import PageIntro from "@/components/PageIntro";
 import { useLang } from "@/components/LanguageProvider";
+import SpeakButton from "@/components/SpeakButton";
 
 // Frequently asked questions about Shokhi. Bilingual and self-contained (like the
 // About page) — the health *content* lives in knowledge.json, but these are questions
@@ -96,9 +97,15 @@ export default function FaqPage() {
                 </svg>
               </span>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-plum/70">
-              {lang === "en" ? f.a_en : f.a_bn}
-            </p>
+            <div className="mt-3 flex items-start gap-3">
+              <p className="flex-1 text-sm leading-relaxed text-plum/70">
+                {lang === "en" ? f.a_en : f.a_bn}
+              </p>
+              <SpeakButton
+                text={`${lang === "en" ? f.q_en : f.q_bn}. ${lang === "en" ? f.a_en : f.a_bn}`}
+                size="sm"
+              />
+            </div>
           </details>
         ))}
       </section>

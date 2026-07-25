@@ -6,6 +6,7 @@ import PageIntro from "@/components/PageIntro";
 import WeeklyPlan from "@/components/WeeklyPlan";
 import MoveVisual from "@/components/MoveVisual";
 import Icon from "@/components/Icon";
+import SpeakButton from "@/components/SpeakButton";
 import { useLang } from "@/components/LanguageProvider";
 import { getWellness } from "@/lib/api";
 import type { Wellness } from "@/lib/types";
@@ -30,9 +31,10 @@ export default function WellnessPage() {
 
       {w && (
         <div className="mt-8 space-y-10">
-          <p className="mx-auto max-w-2xl text-center text-[15px] leading-relaxed text-plum/70">
-            {pick(w, "intro")}
-          </p>
+          <div className="mx-auto flex max-w-2xl items-start justify-center gap-3 text-center">
+            <p className="text-[15px] leading-relaxed text-plum/70">{pick(w, "intro")}</p>
+            <SpeakButton text={pick(w, "intro")} size="sm" />
+          </div>
 
           {/* personalized 7-day plan */}
           <WeeklyPlan />
@@ -43,7 +45,10 @@ export default function WellnessPage() {
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {w.phases.map((p) => (
                 <div key={p.id} className="rounded-2xl bg-surface/80 p-5 ring-1 ring-rose-soft">
-                  <p className="font-display text-base font-bold text-plum">{pick(p, "label")}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-display text-base font-bold text-plum">{pick(p, "label")}</p>
+                    <SpeakButton text={`${pick(p, "label")}. ${t("wellness.move")}: ${pick(p, "move")}. ${t("wellness.food")}: ${pick(p, "food")}`} size="sm" />
+                  </div>
                   <p className="text-xs text-plum/45">{pick(p, "days")}</p>
                   <p className="mt-3 text-sm leading-relaxed text-plum/80">
                     <span className="font-semibold text-rose-deep">{t("wellness.move")}</span> — {pick(p, "move")}
@@ -62,7 +67,10 @@ export default function WellnessPage() {
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {w.conditions.map((c) => (
                 <div key={c.id} className="rounded-2xl bg-blush/50 p-5 ring-1 ring-rose-soft">
-                  <p className="font-display text-base font-bold text-plum">{pick(c, "label")}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-display text-base font-bold text-plum">{pick(c, "label")}</p>
+                    <SpeakButton text={`${pick(c, "label")}. ${t("wellness.move")}: ${pick(c, "move")}. ${t("wellness.food")}: ${pick(c, "food")}. ${pick(c, "note")}`} size="sm" />
+                  </div>
                   <p className="mt-3 text-sm leading-relaxed text-plum/80">
                     <span className="font-semibold text-rose-deep">{t("wellness.move")}</span> — {pick(c, "move")}
                   </p>
