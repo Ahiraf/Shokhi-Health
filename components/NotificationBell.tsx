@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
-import { buildNotifications, actionableSignature, type Notif, type Tone } from "@/lib/notifications";
+import { buildNotifications, actionableSignature, NOTIFICATION_EVENT, type Notif, type Tone } from "@/lib/notifications";
 
 const SEEN_KEY = "shokhi_notif_seen";
 
@@ -27,16 +27,18 @@ export default function NotificationBell() {
     try { setSeen(localStorage.getItem(SEEN_KEY) || ""); } catch { /* ignore */ }
   };
 
-  // recompute on mount, on language change, and whenever the tab regains focus / storage changes
+  // Recompute on mount, language change, app data changes, tab focus and a short timer.
   useEffect(() => {
     refresh();
     const onFocus = () => refresh();
     window.addEventListener("focus", onFocus);
     window.addEventListener("storage", onFocus);
-    const id = setInterval(refresh, 60_000);
+    window.addEventListener(NOTIFICATION_EVENT, onFocus);
+    const id = setInterval(refresh, 15_000);
     return () => {
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("storage", onFocus);
+      window.removeEventListener(NOTIFICATION_EVENT, onFocus);
       clearInterval(id);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
 import SpeakButton from "./SpeakButton";
+import { notifyDataChanged } from "@/lib/notifications";
 
 const STORE_KEY = "shokhi_pad_reminder";
 const BN = "০১২৩৪৫৬৭৮৯";
@@ -65,6 +66,7 @@ export default function PadReminder() {
     }
     const r = { start: Date.now(), hours };
     localStorage.setItem(STORE_KEY, JSON.stringify(r));
+    notifyDataChanged();
     setReminder(r);
     setDone(false);
     setNow(Date.now());
@@ -72,6 +74,7 @@ export default function PadReminder() {
 
   function cancel() {
     localStorage.removeItem(STORE_KEY);
+    notifyDataChanged();
     setReminder(null);
     setDone(false);
   }

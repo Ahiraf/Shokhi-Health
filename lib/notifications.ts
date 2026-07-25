@@ -7,6 +7,11 @@ import type { CycleLog } from "./types";
 import type { IconName } from "@/components/Icon";
 
 export type Tone = "urgent" | "info" | "calm";
+export const NOTIFICATION_EVENT = "shokhi:data-changed";
+
+export function notifyDataChanged(): void {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(NOTIFICATION_EVENT));
+}
 
 export interface Notif {
   id: string;
@@ -55,19 +60,33 @@ export function buildNotifications(lang: "bn" | "en"): Notif[] {
   const ins = getInsights(loadLogs(), lang);
   if (ins.hasData) {
     if (ins.status.kind === "late") {
+      const lateDays = ins.status.value ?? 0;
+      const stopped = lateDays >= 90;
       out.push({
-        id: "period-late", icon: "drop", tone: "urgent", actionable: true, href: "/tracker",
-        title: en ? `Your period is ${ins.status.value} days late` : `আপনার মাসিক ${ins.status.value} দিন দেরি`,
-        body: en ? "Occasional lateness is normal; see a doctor if over 3 months." : "মাঝে মাঝে দেরি স্বাভাবিক; ৩ মাসের বেশি হলে ডাক্তার দেখান।",
+        id: stopped ? "period-stopped" : "period-late", icon: "drop", tone: stopped ? "urgent" : "info", actionable: stopped, href: "/tracker",
+        title: stopped
+          ? (en ? "Your period has not come for 3 months" : "৩ মাস ধরে আপনার মাসিক আসেনি")
+          : (en ? `Your period is ${lateDays} days late` : `আপনার মাসিক ${lateDays} দিন দেরি`),
+        body: stopped
+          ? (en ? "Please take a pregnancy test if relevant and speak with a doctor or health worker." : "প্রয়োজন হলে গর্ভধারণ পরীক্ষা করুন এবং ডাক্তার বা স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।")
+          : (en ? "A few days can be normal. Keep tracking and check in if this continues." : "কয়েক দিন দেরি স্বাভাবিক হতে পারে। লিখে রাখুন; দেরি চলতে থাকলে পরামর্শ নিন।"),
       });
-    } else if (ins.daysUntilNext != null && ins.daysUntilNext >= 0 && ins.daysUntilNext <= 5) {
+    } else if (ins.daysUntilNext != null && ins.daysUntilNext >= 0 && ins.daysUntilNext <= 14) {
       const d = ins.daysUntilNext;
       out.push({
         id: "period-soon", icon: "drop", tone: "info", actionable: true, href: "/tracker",
         title: d === 0
           ? (en ? "Your period may start today" : "আজ আপনার মাসিক শুরু হতে পারে")
           : (en ? `Period likely in ${d} days` : `মাসিক আনুমানিক ${d} দিনে`),
-        body: en ? "Keep a pad handy, just in case." : "নিশ্চিন্তে থাকতে সঙ্গে একটি প্যাড রাখুন।",
+        body: en ? "Keep tracking your cycle and keep a pad handy as the date gets closer." : "চক্রটি লিখে রাখুন; তারিখ কাছে এলে সঙ্গে একটি প্যাড রাখুন।",
+      });
+    }
+
+    if (ins.analysis.regular === false) {
+      out.push({
+        id: "cycle-irregular", icon: "calendar", tone: "calm", actionable: false, href: "/tracker",
+        title: en ? "Your cycle looks irregular" : "আপনার চক্রটি অনিয়মিত মনে হচ্ছে",
+        body: en ? "Keep logging dates. If this continues, discuss it with a health worker." : "তারিখ লিখে যেতে থাকুন। এভাবে চললে স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।",
       });
     }
 

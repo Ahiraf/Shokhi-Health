@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { CycleLog } from "@/lib/types";
 import { getInsights, fromDays, toDays, todayDays, type Phase } from "@/lib/cycle-insights";
 import { useLang } from "./LanguageProvider";
+import { notifyDataChanged } from "@/lib/notifications";
 import type { StringKey } from "@/lib/i18n";
 import CycleCalendar from "./CycleCalendar";
 import CycleTrends from "./CycleTrends";
@@ -60,6 +61,7 @@ export default function CycleTracker() {
   function persist(next: CycleLog[]) {
     setLogs(next);
     localStorage.setItem(STORE_KEY, JSON.stringify(next));
+    notifyDataChanged();
   }
   function resetForm() {
     setStart(""); setFlow("normal"); setPain(0); setPads(0); setEditing(null); setShowForm(false);

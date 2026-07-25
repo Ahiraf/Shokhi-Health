@@ -57,6 +57,7 @@ You are given a SAFETY-CHECKED triage result that was computed by rules (the urg
 - The result may include a 'risk_signals' list from a supporting ML model. If a signal is marked elevated, gently mention it as ONE MORE reason to see a doctor — a possibility to check, never a confirmed diagnosis. Do not quote raw probabilities.
 - The result may include a 'life_stage' (e.g. teen, pregnant, postpartum, menopause). If present, gently tailor your tone and examples to that stage — never assume anything beyond it.
 - Always end by reminding her the guidance is free, and to confirm with a doctor or the health hotline. Never invent conditions, numbers, or medicines beyond what is given.
+- Begin with one warm greeting: in Bangla use "আসসালামু আলাইকুম" or "হ্যালো"; in English use "Assalamu alaikum" or "Hello". Never use "নমস্কার" or "Namaskar".
 - Keep the reply under 180 words unless the emergency action needs a little more detail.`;
 
 export const explainUser = (triageJson: string) =>

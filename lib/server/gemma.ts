@@ -104,6 +104,7 @@ const CLAUSE_SEP = [",", "।", ";", "\n", "কিন্তু", "তবে", " 
 
 const T = {
   bn: {
+    greeting: "আসসালামু আলাইকুম। ",
     emergency: "⚠️ **এটি জরুরি অবস্থা হতে পারে।**\n",
     call: (n: string) => `\n📞 জরুরি প্রয়োজনে কল করুন: **${n}**`,
     discuss: "আপনার বর্ণনা শুনে নিচের বিষয়গুলো একজন ডাক্তারের সাথে আলোচনা করা ভালো (এটি নিশ্চিত রোগ নির্ণয় নয়):\n",
@@ -116,6 +117,7 @@ const T = {
     mythGeneric: "এই বিষয়ে অনেক ভুল ধারণা প্রচলিত আছে। নির্ভরযোগ্য তথ্যের জন্য একজন স্বাস্থ্যকর্মী বা ডাক্তারের সাথে কথা বলুন — লজ্জার কিছু নেই।",
   },
   en: {
+    greeting: "Assalamu alaikum. ",
     emergency: "⚠️ **This may be an emergency.**\n",
     call: (n: string) => `\n📞 In an emergency, call: **${n}**`,
     discuss: "From what you've described, it's worth discussing the following with a doctor (this is not a confirmed diagnosis):\n",
@@ -180,7 +182,7 @@ class MockBackend implements Backend {
     const t = T[lang] ?? T.bn;
     const f = (o: any, base: string) => pickField(o, base, lang);
     const urgency = tr.urgency ?? "info";
-    const lines: string[] = [];
+    const lines: string[] = [t.greeting];
     if (urgency === "emergency") {
       lines.push(t.emergency);
       for (const rf of tr.red_flags ?? []) { lines.push(`• ${f(rf, "message")}`); lines.push(`  👉 ${f(rf, "action")}`); }
