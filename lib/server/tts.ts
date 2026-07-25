@@ -5,8 +5,8 @@
 import { geminiKeys } from "./gemma";
 
 const TTS_MODEL = process.env.SHOKHI_TTS_MODEL || "gemini-2.5-flash-preview-tts";
-// Achird is friendly and conversational; override it when testing another supported voice.
-const VOICE = process.env.SHOKHI_TTS_VOICE || "Achird";
+// Aoede is a warm, natural-sounding female voice; override it when testing another supported voice.
+const VOICE = process.env.SHOKHI_TTS_VOICE || "Aoede";
 
 function cleanTranscript(text: string): string {
   return text
@@ -20,20 +20,11 @@ function cleanTranscript(text: string): string {
 }
 
 function promptFor(text: string, lang: "bn" | "en"): string {
-  const transcript = cleanTranscript(text).slice(0, 1500);
+  const transcript = cleanTranscript(text).slice(0, 1200);
   if (lang === "bn") {
-    return [
-      "Audio profile: a warm, natural adult woman from Bangladesh who is a native Bangla speaker.",
-      "Scene: she is speaking directly and kindly to a woman who may not be able to read.",
-      "Director's notes: use natural Bangladeshi Bengali pronunciation (bn-BD), not an English or Indian Bengali accent. Speak conversationally, clearly, gently, and unhurriedly, with short natural pauses. Sound human and reassuring, not like a navigation system or a newsreader. Do not translate, summarize, or add words.",
-      `Transcript: ${transcript}`,
-    ].join("\n");
+    return `Speak as a warm, natural adult female native speaker from Bangladesh. Use clear, conversational Bangladeshi Bengali (bn-BD), with gentle pauses and an unhurried pace. Do not sound robotic or like a newsreader. Read exactly this transcript without translating, summarizing, or adding words:\n${transcript}`;
   }
-  return [
-    "Audio profile: a warm, natural adult woman speaking clearly and kindly.",
-    "Director's notes: conversational pace, gentle pauses, reassuring tone, never robotic or like a navigation system. Do not translate, summarize, or add words.",
-    `Transcript: ${transcript}`,
-  ].join("\n");
+  return `Speak as a warm, natural adult female voice. Use a clear, conversational pace with gentle pauses. Do not sound robotic or like a newsreader. Read exactly this transcript without translating, summarizing, or adding words:\n${transcript}`;
 }
 
 /** Wrap raw signed-16-bit little-endian PCM in a minimal WAV header so browsers can play it. */

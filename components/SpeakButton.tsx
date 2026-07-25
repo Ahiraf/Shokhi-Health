@@ -5,6 +5,9 @@ import { speak as browserSpeak, stopSpeaking as browserStop } from "@/lib/speak"
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
 
+const audioCache = new Map<string, Blob>();
+const MAX_CACHED_AUDIO = 20;
+
 /**
  * "Listen" button. Primary path: GOOGLE neural TTS (/api/tts) — fluent, correctly-pronounced
  * Bangla/English (unlike the browser's robotic voice). Falls back to the browser's SpeechSynthesis
@@ -45,16 +48,26 @@ export default function SpeakButton({
   async function play() {
     setState("loading");
     try {
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, lang }),
-      });
-      if (!res.ok) throw new Error("tts");
-      const blob = await res.blob();
+      const cacheKey = `${lang}:${text}`;
+      let blob = audioCache.get(cacheKey);
+      if (!blob) {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, lang }),
+        });
+        if (!res.ok) throw new Error("tts");
+        blob = await res.blob();
+        if (audioCache.size >= MAX_CACHED_AUDIO) {
+          const oldest = audioCache.keys().next().value;
+          if (oldest) audioCache.delete(oldest);
+        }
+        audioCache.set(cacheKey, blob);
+      }
       const url = URL.createObjectURL(blob);
       urlRef.current = url;
       const audio = new Audio(url);
+      audio.preload = "auto";
       audioRef.current = audio;
       audio.onended = () => { setState("idle"); cleanup(); };
       audio.onerror = () => fallback();
