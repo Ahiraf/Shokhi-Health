@@ -45,10 +45,12 @@ export default function SpeakButton({
   text,
   size = "md",
   className = "",
+  withLabel = false,
 }: {
   text: string;
   size?: "sm" | "md";
   className?: string;
+  withLabel?: boolean;
 }) {
   const { t, lang } = useLang();
   const [state, setState] = useState<"idle" | "loading" | "playing">("idle");
@@ -56,7 +58,6 @@ export default function SpeakButton({
   const audioUrlRef = useRef<string | null>(null);
   useEffect(() => {
     warmVoices();
-    if (text.trim()) void loadAudio(text, lang).catch(() => {});
     return () => {
       browserStop();
       audioRef.current?.pause();
@@ -121,10 +122,11 @@ export default function SpeakButton({
       onTouchStart={prefetch}
       aria-label={label}
       title={label}
-      className={`inline-flex ${dim} shrink-0 items-center justify-center rounded-full ring-1 ring-rose-soft transition
+      className={`inline-flex ${dim} ${withLabel ? "w-auto gap-1.5 px-2" : "shrink-0 justify-center"} items-center rounded-full ring-1 ring-rose-soft transition
         ${state !== "idle" ? "animate-pulse bg-rose text-accentink" : "bg-surface text-rose-deep hover:bg-rose-mist"} ${className}`}
     >
       <Icon name={state === "playing" ? "stop" : "volume"} size={size === "sm" ? 13 : 15} />
+      {withLabel && <span className="text-xs font-semibold">{label}</span>}
     </button>
   );
 }

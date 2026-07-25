@@ -68,7 +68,7 @@ export default function Message({ item }: { item: ChatItem }) {
         {/* voice output — read the reply aloud (for users who prefer listening) */}
         {item.text.trim() && (
           <div className="mt-2 flex justify-end">
-            <SpeakButton text={item.text} size="sm" />
+            <SpeakButton text={item.text} size="sm" withLabel />
           </div>
         )}
       </div>
