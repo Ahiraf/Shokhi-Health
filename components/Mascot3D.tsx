@@ -34,7 +34,7 @@ export default function Mascot3D({
 }) {
   // page-specific pose first, then the shared default
   const variantSource = variant === "today"
-    ? "/New Morning2.png"
+    ? "/NewMorning3.png"
     : variant === "report"
     ? "/NewReport.png"
     : variant
