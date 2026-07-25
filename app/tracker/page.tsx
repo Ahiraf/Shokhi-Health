@@ -6,6 +6,7 @@ import PadReminder from "@/components/PadReminder";
 import WellnessTip from "@/components/WellnessTip";
 import MoodLog from "@/components/MoodLog";
 import FamilyCard from "@/components/FamilyCard";
+import PersonalToday from "@/components/PersonalToday";
 import { useLang } from "@/components/LanguageProvider";
 
 export default function TrackerPage() {
@@ -15,6 +16,7 @@ export default function TrackerPage() {
       <PageIntro icon="🩸" title={t("tracker.title")} sub={t("tracker.sub")} variant="tracker" side="left" size={140} />
       <CycleTracker />
       <div className="mt-5 space-y-5">
+        <PersonalToday />
         <MoodLog />
         <FamilyCard />
       </div>

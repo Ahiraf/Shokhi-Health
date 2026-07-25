@@ -26,6 +26,8 @@ export interface Backend {
   safetyCheck(message: string): Promise<SafetyResult>;
   /** Streaming variant of explainTriage — yields the guidance in chunks for a live feel. */
   explainTriageStream(triage: any, lang: Lang): AsyncGenerator<string>;
+  /** Generic on-demand generation for personalised features (notes, explanations, etc.). */
+  composeStream(system: string, user: string, lang: Lang, fallback: string): AsyncGenerator<string>;
 }
 
 const pickField = (obj: any, base: string, lang: Lang) =>
@@ -261,6 +263,11 @@ class MockBackend implements Backend {
     for (const line of full.split("\n")) yield line + "\n";
   }
 
+  // Offline: no LLM, so return the deterministic fallback the caller supplied.
+  async *composeStream(_system: string, _user: string, _lang: Lang, fallback: string): AsyncGenerator<string> {
+    for (const line of (fallback || "").split("\n")) yield line + "\n";
+  }
+
 }
 
 // --- Gemini backend (hosted Gemma 4) with multi-key quota fallback ------------
@@ -381,6 +388,9 @@ class GeminiBackend implements Backend {
   }
   explainTriageStream(tr: any, lang: Lang) {
     return this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr)), 0.4);
+  }
+  composeStream(system: string, user: string, lang: Lang, _fallback: string) {
+    return this.generateStream(P.withLanguage(system, lang), user, 0.5);
   }
   async safetyCheck(message: string): Promise<SafetyResult> {
     try {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
 import SpeakButton from "./SpeakButton";
+import GemmaPanel from "./GemmaPanel";
+import { currentPhase } from "@/lib/wellness";
 
 /**
  * "Help them understand" — a simple, shareable explainer the woman can show her family so the
@@ -52,6 +54,15 @@ export default function FamilyCard() {
           <Icon name="upload" size={15} /> {copied ? (en ? "Copied!" : "কপি হয়েছে!") : en ? "Show my family" : "পরিবারকে দেখান"}
         </button>
         <SpeakButton text={message} className="!bg-white/15 !text-white !ring-white/20" />
+      </div>
+
+      {/* let Gemma tailor the note to her situation */}
+      <div className="rounded-2xl bg-white/10 p-3">
+        <GemmaPanel
+          kind="family"
+          cta={en ? "Personalise this note" : "আমার মতো করে লিখুন"}
+          data={() => ({ phase: currentPhase().phase })}
+        />
       </div>
     </div>
   );

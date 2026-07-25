@@ -7,6 +7,7 @@ import { useLang } from "./LanguageProvider";
 import type { StringKey } from "@/lib/i18n";
 import CycleCalendar from "./CycleCalendar";
 import CycleTrends from "./CycleTrends";
+import GemmaPanel from "./GemmaPanel";
 import Icon, { EmojiIcon } from "./Icon";
 
 const STORE_KEY = "shokhi_cycle_logs";
@@ -316,8 +317,23 @@ export default function CycleTracker() {
 
       {/* ---- insight text + disclaimer ---- */}
       {analysis.insights_bn.length > 0 && (
-        <div className="space-y-1.5 rounded-2xl bg-rose-soft/40 p-4 text-sm text-rose-deep/90">
+        <div className="space-y-3 rounded-2xl bg-rose-soft/40 p-4 text-sm text-rose-deep/90">
           <ul className="space-y-1.5">{analysis.insights_bn.map((i, idx) => <li key={idx}>• {i}</li>)}</ul>
+          {/* Gemma explains these numbers warmly, in simple words, on demand */}
+          <GemmaPanel
+            kind="cycle"
+            cta={lang === "en" ? "Explain my cycle in simple words" : "সহজ ভাষায় আমার চক্র বোঝান"}
+            data={() => ({
+              avg_cycle_length: analysis.avg_cycle_length,
+              regular: analysis.regular,
+              shortest_cycle: analysis.shortest_cycle,
+              longest_cycle: analysis.longest_cycle,
+              avg_period_length: analysis.avg_period_length,
+              days_until_next: analysis.days_until_next,
+              predicted_next_start: analysis.predicted_next_start,
+              insights: analysis.insights_bn,
+            })}
+          />
           <p className="pt-1 text-xs text-rose-deep/50">ℹ️ {analysis.disclaimer_bn}</p>
         </div>
       )}

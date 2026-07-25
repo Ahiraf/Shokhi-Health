@@ -23,6 +23,7 @@ export const STRINGS = {
   "nav.wellness": { bn: "সুস্থতা", en: "Wellness" },
   "nav.hotline": { bn: "হটলাইন", en: "Hotline" },
   "nav.faq": { bn: "প্রশ্নোত্তর", en: "FAQ" },
+  "nav.report": { bn: "রিপোর্ট", en: "Report" },
   "nav.about": { bn: "সম্পর্কে", en: "About" },
   "nav.profile": { bn: "আমার প্রোফাইল", en: "My Profile" },
   "nav.menu": { bn: "মেনু", en: "Menu" },

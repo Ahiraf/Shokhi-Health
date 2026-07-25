@@ -87,6 +87,47 @@ export async function sendMessageStream(
   return full;
 }
 
+/**
+ * Stream an on-demand personalised Gemma feature (today note, cycle explanation, report
+ * explainer, mood reflection, family note) over SSE. Calls `onDelta` for each chunk and
+ * resolves with the full text. Throws on transport failure.
+ */
+export async function composeStream(
+  kind: "today" | "cycle" | "report" | "mood" | "family",
+  data: Record<string, unknown>,
+  lang: "bn" | "en",
+  onDelta: (chunk: string) => void
+): Promise<string> {
+  const res = await fetch(`${BASE}/api/compose`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind, data, lang }),
+  });
+  if (!res.ok || !res.body) throw new Error(`compose failed: ${res.status}`);
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let full = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let sep: number;
+    while ((sep = buffer.indexOf("\n\n")) !== -1) {
+      const block = buffer.slice(0, sep);
+      buffer = buffer.slice(sep + 2);
+      const lines = block.split("\n");
+      const event = lines.find((l) => l.startsWith("event:"))?.slice(6).trim();
+      const dataLine = lines.find((l) => l.startsWith("data:"))?.slice(5).trim();
+      if (!event || dataLine === undefined) continue;
+      const parsed = JSON.parse(dataLine);
+      if (event === "delta") { full += parsed; onDelta(parsed as string); }
+      else if (event === "error") throw new Error(parsed.detail || "compose error");
+    }
+  }
+  return full;
+}
+
 export async function getGuides(): Promise<GuideCard[]> {
   const res = await fetch(`${BASE}/api/guides`);
   if (!res.ok) throw new Error("guides failed");

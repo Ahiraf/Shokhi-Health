@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLang } from "./LanguageProvider";
+import GemmaPanel from "./GemmaPanel";
+import { currentPhase } from "@/lib/wellness";
 import { getInsights, toDays, fromDays, todayDays } from "@/lib/cycle-insights";
 import type { CycleLog } from "@/lib/types";
 
@@ -83,9 +85,19 @@ export default function MoodLog() {
       </div>
 
       {chosen && (
-        <p className="text-xs text-rose-deep/60">
-          {en ? "Saved on this phone. Logging daily helps you see your own pattern." : "এই ফোনে সংরক্ষিত। প্রতিদিন লিখলে নিজের ধরন বুঝতে পারবেন।"}
-        </p>
+        <>
+          <p className="text-xs text-rose-deep/60">
+            {en ? "Saved on this phone. Logging daily helps you see your own pattern." : "এই ফোনে সংরক্ষিত। প্রতিদিন লিখলে নিজের ধরন বুঝতে পারবেন।"}
+          </p>
+          {/* a warm, validating reflection from Shokhi about today's mood */}
+          {MOODS.find((m) => m.id === chosen)?.neg && (
+            <GemmaPanel
+              kind="mood"
+              cta={en ? "A word from Shokhi" : "সখীর কথা শুনুন"}
+              data={() => ({ mood: chosen, phase: currentPhase().phase })}
+            />
+          )}
+        </>
       )}
 
       {pattern && (
