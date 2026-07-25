@@ -15,7 +15,7 @@ export const todayDays = () => Math.floor(Date.now() / DAY);
 /** Phase for a 0-based day-of-cycle (same rule as lib/wellness). */
 function phaseOf(day0: number, cycle: number): Phase {
   const d = ((day0 % cycle) + cycle) % cycle;
-  const ov = cycle - 14;
+  const ov = Math.max(6, cycle - 14);
   if (d <= 5) return "menstrual";
   if (d < ov - 1) return "follicular";
   if (d <= ov + 1) return "ovulatory";
@@ -69,8 +69,8 @@ export function getInsights(logs: CycleLog[], lang: "bn" | "en" = "bn"): CycleIn
   const fertileDays = new Set<string>();
   for (let i = -5; i <= 1; i++) fertileDays.add(fromDays(ovDay + i));
 
-  const cycleDay = today - lastStart + 1;
-  const phase = phaseOf(cycleDay - 1, avgCycle);
+  const cycleDay = today >= lastStart ? today - lastStart + 1 : null;
+  const phase = cycleDay === null ? null : phaseOf(cycleDay - 1, avgCycle);
 
   const inPeriodToday =
     periodDays.has(fromDays(today)) || (today >= lastStart && today < lastStart + periodLen);

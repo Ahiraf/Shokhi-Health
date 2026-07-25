@@ -56,12 +56,13 @@ export default function SpeakButton({
   const audioUrlRef = useRef<string | null>(null);
   useEffect(() => {
     warmVoices();
+    if (text.trim()) void loadAudio(text, lang).catch(() => {});
     return () => {
       browserStop();
       audioRef.current?.pause();
       if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     };
-  }, []);
+  }, [text, lang]);
 
   function fallback() {
     const ok = browserSpeak(text, lang, () => setState("idle"));

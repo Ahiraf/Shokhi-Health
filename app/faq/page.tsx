@@ -42,8 +42,8 @@ const FAQS: { q_bn: string; q_en: string; a_bn: string; a_en: string }[] = [
   {
     q_bn: "আমি পড়তে পারি না — তবু কি ব্যবহার করতে পারব?",
     q_en: "I can't read — can I still use it?",
-    a_bn: "সমর্থিত ব্রাউজারে লেখার বদলে কণ্ঠে বাংলায় বলতে পারেন। যাঁদের স্মার্টফোন নেই, তাঁদের জন্য ভয়েস হটলাইন এখনো ভবিষ্যৎ পরিকল্পনা — এই ডেমোতে চালু নয়।",
-    a_en: "In a supported browser, you can speak in Bangla instead of typing. A phone hotline for people without smartphones is still a roadmap feature and is not live in this demo.",
+    a_bn: "সমর্থিত ব্রাউজারে লেখার বদলে কণ্ঠে বাংলায় বলতে পারেন এবং সখীর উত্তর শুনতে পারেন।",
+    a_en: "In a supported browser, you can speak in Bangla instead of typing and listen to Shokhi’s reply.",
   },
   {
     q_bn: "সখী কোন কোন বিষয়ে সাহায্য করে?",

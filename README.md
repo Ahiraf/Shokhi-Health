@@ -117,11 +117,11 @@ triage, and the mock backend remain supporting paths permitted by the hackathon 
 |---|---|---|
 | Urban teen / literate woman | **Web app** (text + voice input) | ✅ this repo |
 | Health worker / NGO field staff | Same web app | ✅ this repo |
-| **Rural, low-literacy woman** | **IVR voice hotline** — dial, speak Bangla, hear guidance; no smartphone, no reading | 🛣️ roadmap |
+| **Rural, low-literacy woman** | **Browser voice help** — speak Bangla, hear guidance, and use read-aloud support | ✅ available |
 
 Because the triage engine and Gemma backend are fully decoupled from the UI, the *same
-core* can power the web app **and** a future phone hotline. The web app already accepts
-**spoken Bangla** through supported browsers, then the identical triage runs; the planned IVR path can reuse that core behind a Twilio/Exotel phone
+core* powers the web app and its voice-help experience. The app accepts **spoken Bangla**
+through supported browsers, then the identical triage runs;
 number with a separate speech-to-text and text-to-speech adapter, always with a spoken
 fallback to **16263 / 999**.
 
@@ -157,7 +157,7 @@ to menopause — as **one warm companion**:
 | **Voice input + read-aloud** | Browser-native Bangla voice input and fast female-preferred read-aloud | `/chat` · FAQ · guides |
 | **Guides, myths, and FAQ** | Trusted explainers with sources and listen buttons | `/guides` · `/myths` · `/faq` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
-| **Voice hotline** | Planned phone-first experience for women without smartphones | `/hotline` · roadmap |
+| **Voice help** | Speak through a supported browser and listen to Shokhi’s guidance | `/hotline` |
 
 The **safety model is identical everywhere**: every urgency decision is made by
 deterministic rules in `triage.ts`/`cycle.ts`, never by the LLM; Gemma only understands

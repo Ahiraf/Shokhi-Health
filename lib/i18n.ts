@@ -92,10 +92,10 @@ export const STRINGS = {
  bn:"জরুরি সিদ্ধান্ত সবসময় নির্দিষ্ট নিয়ম দিয়ে নেওয়া হয়, AI-এর অনুমানে নয় — তাই সখী কখনো কোনো জরুরি অবস্থাকে হালকা করে দেখে না।",
  en:"Urgent decisions are always made by fixed rules, never by AI guesswork — so Shokhi never under-plays an emergency.",
   },
-"home.hotlineTitle": { bn:"পড়তে পারেন না? ভবিষ্যৎ ভয়েস সহায়তা", en:"Voice support is planned"},
+"home.hotlineTitle": { bn:"পড়তে পারেন না? কণ্ঠে বলুন", en:"Speak instead of typing"},
   "home.hotlineDesc": {
-    bn: "বর্তমান ডেমোতে সমর্থিত ব্রাউজারে বাংলায় বলুন। সাধারণ ফোনের হটলাইনটি ভবিষ্যৎ পরিকল্পনা।",
-    en: "In this demo, speak Bangla in a supported browser. A phone hotline is planned for later.",
+    bn: "সমর্থিত ব্রাউজারে বাংলায় বলুন, সখীর উত্তর শুনুন।",
+    en: "Speak Bangla in a supported browser and listen to Shokhi’s reply.",
   },
   "home.hotlineCta": { bn: "হটলাইন সম্পর্কে", en: "About the hotline" },
 
@@ -348,18 +348,14 @@ export const STRINGS = {
   // --- hotline -------------------------------------------------------------
   "hotline.title": { bn: "ভয়েস হটলাইন", en: "Voice hotline" },
   "hotline.sub": {
-    bn: "যাঁরা পড়তে পারেন না বা যাঁদের স্মার্টফোন নেই — তাঁদের জন্য ভবিষ্যৎ পরিকল্পনা।",
-    en: "A planned future feature for people who cannot read or do not have smartphones.",
+    bn: "মাইক্রোফোনে বাংলায় বলুন, সখীর নিরাপদ পরামর্শ শুনুন।",
+    en: "Speak into the microphone and listen to Shokhi’s safe guidance.",
   },
-  "hotline.anyPhone": { bn: "ভবিষ্যতে: যেকোনো সাধারণ ফোন থেকে", en: "Planned: from any ordinary phone" },
-  "hotline.brand": { bn: "সখী হটলাইন · ভবিষ্যৎ পরিকল্পনা", en: "Shokhi Hotline · Roadmap" },
+  "hotline.anyPhone": { bn: "এখনই ব্যবহার করুন · মাইক্রোফোন প্রস্তুত রাখুন", en: "Use it now · keep your microphone ready" },
+  "hotline.brand": { bn: "সখী ভয়েস সহায়তা", en: "Shokhi Voice Help" },
   "hotline.brandDesc": {
-    bn: "একই সখী, একই নিরাপদ পরামর্শ — ভবিষ্যতে শুধু কণ্ঠে। কোনো অ্যাপ নেই, পড়া নেই।",
-    en: "The same Shokhi and safe guidance, eventually by voice with no app or reading required.",
-  },
-  "hotline.techNote": {
- bn:"এটি এখনো ভবিষ্যৎ পরিকল্পনা। চালু হলে ফোনের ভয়েসকে লেখায় রূপান্তরের একটি নিরাপদ সেবা, একই নিয়ম-ভিত্তিক যাচাই এবং বাংলায় উত্তর শোনানোর ব্যবস্থা লাগবে।",
- en:"This is currently a roadmap feature. A live version will need a safe speech-to-text service, the same rule-based triage, and Bangla audio replies.",
+    bn: "মাইক্রোফোনে কথা বলুন — সখী আপনার কথা বুঝে বাংলায় নিরাপদ পরামর্শ দেবে।",
+    en: "Speak into the microphone — Shokhi understands and gives safe guidance aloud.",
   },
 "hotline.needEmergency": { bn:"এখনই জরুরি প্রয়োজন?", en:"Need help right now?"},
   "hotline.emergencyLine": {

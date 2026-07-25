@@ -9,7 +9,7 @@ function cleanText(text: string): string {
     .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{FE0F}\u{200D}]/gu, "")
     .replace(/\s+/g, " ")
     .trim()
-    .slice(0, 1400);
+    .slice(0, 900);
 }
 
 function pcmToWav(pcm: Buffer, sampleRate = 24_000, channels = 1, bitsPerSample = 16): Buffer {

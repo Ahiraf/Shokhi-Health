@@ -103,7 +103,7 @@ serve multiple channels:
 |---|---|---|
 | Urban teen / literate woman | Web app (text + voice) | Built — the demo |
 | Health worker / NGO field staff | Same web app, checklist mode | Built |
-| **Rural, low-literacy woman** | **IVR voice hotline** — dial, speak Bangla, hear guidance; no smartphone, no reading | Roadmap, same backend |
+| **Rural, low-literacy woman** | **Browser voice help** — speak Bangla and hear guidance | Available in the demo |
 
 ## Technical implementation
 
