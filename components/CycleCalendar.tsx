@@ -57,7 +57,7 @@ export default function CycleCalendar({
         <button onClick={() => shift(1)} aria-label="next" className="flex h-8 w-8 items-center justify-center rounded-full text-rose-deep hover:bg-rose-soft">›</button>
       </div>
 
-      <div className="grid grid-cols-7 gap-0.5 text-center text-[10px] font-medium text-rose-deep/50">
+      <div className="grid grid-cols-7 gap-0.5 text-center text-[10px] font-semibold text-rose-deep">
         {dows.map((d, i) => <div key={i} className="py-1">{d}</div>)}
       </div>
 
@@ -94,7 +94,7 @@ export default function CycleCalendar({
       </div>
 
       {/* legend */}
-      <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-rose-deep/60">
+      <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-medium text-rose-deep">
         <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-rose-deep" /> {t("tracker.legendPeriod")}</span>
         <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full ring-1 ring-dashed ring-rose-deep/60" /> {t("tracker.legendPredicted")}</span>
         <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-emerald-100" /> {t("tracker.legendFertile")}</span>

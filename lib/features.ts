@@ -78,6 +78,15 @@ export const FEATURES: Feature[] = [
     accent: "sage",
   },
   {
+    href: "/report",
+    icon: "note",
+    title_bn: "রিপোর্ট বুঝুন",
+    title_en: "Understand a report",
+    desc_bn: "রিপোর্টের ছবি বা মান দিন — সহজ ভাষায় বুঝুন কী লেখা আছে।",
+    desc_en: "Upload a report photo or type values — understand them in simple words.",
+    accent: "apricot",
+  },
+  {
     href: "/hotline",
     icon: "phone",
     title_bn: "ভয়েস হটলাইন",

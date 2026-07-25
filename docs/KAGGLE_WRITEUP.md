@@ -1,7 +1,7 @@
 # সখী · Shokhi — A Bangla Women's Health Companion, Powered by Gemma 4
 
-**Subtitle:** Free-form Bangla symptom understanding + a deterministic clinical safety
-layer, built for every woman — from urban teenagers to rural women who cannot read.
+**Subtitle:** Free-form Bangla symptom understanding + a deterministic clinical safety layer
+for every woman.
 
 ---
 
@@ -78,12 +78,21 @@ deterministic engine, so Gemma **can never under-triage an emergency because of 
 hallucination**. This is the responsible pattern for health AI: *LLM for language,
 deterministic logic for safety.* Gemma stays core (natural language), wrapped in a guardrail.
 
-**Voice is supported** for women who cannot type: in supported browsers, browser speech
-recognition captures spoken Bangla and sends the resulting text through the same pipeline.
-The backend does not claim native Gemma audio transcription. Other supporting,
+**Voice is supported** for women who cannot type: supported browsers recognize spoken Bangla
+locally and send only the resulting text through the same pipeline. Read-aloud uses the device's
+native SpeechSynthesis engine, with a female voice preferred when available. Report photos go
+through standard OCR first; Gemma 4 explains the extracted text. Other supporting,
 non-generative tools assist Gemma — a curated knowledge base of red flags/conditions/myths,
-embeddings + a vector store for RAG, and two exported ML risk classifiers. **Gemma 4 is the
-only LLM in the system.**
+embeddings + cosine search for RAG, and two exported ML risk classifiers. **Gemma 4 is the only
+LLM in the system.**
+
+### Multi-Provider AI Fallback (reliability by design)
+
+Hosted Gemma 4 calls rotate through up to three Google AI Studio keys when quota, access,
+rate-limit, or transient service errors occur. If no hosted key works, the deterministic mock
+backend keeps the prototype usable offline. This is a reliability layer, not a second LLM:
+guidance always comes from Gemma 4; browser speech, OCR, embeddings, rules, and traditional ML
+are non-generative support.
 
 ## System architecture: one brain, many front doors
 
@@ -95,9 +104,6 @@ serve multiple channels:
 | Urban teen / literate woman | Web app (text + voice) | Built — the demo |
 | Health worker / NGO field staff | Same web app, checklist mode | Built |
 | **Rural, low-literacy woman** | **IVR voice hotline** — dial, speak Bangla, hear guidance; no smartphone, no reading | Roadmap, same backend |
-
-**Platform choice:** a **web app**, not a native mobile app. It runs in a browser, supports
-voice, and leaves a clear path to a **voice IVR hotline** for phone-only users.
 
 ## Technical implementation
 
@@ -128,7 +134,7 @@ with server logic in `lib/server/`:
   can't type), browser voice input, colored urgency cards, and optional **Bangla text-to-speech**.
 - **Pure-TypeScript runtime + tests** — ML risk classifiers are trained offline and
 **exported to plain JSON**, so inference runs in TypeScript with **no Python/ML runtime on
-the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (37 tests)
+the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (40 tests)
   locks the safety guarantees: emergencies are never downgraded, the ML signal never
   overrides urgency, and RAG degrades gracefully.
 
@@ -137,7 +143,7 @@ the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (
 For open questions about a topic, Shokhi does not answer from memory. It first **retrieves**
 the most relevant passages from a small library of **trusted health documents** (WHO,
 national guidelines), then **Gemma 4 answers using only those passages** and cites the
-source. Retrieval uses **embeddings** (Google `gemini-embedding-001`) + cosine
+source. Retrieval uses **non-generative embeddings** + cosine
 search — both **non-generative**, which the rules permit as support — so **Gemma 4 stays the
 only LLM**. The pipeline is **TypeScript** (RAG is an architecture, not a Python library)
 inside the one Next.js app. If nothing relevant is
@@ -171,4 +177,4 @@ fact sheets/guidelines under **CC BY-NC-SA 3.0 IGO** (adapted with WHO's require
 summarised with attribution. Full credits in `ATTRIBUTION.md`. Shokhi is free and
 non-commercial.
 
-*Repository & demo attached. Gemma 4 is the only LLM used.*
+*Repository & public demo attached. Gemma 4 is the only LLM used.*

@@ -128,7 +128,7 @@ export async function composeStream(
   return full;
 }
 
-/** Stream an explanation of a REPORT IMAGE over SSE. Calls onDelta per chunk; returns full text. */
+/** OCR a REPORT IMAGE and stream Gemma's explanation. Calls onDelta per chunk. */
 export async function reportImageStream(
   file: File,
   lang: "bn" | "en",

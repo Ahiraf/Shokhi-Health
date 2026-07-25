@@ -2,22 +2,26 @@
   <img src="docs/brand/shokhi-logo.png" alt="Shokhi — Your Health. Your Care. Your Friend." width="320" />
 </p>
 
-# 🌸 সখী · Shokhi — A Bangla Women's Health Companion, Powered by Gemma 4
+<div align="center">
+  <h1>🌸 সখী · Shokhi</h1>
+  <p><strong>A Bangla-first AI health companion for every woman in Bangladesh.</strong></p>
+  <p>Private, simple guidance for periods, PCOS, pregnancy, postpartum health, and menopause — powered by Gemma 4.</p>
+  <p>🌐 <a href="#demo">Demo</a> · 📖 <a href="docs/KAGGLE_WRITEUP.md">Kaggle writeup</a> · 🛡️ <a href="#safety-first-design">Safety-first design</a></p>
+</div>
 
-**Shokhi** (সখী — *"a woman's trusted confidante"*) is a warm, Bangla-first health
-companion for menstrual health, **PCOS, PMS, and endometriosis** — built for **every**
-woman in Bangladesh, from urban teenagers to rural women who may not be able to read.
-
-You describe how you feel — by **typing or speaking in Bangla** — and Shokhi:
-
-1. **Understands** your free-form symptoms (Gemma 4),
-2. **Safely triages** them with a deterministic clinical rules layer — *is this an
-   emergency, a "see a doctor soon", or safe home care?*,
-3. **Explains** kindly, in simple spoken-style Bangla, what it might be and what to do
-   (Gemma 4), always pointing you to a real doctor for diagnosis.
+Shokhi (সখী — *"a woman's trusted confidante"*) lets women **type or speak in Bangla**,
+then combines Gemma 4's language understanding with a deterministic safety layer to explain
+what may be happening, what to do next, and when to contact a real health professional.
 
 > Shokhi is a **health companion, not a doctor**. It gives an initial sense and safe
 > guidance; a qualified doctor confirms any diagnosis. Emergencies → **999**.
+
+## 🎬 Demo
+
+The app runs as a single Next.js project with no login required. Add the hosted URL and
+short demo-video URL here before the Kaggle submission:
+
+**🌐 Live demo:** _add public URL_ · **▶️ Demo video:** _add public video URL_
 
 ---
 
@@ -64,34 +68,29 @@ rules, not the model**, so Gemma can **never under-triage an emergency** because
 hallucination. This is the standard safe pattern for health AI: *LLM for language,
 deterministic logic for safety-critical decisions.*
 
-### 🎙️ Voice input (speech-to-text) — why it uses Gemini, not Gemma
+### 🎙️ Voice input and output — fast, private, and device-native
 
-A woman can **speak** her symptoms instead of typing. The browser records her audio
-(`MediaRecorder`) and posts it to `/api/voice-transcribe`, which transcribes it **verbatim**
-(Bangla or English, no translation) and drops the text into the chat box — from there it runs
-through the **exact same Gemma 4 + deterministic-triage pipeline** as typed input.
+A woman can **speak** her symptoms instead of typing. Supported browsers use their built-in
+speech recognition directly, with Bangla (`bn-BD`) or English selected from the language toggle.
+The resulting text goes through the **same Gemma 4 + deterministic-triage pipeline** as typed
+input; no audio is uploaded to a model server.
 
-**Gemma cannot do this step — and that's expected.** Gemma is a **text (and vision) model with
-no audio input modality**; the API rejects audio outright:
+Read-aloud uses the device's built-in SpeechSynthesis engine, starts immediately without a
+network round-trip, and prefers a female Bangla/English voice when the device provides one.
+Voice availability and pronunciation depend on the phone or browser, so the app keeps the
+written answer visible too.
 
-```
-POST …:generateContent  (model: gemma-4-26b-a4b-it, audio attached)
-→ 400 INVALID_ARGUMENT: "Audio input modality is not enabled for this model"
-```
-
-So transcription uses **Google's own `gemini-2.5-flash`** (multimodal, accepts audio), via the
-**same `GOOGLE_API_KEY` and multi-key fallback** as the rest of the app — configurable with
-`SHOKHI_STT_MODEL`. This deliberately stays inside the **Google** ecosystem (**no OpenAI /
-Whisper**, no extra key). It is a **non-generative input step** — speech → text — and **Gemma
-remains the only model that generates any answer.** It works reliably in Brave, Safari and
-Chrome, unlike the browser's built-in Web Speech API.
+Report photos use a standard OCR endpoint to extract text first. Only that extracted text is
+sent to Gemma 4 for the simple explanation; the image itself is never interpreted by another
+generative model.
 
 Other supporting (non-generative, allowed) tools: the RAG corpus + embeddings, a knowledge
 base of red flags / conditions / myths, and the two logistic-regression risk classifiers.
 
-## 🔁 Three-key API fallback (reliability by design)
+## 🧠 Multi-Provider AI Fallback (reliability by design)
 
-Hosted AI calls rotate through up to three Google AI Studio keys. If a key hits a quota,
+Shokhi keeps the Gemma 4 experience available across hosted and offline provider paths. Hosted
+Gemma 4 calls rotate through up to three Google AI Studio keys; if a key hits a quota,
 permission, rate-limit, or transient service error, Shokhi automatically tries the next key:
 
 ```
@@ -107,9 +106,9 @@ GOOGLE_API_KEY_3     (#3)
 Deterministic mock backend (no-key / offline mode)
 ```
 
-The same key rotation supports Gemma text generation, speech-to-text, report-image reading,
-embeddings, and neural text-to-speech. The deterministic triage and mock backend remain
-available without any API key.
+This is deliberately **Gemma 4 only** for generated health guidance — there is no alternate
+LLM hidden behind the fallback. Browser speech, OCR, non-generative embeddings, deterministic
+triage, and the mock backend remain supporting paths permitted by the hackathon rules.
 
 ---
 
@@ -123,9 +122,7 @@ available without any API key.
 
 Because the triage engine and Gemma backend are fully decoupled from the UI, the *same
 core* can power the web app **and** a future phone hotline. The web app already accepts
-**spoken Bangla** (recorded audio is transcribed server-side by Google — see
-[Voice input](#️-voice-input-speech-to-text--why-it-uses-gemini-not-gemma) — then the
-identical triage runs); the planned IVR path can reuse that core behind a Twilio/Exotel phone
+**spoken Bangla** through supported browsers, then the identical triage runs; the planned IVR path can reuse that core behind a Twilio/Exotel phone
 number with a separate speech-to-text and text-to-speech adapter, always with a spoken
 fallback to **16263 / 999**.
 
@@ -135,7 +132,7 @@ fallback to **16263 / 999**.
 | ----- | ---------- |
 | Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
 | Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
-| AI | Google Gemma 4 · Gemini multimodal models for speech, report images, embeddings, and TTS |
+| AI | Google Gemma 4 for language · standard browser speech/OCR support · non-generative embeddings |
 | Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
 | Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
 | Retrieval | Local Markdown corpus · precomputed embeddings · grounded RAG responses |
@@ -144,28 +141,35 @@ fallback to **16263 / 999**.
 
 ---
 
-## ✨ What Shokhi covers (features)
+## ✨ Features
 
-Beyond symptom triage, Shokhi now spans a woman's whole reproductive life — from her first
-period to menopause — as **one warm companion**:
+Beyond symptom triage, Shokhi spans a woman's whole reproductive life — from her first period
+to menopause — as **one warm companion**:
 
 | Area | What it does | Where |
 |---|---|---|
-| **Bangla ↔ English** | A language toggle across the whole app; curated content is bilingual and Gemma replies in the chosen language | `lib/i18n.ts` |
-| **Symptom triage** | Free-form Bangla → urgency + red flags + suspected conditions | `lib/server/triage.ts` |
-| **Menstrual cycle tracker** | Log periods privately (on-device); get regularity, next-period estimate, and PCOS/anaemia pattern hints over months | `lib/server/cycle.ts` |
-| **Wellness (movement & food)** | Gentle exercise + everyday Bangladeshi food for hormonal balance, **personalised to her cycle phase and conditions** (PCOS/PMS/anaemia/menopause) — body-positive, not diet-culture | `/wellness`, `lib/wellness.ts` |
-| **Pregnancy & postpartum** | Danger-sign triage: eclampsia, pre-eclampsia, bleeding, reduced fetal movement, postpartum haemorrhage/sepsis, mastitis, postpartum depression | `knowledge.json` |
-| **Menopause / perimenopause** | Recognises hot flashes, night sweats, dryness, mood changes; flags post-menopausal bleeding | `knowledge.json` |
-| **Health guides** | Warm, grounded explainers: **contraception, family planning**, menopause care, nutrition/anaemia, first period, menstrual hygiene | `/api/guides` |
-| **More conditions** | + UTI, vaginal infection, anaemia, breast-change screening | `knowledge.json` |
-| **Myth-busting** | Gentle, shame-free corrections of common beliefs | `/api/myth` |
-| **Voice hotline (IVR)** | Dial, speak Bangla, hear guidance — no smartphone, no reading | 🛣️ roadmap |
+| Feature | What judges can see | Route / source |
+|---|---|---|
+| **Bangla ↔ English** | Bilingual interface and Gemma replies in the selected language | `lib/i18n.ts` |
+| **Real-time safe triage** | Free-form symptoms become urgency, red flags, and next steps | `/chat` · `lib/server/triage.ts` |
+| **AI health advisor** | Simple, spoken-style explanations grounded in Gemma 4 | `/chat` |
+| **Period tracker** | Private cycle logs, predictions, calendar, and pattern hints | `/tracker` |
+| **Report reader** | Type values or OCR a report photo, then receive a simple explanation | `/report` |
+| **Voice input + read-aloud** | Browser-native Bangla voice input and fast female-preferred read-aloud | `/chat` · FAQ · guides |
+| **Guides, myths, and FAQ** | Trusted explainers with sources and listen buttons | `/guides` · `/myths` · `/faq` |
+| **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
+| **Voice hotline** | Planned phone-first experience for women without smartphones | `/hotline` · roadmap |
 
 The **safety model is identical everywhere**: every urgency decision is made by
 deterministic rules in `triage.ts`/`cycle.ts`, never by the LLM; Gemma only understands
 messy Bangla and speaks back with warmth. New danger signs (e.g. pregnancy `any`-clause
 red flags) plug into the same rules table.
+
+## 🛡️ Safety-first design
+
+Gemma 4 handles language and empathy. A deterministic clinical rules layer owns urgency and
+red flags, so an AI response can never soften an emergency. Traditional ML classifiers only
+add optional risk signals; they never override the safety decision.
 
 ---
 
@@ -219,7 +223,7 @@ simple Bangla answer **and shows which source it came from**.
 **How it works here (three steps):**
 
 1. **Retrieve** — the question is turned into a list of numbers (an *embedding*) with
-   Google `gemini-embedding-001`, and compared (cosine similarity) against the pre-embedded
+   Google embedding model, and compared (cosine similarity) against the pre-embedded
    passages in `lib/server/rag/corpus.json`. The closest few win.
 2. **Augment** — those passages become the *context* inside the prompt.
 3. **Generate** — **Gemma 4** writes the final answer from that context, and the app appends
@@ -235,9 +239,9 @@ retrieval — so RAG makes the *information* richer without ever affecting safet
 TypeScript equivalent, so the whole pipeline runs in this one Next.js app — **no Python, no
 separate service.**
 
-**Rules compliance.** Embeddings and vector search are **non-generative** techniques, which
-the hackathon rules explicitly permit as *support*. **Gemma 4 remains the only LLM that
-generates answers** — no other language model is used anywhere.
+**Rules compliance.** Browser speech, OCR, embeddings and vector search are **supporting,
+non-generative** techniques, which the hackathon rules explicitly permit. **Gemma 4 remains
+the only LLM that generates answers**.
 
 **Build / update the corpus** (100% TypeScript):
 
@@ -245,7 +249,7 @@ generates answers** — no other language model is used anywhere.
 npm run ingest     # reads lib/server/rag/sources/*.md → chunks → embeds → corpus.json
 ```
 
-With `GOOGLE_API_KEY` set it embeds with `gemini-embedding-001`; with no key it uses a small
+With `GOOGLE_API_KEY` set it uses hosted embeddings; with no key it uses a small
 offline embedder so a fresh clone still works.
 
 ### 📚 Data sources in the RAG corpus (references for judging)
@@ -372,6 +376,7 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 |---|---|---|
 | `GOOGLE_API_KEY` | — | Google AI Studio key for live Gemma 4. Absent → deterministic mock backend. |
 | `GOOGLE_API_KEY_2`, `_3` | — | Optional second and third keys for automatic quota/access fallback. |
+| `GOOGLE_CLOUD_VISION_API_KEY` | — | Optional Google Cloud Vision OCR key for report-photo text extraction; falls back to the Google key list. |
 | `SHOKHI_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Gemma 4 model on AI Studio (e.g. `gemma-4-31b-it`). |
 | `SHOKHI_BACKEND` | auto | Force `gemini` or `mock`. Default: `gemini` if a key is present, else `mock`. |
 | `SHOKHI_LLM_EXTRACT` | off | Optional Gemma symptom extraction; leave off for the faster deterministic intake path. |

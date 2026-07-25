@@ -56,18 +56,18 @@
   --c-apricot: 228 194 144;
   --c-apricot-soft: 64 53 41;
   --c-accentink: 47 29 29; /* text on solid rose/sage fills (dark mode: deep rose, since fills are light) */
-  --c-cream: 48 30 30; /* nav bar / light-surface token — a touch darker than the page so the nav separates */
+  --c-cream: 48 56 50; /* nav bar / light-surface token — muted green in dark mode */
   --c-blush: 74 46 46;
   --c-gold: 220 176 96;
-  --c-surface: 94 55 54; /* cards — a lighter deep-rose, clearly above the page bg */
-  --c-panel: 63 39 38; /* dark feature banner */
-  --c-panel-deep: 51 31 31;
+  --c-surface: 61 69 61; /* cards — muted green, clearly above the page bg */
+  --c-panel: 46 57 49; /* dark feature banner */
+  --c-panel-deep: 36 45 39;
 
   /* page background = DEEP dusty rose */
-  --bg-1: #5c3434; /* warm rose glow */
-  --bg-2: #422727;
-  --bg-base: #3f2626;
-  --scrollbar: #6e4141;
+  --bg-1: #3f4a42; /* muted green glow */
+  --bg-2: #354037;
+  --bg-base: #323a34;
+  --scrollbar: #526357;
 }
 
 html {

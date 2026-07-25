@@ -1,4 +1,6 @@
-import { explainReportImageStream } from "@/lib/server/vision";
+import { extractReportText } from "@/lib/server/ocr";
+import { getBackend } from "@/lib/server/gemma";
+import { buildPersonal } from "@/lib/server/personal";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
 import { errorJson, readLanguage } from "@/lib/server/request";
 
@@ -6,7 +8,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-// Explain a PHOTO of a medical report over SSE (like the chat stream).
+// OCR a report photo, then let Gemma explain the extracted values over SSE.
 function sse(event: string, data: unknown) {
   return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
@@ -36,7 +38,10 @@ export async function POST(req: Request) {
       const send = (event: string, d: unknown) => controller.enqueue(encoder.encode(sse(event, d)));
       controller.enqueue(encoder.encode(": open\n\n"));
       try {
-        for await (const chunk of explainReportImageStream(bytes, mime, lang)) send("delta", chunk);
+        const extractedText = await extractReportText(bytes, mime);
+        const { system, user, fallback } = buildPersonal("report", { text: extractedText }, lang);
+        send("ocr", { text: extractedText });
+        for await (const chunk of getBackend().composeStream(system, user, lang, fallback)) send("delta", chunk);
         send("done", {});
       } catch {
         send("error", { detail: "Couldn't read that image. Please try a clearer photo, or type the values." });

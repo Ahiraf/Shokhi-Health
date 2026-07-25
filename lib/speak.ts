@@ -20,10 +20,18 @@ function cleanForSpeech(text: string): string {
     .trim();
 }
 
+const FEMALE_VOICE_HINTS = ["female", "woman", "zira", "samantha", "susan", "karen", "google বাংলা", "google bangla", "priya", "lekha"];
+
 function pickVoice(lang: "bn" | "en"): SpeechSynthesisVoice | null {
   const voices = window.speechSynthesis.getVoices();
   const prefix = lang === "bn" ? "bn" : "en";
-  return voices.find((v) => v.lang?.toLowerCase().startsWith(prefix)) ?? null;
+  const matching = voices.filter((v) => v.lang?.toLowerCase().startsWith(prefix));
+  return matching.find((voice) => FEMALE_VOICE_HINTS.some((hint) => voice.name.toLowerCase().includes(hint))) ?? matching[0] ?? null;
+}
+
+export function warmVoices(): void {
+  if (!ttsSupported()) return;
+  window.speechSynthesis.getVoices();
 }
 
 /** Speak `text` in the given language. Returns false if speech isn't supported. */
@@ -33,7 +41,7 @@ export function speak(text: string, lang: "bn" | "en", onend?: () => void): bool
   synth.cancel(); // stop anything already speaking
   const u = new SpeechSynthesisUtterance(cleanForSpeech(text));
   u.lang = lang === "bn" ? "bn-BD" : "en-US";
-  u.rate = 0.95;
+  u.rate = lang === "bn" ? 0.9 : 0.95;
   const v = pickVoice(lang);
   if (v) u.voice = v;
   if (onend) {

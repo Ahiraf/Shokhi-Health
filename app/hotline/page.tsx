@@ -33,6 +33,15 @@ export default function HotlinePage() {
     <main className="mx-auto max-w-3xl px-5 py-10">
       <PageHeader icon="☎️" title={t("hotline.title")} sub={t("hotline.sub")} />
 
+      <div className="mt-6 rounded-2xl border border-apricot/30 bg-apricot-soft px-5 py-4 text-center shadow-soft">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">
+          {lang === "en" ? "Roadmap · Not live yet" : "ভবিষ্যৎ পরিকল্পনা · এখনো চালু নয়"}
+        </p>
+        <p className="mt-1 text-sm font-medium text-plum/75">
+          {lang === "en" ? "This page shows the planned phone experience. For help today, use chat or call the numbers below." : "এই পাতায় ভবিষ্যতের ফোন সেবার পরিকল্পনা দেখানো হয়েছে। এখন সাহায্যের জন্য চ্যাট ব্যবহার করুন বা নিচের নম্বরে কল করুন।"}
+        </p>
+      </div>
+
       <div className="mt-8 flex flex-col items-center gap-5 rounded-3xl bg-gradient-to-br from-panel to-panel-deep px-6 py-8 text-center text-white sm:flex-row sm:text-left">
         <div className="shrink-0">
           <Mascot3D variant="hotline" size={110} />
