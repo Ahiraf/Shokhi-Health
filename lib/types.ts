@@ -149,6 +149,7 @@ export interface WellnessMove {
   id: string; icon: string;
   name_bn: string; name_en: string;
   how_bn: string; how_en: string;
+  why_bn?: string; why_en?: string;
 }
 export interface Wellness {
   intro_bn: string; intro_en: string;

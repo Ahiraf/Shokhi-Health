@@ -8,7 +8,7 @@ export type IconName =
   | "sparkle" | "calendar" | "edit" | "note" | "activity" | "heart" | "mic" | "trash"
   | "download" | "upload" | "save" | "moon" | "user" | "flower"
   | "help" | "ear" | "tool" | "lock" | "health" | "alert" | "apple" | "basket"
-  | "refresh" | "check" | "search" | "bell" | "close" | "volume" | "stop";
+  | "refresh" | "check" | "search" | "bell" | "close" | "volume" | "stop" | "chevron";
 
 const PATHS: Record<IconName, React.ReactNode> = {
   chat: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />,
@@ -49,6 +49,7 @@ const PATHS: Record<IconName, React.ReactNode> = {
   close: <path d="M18 6 6 18M6 6l12 12" />,
   volume: <><path d="M11 5 6 9H2v6h4l5 4z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></>,
   stop: <rect x="6" y="6" width="12" height="12" rx="2" />,
+  chevron: <path d="m9 6 6 6-6 6" />,
 };
 
 // Map the emoji glyphs used around the app to a line icon, so we can drop in <Icon> without

@@ -1,0 +1,78 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { getWellness } from "@/lib/api";
+import type { WellnessMove } from "@/lib/types";
+import { useLang } from "@/components/LanguageProvider";
+import MoveVisual from "@/components/MoveVisual";
+import SpeakButton from "@/components/SpeakButton";
+
+export default function MoveDetailPage() {
+  const { lang } = useLang();
+  const en = lang === "en";
+  const { id } = useParams<{ id: string }>();
+  const [move, setMove] = useState<WellnessMove | null>(null);
+  const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
+
+  useEffect(() => {
+    getWellness()
+      .then((w) => {
+        const m = w.moves.find((x) => x.id === id) || null;
+        setMove(m);
+        setStatus(m ? "ok" : "error");
+      })
+      .catch(() => setStatus("error"));
+  }, [id]);
+
+  const pick = (base: "name" | "how" | "why") =>
+    (en ? (move as any)?.[`${base}_en`] : "") || (move as any)?.[`${base}_bn`] || "";
+
+  return (
+    <main className="mx-auto max-w-2xl px-5 py-10">
+      <Link href="/wellness" className="text-sm font-semibold text-rose hover:underline">
+        {en ? "← All exercises" : "← সব ব্যায়াম"}
+      </Link>
+
+      {status === "loading" && <p className="mt-8 text-plum/50">{en ? "Loading…" : "লোড হচ্ছে…"}</p>}
+      {status === "error" && <p className="mt-8 text-plum/50">{en ? "Not found." : "পাওয়া যায়নি।"}</p>}
+
+      {move && (
+        <article className="mt-4">
+          {/* cartoon girl demonstrating the move, at the top */}
+          <div className="flex flex-col items-center rounded-3xl bg-sage-soft/60 p-6 text-center">
+            <div className="flex h-44 w-44 items-center justify-center">
+              <MoveVisual id={move.id} icon={move.icon} size={176} />
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              <h1 className="font-display text-2xl font-bold text-plum">{pick("name")}</h1>
+              <SpeakButton text={`${pick("name")}. ${pick("how")}. ${pick("why")}`} />
+            </div>
+          </div>
+
+          <section className="mt-6">
+            <h2 className="font-display text-lg font-bold text-rose-deep">{en ? "How to do it" : "কীভাবে করবেন"}</h2>
+            <p className="mt-2 text-[15px] leading-relaxed text-plum/80">{pick("how")}</p>
+          </section>
+
+          {pick("why") && (
+            <section className="mt-6 rounded-2xl bg-blush/60 p-4">
+              <h2 className="font-display text-lg font-bold text-rose-deep">{en ? "Why it helps" : "কেন উপকারী"}</h2>
+              <p className="mt-2 text-[15px] leading-relaxed text-plum/80">{pick("why")}</p>
+            </section>
+          )}
+
+          <div className="mt-8 rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-rose-soft">
+            <p className="text-sm text-plum/70">
+              {en ? "Move gently, at your own pace. Stop if it hurts, and rest when you need to." : "নিজের গতিতে মৃদুভাবে করুন। ব্যথা হলে থামুন, দরকারে বিশ্রাম নিন।"}
+            </p>
+            <Link href="/wellness" className="mt-2 inline-block rounded-full bg-rose px-5 py-2 text-sm font-semibold text-accentink">
+              {en ? "See more exercises" : "আরও ব্যায়াম দেখুন"}
+            </Link>
+          </div>
+        </article>
+      )}
+    </main>
+  );
+}

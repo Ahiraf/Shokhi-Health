@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import PageIntro from "@/components/PageIntro";
 import WeeklyPlan from "@/components/WeeklyPlan";
 import MoveVisual from "@/components/MoveVisual";
-import SpeakButton from "@/components/SpeakButton";
+import Icon from "@/components/Icon";
 import { useLang } from "@/components/LanguageProvider";
 import { getWellness } from "@/lib/api";
 import type { Wellness } from "@/lib/types";
@@ -81,18 +82,20 @@ export default function WellnessPage() {
             <h2 className="font-display text-xl font-bold text-plum">{t("wellness.movesTitle")}</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {w.moves.map((m) => (
-                <div key={m.id} className="flex gap-3 rounded-2xl bg-surface/80 p-4 ring-1 ring-rose-soft">
+                <Link
+                  key={m.id}
+                  href={`/wellness/move/${m.id}`}
+                  className="group flex items-center gap-3 rounded-2xl bg-surface/80 p-4 ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:shadow-card"
+                >
                   <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-sage-soft text-3xl">
                     <MoveVisual id={m.id} icon={m.icon} size={60} />
                   </span>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-display text-sm font-bold text-plum">{pick(m, "name")}</p>
-                      <SpeakButton size="sm" text={`${pick(m, "name")}. ${pick(m, "how")}`} />
-                    </div>
-                    <p className="mt-0.5 text-sm leading-relaxed text-plum/65">{pick(m, "how")}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-display text-sm font-bold text-plum">{pick(m, "name")}</p>
+                    <p className="mt-0.5 line-clamp-2 text-sm leading-relaxed text-plum/65">{pick(m, "how")}</p>
                   </div>
-                </div>
+                  <Icon name="chevron" size={18} className="shrink-0 text-rose-deep/50 transition group-hover:translate-x-0.5 group-hover:text-rose-deep" />
+                </Link>
               ))}
             </div>
           </section>

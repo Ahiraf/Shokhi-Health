@@ -735,73 +735,97 @@
         "id": "walk", "icon": "🚶‍♀️",
         "name_bn": "দ্রুত হাঁটা", "name_en": "Brisk walking",
         "how_bn": "ঘরে, উঠানে বা বাইরে ২০–৩০ মিনিট একটু জোরে হাঁটুন। সবার জন্য সবচেয়ে সহজ ও নিরাপদ ব্যায়াম।",
-        "how_en": "Walk a little briskly for 20–30 minutes — indoors, in the courtyard, or outside. The easiest, safest movement for everyone."
+        "how_en": "Walk a little briskly for 20–30 minutes — indoors, in the courtyard, or outside. The easiest, safest movement for everyone.",
+        "why_bn": "হাঁটলে রক্ত চলাচল বাড়ে ও মন ভালো হয় — ব্যথা কমে, ঘুম ভালো হয় এবং হৃদপিণ্ড সুস্থ থাকে, কোনো যন্ত্র ছাড়াই।",
+        "why_en": "Walking gets your blood moving and lifts your mood — it eases cramps, helps you sleep and keeps your heart healthy, with no equipment."
       },
       {
         "id": "stretch", "icon": "🤸‍♀️",
         "name_bn": "স্ট্রেচিং", "name_en": "Stretching",
         "how_bn": "ঘাড়, পিঠ, কোমর ও পায়ের মৃদু স্ট্রেচ — মাসিকের ব্যথা ও টান কমায়। ধীরে শ্বাস নিন।",
-        "how_en": "Gentle stretches for neck, back, hips and legs — eases cramps and tension. Breathe slowly."
+        "how_en": "Gentle stretches for neck, back, hips and legs — eases cramps and tension. Breathe slowly.",
+        "why_bn": "হালকা স্ট্রেচিং শক্ত পেশি নরম করে, মাসিকের ব্যথা ও কোমরব্যথা কমায় এবং বসে থাকা বা দুশ্চিন্তার টান ছাড়ায়।",
+        "why_en": "Gentle stretching loosens tight muscles, eases period cramps and back pain, and releases the tension that builds up from sitting or worry."
       },
       {
         "id": "squats", "icon": "🦵",
         "name_bn": "স্কোয়াট", "name_en": "Squats",
         "how_bn": "পা ফাঁক করে দাঁড়ান, যেন নিচু টুলে বসছেন তেমন করে বসুন, আবার উঠুন। ধীরে ৮–১০ বার। পা ও কোমরের শক্তি বাড়ায়।",
-        "how_en": "Stand with feet apart, sit back as if onto a low stool, then stand up. 8–10 slow reps. Builds leg and hip strength."
+        "how_en": "Stand with feet apart, sit back as if onto a low stool, then stand up. 8–10 slow reps. Builds leg and hip strength.",
+        "why_bn": "স্কোয়াট পা, কোমর ও নিতম্বের জোর বাড়ায় — যে পেশি প্রতিদিন দাঁড়ানো, তোলা ও বহন করায় কাজে লাগে।",
+        "why_en": "Squats build strength in your legs, hips and lower back — the muscles you use every day for standing, lifting and carrying."
       },
       {
         "id": "yoga", "icon": "🧘‍♀️",
         "name_bn": "সহজ যোগব্যায়াম", "name_en": "Simple yoga",
         "how_bn": "শিশু-ভঙ্গি বা বিড়াল-গরু ভঙ্গির মতো সহজ আসন মন শান্ত করে ও মাসিকের ব্যথায় আরাম দেয়।",
-        "how_en": "Simple poses like child's pose or cat-cow calm the mind and ease period pain."
+        "how_en": "Simple poses like child's pose or cat-cow calm the mind and ease period pain.",
+        "why_bn": "ধীর যোগব্যায়াম শরীর ও মন একসাথে শান্ত করে; হালকা আসন তলপেট ও কোমর শিথিল করে মাসিকের ব্যথা ও চাপ কমায়।",
+        "why_en": "Slow yoga calms mind and body together; the gentle poses relax the belly and lower back, easing period pain and stress."
       },
       {
         "id": "breathing", "icon": "🌬️",
         "name_bn": "গভীর শ্বাস", "name_en": "Deep breathing",
         "how_bn": "ধীরে গভীর করে পেট ভরে ৫ মিনিট শ্বাস নিন — মানসিক চাপ কমে, যা হরমোনে প্রভাব ফেলে।",
-        "how_en": "Slow, deep belly breathing for 5 minutes — lowers stress, which affects hormones."
+        "how_en": "Slow, deep belly breathing for 5 minutes — lowers stress, which affects hormones.",
+        "why_bn": "গভীর শ্বাস স্ট্রেস হরমোন কমায়, দ্রুত হৃৎস্পন্দন ধীর করে, এবং ব্যথা ও মেজাজ ওঠানামা কমাতে পারে — যেকোনো জায়গায়, যেকোনো সময়।",
+        "why_en": "Deep breathing lowers stress hormones, slows a racing heart, and can ease pain and mood swings — anywhere, anytime."
       },
       {
         "id": "marching", "icon": "🏃‍♀️",
         "name_bn": "এক জায়গায় হাঁটা", "name_en": "Marching in place",
         "how_bn": "ঘরেই এক জায়গায় দাঁড়িয়ে হাঁটু তুলে ৫–১০ মিনিট হাঁটুন। বাইরে যেতে না পারলেও দারুণ ব্যায়াম।",
-        "how_en": "March on the spot at home, lifting your knees, for 5–10 minutes. A great option when you can't go outside."
+        "how_en": "March on the spot at home, lifting your knees, for 5–10 minutes. A great option when you can't go outside.",
+        "why_bn": "এক জায়গায় হাঁটলে ছোট ঘরেও হৃৎস্পন্দন বাড়ে ও শরীর গরম হয় — বাইরে যেতে না পারলে দারুণ।",
+        "why_en": "Marching in place raises your heart rate and warms your whole body even in a small room — perfect when you can't go outside."
       },
       {
         "id": "cat_cow", "icon": "🐈",
         "name_bn": "বিড়াল-গরু স্ট্রেচ", "name_en": "Cat–cow stretch",
         "how_bn": "হাত ও হাঁটুর ওপর ভর দিয়ে ধীরে ধীরে পিঠ উঁচু-নিচু করুন — কোমর ও মাসিকের ব্যথায় আরাম দেয়।",
-        "how_en": "On your hands and knees, slowly arch and round your back. Eases lower-back and period pain."
+        "how_en": "On your hands and knees, slowly arch and round your back. Eases lower-back and period pain.",
+        "why_bn": "এই হালকা মেরুদণ্ড নাড়াচাড়া কোমর ও তলপেটে আরাম দেয়, মাসিকের ব্যথা ও বসে থাকার আড়ষ্টতা কমায়।",
+        "why_en": "This gentle spine movement soothes your lower back and belly, easing period cramps and stiffness from sitting."
       },
       {
         "id": "pelvic_tilt", "icon": "🧎‍♀️",
         "name_bn": "পেলভিক টিল্ট", "name_en": "Pelvic tilts",
         "how_bn": "চিত হয়ে শুয়ে ধীরে ধীরে কোমর সামান্য তুলে পিঠ মেঝেতে চাপুন, তারপর ছাড়ুন — তলপেটের ব্যথা কমায়।",
-        "how_en": "Lie on your back and gently tilt your pelvis, pressing your lower back to the floor, then release. Soothes cramps."
+        "how_en": "Lie on your back and gently tilt your pelvis, pressing your lower back to the floor, then release. Soothes cramps.",
+        "why_bn": "পেলভিক টিল্ট তলপেট ও কোমরের পেশিতে মৃদু কাজ করে, ব্যথা প্রশমিত করে ও কোমরের ব্যথা কমায়।",
+        "why_en": "Pelvic tilts gently work the muscles around your lower belly and back, soothing cramps and easing lower-back ache."
       },
       {
         "id": "neck_shoulder", "icon": "🙆‍♀️",
         "name_bn": "ঘাড় ও কাঁধ ঘোরানো", "name_en": "Neck & shoulder rolls",
         "how_bn": "ধীরে ধীরে ঘাড় ও কাঁধ গোল করে ঘোরান — বসে থাকা বা কাজের টান কমে, শরীর হালকা লাগে।",
-        "how_en": "Slowly roll your neck and shoulders in circles. Releases tension from sitting or work."
+        "how_en": "Slowly roll your neck and shoulders in circles. Releases tension from sitting or work.",
+        "why_bn": "ঘাড় ও কাঁধ ঘোরালে কাজ, ফোন ও চাপ থেকে জমা টান ছাড়ে — শক্ত ভাব ও মাথাব্যথায় দ্রুত আরাম।",
+        "why_en": "Rolling your neck and shoulders releases tension from work, phones and stress — quick relief for tightness and headaches."
       },
       {
         "id": "stairs", "icon": "🧗‍♀️",
         "name_bn": "সিঁড়ি ওঠা-নামা", "name_en": "Stair climbing",
         "how_bn": "কয়েকবার সিঁড়ি ধীরে ধীরে ওঠা-নামা করুন — হৃৎস্পন্দন বাড়ানোর সহজ ও ঘরোয়া উপায়।",
-        "how_en": "Walk up and down the stairs a few times — a simple way at home to raise your heart rate."
+        "how_en": "Walk up and down the stairs a few times — a simple way at home to raise your heart rate.",
+        "why_bn": "সিঁড়ি ওঠা-নামা সহজ ও বিনামূল্যের কার্ডিও যা পা ও হৃদপিণ্ড শক্তিশালী করে — কয়েকবার করলেই কাজ হয়।",
+        "why_en": "Climbing stairs is simple, free cardio that strengthens your legs and heart — a few rounds at home add up."
       },
       {
         "id": "skipping", "icon": "🪢",
         "name_bn": "দড়ি লাফ", "name_en": "Skipping rope",
         "how_bn": "দড়ি নিয়ে ৫–১০ মিনিট লাফান — অল্প জায়গায় দারুণ কার্ডিও। মাসিকের সময় বা খুব দুর্বল/রক্তস্বল্পতা থাকলে এড়িয়ে চলুন।",
-        "how_en": "Jump rope for 5–10 minutes — great cardio in a small space. Skip it during your period, or if you feel very weak or anaemic."
+        "how_en": "Jump rope for 5–10 minutes — great cardio in a small space. Skip it during your period, or if you feel very weak or anaemic.",
+        "why_bn": "দড়ি লাফ ছোট জায়গায় দ্রুত ও শক্তিশালী কার্ডিও — হৃদপিণ্ড ও হাড়ের জন্য ভালো। (মাসিকের সময় বা দুর্বল/রক্তস্বল্পতা থাকলে বিশ্রাম দিন।)",
+        "why_en": "Skipping is quick, powerful cardio in a tiny space — great for your heart and bones. (Rest it during your period or if you feel weak/anaemic.)"
       },
       {
         "id": "cycling", "icon": "🚴‍♀️",
         "name_bn": "সাইকেল চালানো", "name_en": "Cycling",
         "how_bn": "সাইকেল থাকলে চালান, অথবা চিত হয়ে শুয়ে পা দিয়ে সাইকেল-চালানোর মতো নাড়ুন — পায়ের জোর বাড়ে ও হৃৎস্পন্দন বাড়ে।",
-        "how_en": "Ride a bicycle if you have one, or lie on your back and pedal your legs in the air — builds leg strength and raises your heart rate."
+        "how_en": "Ride a bicycle if you have one, or lie on your back and pedal your legs in the air — builds leg strength and raises your heart rate.",
+        "why_bn": "সাইকেল চালানো পায়ের জোর ও স্ট্যামিনা বাড়ায় এবং গাঁটে চাপ কম দেয়; সাইকেল না থাকলে শুয়ে পা দিয়ে সাইকেল-চালানোর মতো নাড়ুন।",
+        "why_en": "Cycling builds leg strength and stamina and is easy on the joints; no bike? Pedal your legs in the air lying down."
       }
     ],
     "disclaimer_bn": "এটি শক্তিশালী ও ভারসাম্যপূর্ণ থাকার সাধারণ পরামর্শ — কোনো ডায়েট বা ওজন কমানোর পরিকল্পনা নয়, চিকিৎসাও নয়। আপনি গর্ভবতী, খুব দুর্বল/রক্তস্বল্পতাগ্রস্ত হলে বা কোনো রোগ থাকলে চলাফেরা মৃদু রাখুন এবং ডাক্তারের পরামর্শ নিন।",

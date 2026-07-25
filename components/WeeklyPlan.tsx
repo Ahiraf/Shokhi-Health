@@ -6,6 +6,7 @@ import { getWellness } from "@/lib/api";
 import type { Wellness, WellnessMove } from "@/lib/types";
 import { useLang } from "./LanguageProvider";
 import MoveVisual from "./MoveVisual";
+import Icon from "./Icon";
 import { weeklyPhases } from "@/lib/wellness";
 
 // during menstrual/luteal phases, keep the suggested move gentle
@@ -67,11 +68,12 @@ export default function WeeklyPlan() {
           const m = moveFor(phaseId, offset);
           const p = phase(phaseId);
           return (
-            <div
+            <Link
               key={offset}
-              className={`flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl px-3 py-2.5 text-sm ${
+              href={`/wellness/move/${m.id}`}
+              className={`group flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl px-3 py-2.5 text-sm transition ${
                 offset === 0 ? "bg-sage-soft/60 ring-1 ring-rose-soft" : "bg-cream"
-              }`}
+              } hover:ring-1 hover:ring-rose-soft`}
             >
               <span className="w-11 shrink-0 font-semibold text-plum/70">{dayLabel(offset)}</span>
               {p && (
@@ -84,7 +86,8 @@ export default function WeeklyPlan() {
                 <MoveVisual id={m.id} icon={m.icon} size={24} /> {pick(m, "name")}
               </span>
               {p && <span className="text-plum/45">· {pick(p, "focus")}</span>}
-            </div>
+              <Icon name="chevron" size={16} className="ml-auto shrink-0 text-rose-deep/45 transition group-hover:translate-x-0.5 group-hover:text-rose-deep" />
+            </Link>
           );
         })}
       </div>
