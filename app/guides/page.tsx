@@ -7,7 +7,7 @@ import type { GuideCard } from "@/lib/types";
 import PageIntro from "@/components/PageIntro";
 import { EmojiIcon } from "@/components/Icon";
 import { useLang } from "@/components/LanguageProvider";
-import { SOURCE_TOPICS, matchesSourceTopic } from "@/lib/source-topics";
+import { UNIQUE_SOURCE_TOPICS, matchesSourceTopic } from "@/lib/source-topics";
 import Icon from "@/components/Icon";
 
 export default function GuidesPage() {
@@ -28,7 +28,7 @@ export default function GuidesPage() {
       .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
   }), [guides, normalizedSearch]);
   const filteredSourceTopics = useMemo(
-    () => SOURCE_TOPICS.filter((topic) => matchesSourceTopic(topic, search)),
+    () => UNIQUE_SOURCE_TOPICS.filter((topic) => matchesSourceTopic(topic, search)),
     [search],
   );
 

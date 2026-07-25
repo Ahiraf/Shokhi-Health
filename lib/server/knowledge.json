@@ -232,6 +232,7 @@
       "name_bn": "পিসিওএস (পলিসিস্টিক ওভারি সিনড্রোম)",
       "name_en": "PCOS (Polycystic Ovary Syndrome)",
       "urgency": "see_doctor_soon",
+      "screening_fields": ["cycles_irregular", "missed_periods_3plus", "excess_hair", "persistent_acne", "unexplained_weight_gain", "trouble_conceiving", "periods_disrupt_daily_life"],
       "suspect_when": {
         "all": [{"field": "cycles_irregular", "op": "is_true"}],
         "any": [
@@ -253,6 +254,7 @@
       "name_bn": "এন্ডোমেট্রিওসিস",
       "name_en": "Endometriosis",
       "urgency": "see_doctor_soon",
+      "screening_fields": ["periods_disrupt_daily_life", "chronic_pelvic_pain", "severe_pelvic_pain", "pain_during_sex", "trouble_conceiving", "heavy_bleeding", "bleeding_between_periods"],
       "suspect_when": {
         "any": [
           {"field": "periods_disrupt_daily_life", "op": "is_true"},
@@ -273,6 +275,7 @@
       "name_bn": "মূত্রনালীর সংক্রমণ (ইউটিআই)",
       "name_en": "Urinary tract infection (UTI)",
       "urgency": "see_doctor_soon",
+      "screening_fields": ["painful_urination", "frequent_urination", "fever", "severe_pelvic_pain"],
       "suspect_when": {
         "all": [{"field": "painful_urination", "op": "is_true"}]
       },
@@ -288,6 +291,7 @@
       "name_bn": "যোনিপথের সংক্রমণ",
       "name_en": "Vaginal infection",
       "urgency": "see_doctor_soon",
+      "screening_fields": ["genital_itching", "foul_discharge", "fever", "pain_during_sex", "painful_urination"],
       "suspect_when": {
         "all": [{"field": "genital_itching", "op": "is_true"}]
       },
@@ -303,6 +307,7 @@
       "name_bn": "রক্তস্বল্পতা (অ্যানিমিয়া)",
       "name_en": "Anaemia (low blood/iron)",
       "urgency": "see_doctor_soon",
+      "screening_fields": ["fatigue_weakness", "heavy_bleeding", "periods_disrupt_daily_life", "fainting_or_dizzy", "bleeding_now"],
       "suspect_when": {
         "all": [{"field": "fatigue_weakness", "op": "is_true"}],
         "any": [
@@ -322,6 +327,7 @@
       "name_bn": "মেনোপজ / পেরিমেনোপজ (মাসিক বন্ধ হওয়ার সময়)",
       "name_en": "Menopause / perimenopause",
       "urgency": "self_care",
+      "screening_fields": ["post_menopausal", "hot_flashes", "night_sweats", "vaginal_dryness", "menopause_mood_changes"],
       "suspect_when": {
         "any": [
           {"field": "hot_flashes", "op": "is_true"},
@@ -342,6 +348,7 @@
       "name_bn": "প্রসব-পরবর্তী বিষণ্নতা",
       "name_en": "Postpartum depression",
       "urgency": "see_doctor_soon",
+      "screening_fields": ["recently_gave_birth", "postpartum_sadness", "postpartum_fever", "postpartum_foul_lochia", "postpartum_heavy_bleeding", "breast_pain_fever"],
       "suspect_when": {
         "all": [{"field": "postpartum_sadness", "op": "is_true"}]
       },
@@ -357,6 +364,7 @@
       "name_bn": "মাসিক-পূর্ব উপসর্গ (পিএমএস)",
       "name_en": "Premenstrual Syndrome (PMS)",
       "urgency": "self_care",
+      "screening_fields": ["pms_mood_symptoms", "pms_physical_symptoms", "periods_disrupt_daily_life", "cycles_irregular"],
       "suspect_when": {
         "any": [
           {"field": "pms_mood_symptoms", "op": "is_true"},
@@ -375,6 +383,7 @@
       "name_bn": "সাধারণ মাসিক ব্যথা",
       "name_en": "Common period cramps",
       "urgency": "self_care",
+      "screening_fields": ["bleeding_now", "severe_pelvic_pain", "periods_disrupt_daily_life", "chronic_pelvic_pain", "heavy_bleeding", "fever", "fainting_or_dizzy"],
       "suspect_when": {
         "any": [{"field": "bleeding_now", "op": "is_true"}]
       },

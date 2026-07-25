@@ -23,7 +23,8 @@ export default function ConditionSelfCheck({ condition, schema }: { condition: a
     const sw = condition?.suspect_when ?? {};
     const all = (sw.all ?? []).map((c: any) => c.field);
     const any = (sw.any ?? []).map((c: any) => c.field);
-    return Array.from(new Set([...all, ...any])).filter((f) => schema[f]);
+    const screening = Array.isArray(condition?.screening_fields) ? condition.screening_fields : [];
+    return Array.from(new Set([...screening, ...all, ...any])).filter((f) => schema[f]);
   }, [condition, schema]);
 
   const [answers, setAnswers] = useState<Record<string, boolean>>({});

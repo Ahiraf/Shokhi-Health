@@ -185,11 +185,6 @@ export const STRINGS = {
   "learn.error": { bn: "তথ্য আনা গেল না।", en: "Couldn't load the information." },
   "learn.searchLabel": { bn: "বিষয় খুঁজুন", en: "Search topics" },
   "learn.searchPlaceholder": { bn: "রোগ বা স্বাস্থ্য বিষয় খুঁজুন…", en: "Search a condition or health topic…" },
-  "learn.sourcesTitle": { bn: "বিশ্বস্ত সূত্র থেকে আরও জানুন", en: "Learn from trusted sources" },
-  "learn.sourcesSub": {
-    bn: "WHO ও বাংলাদেশের স্বাস্থ্য সংস্থার তথ্যের ভিত্তিতে সহজ ব্যাখ্যা।",
-    en: "Simple explanations grounded in WHO and Bangladesh health sources.",
-  },
   "learn.noResults": { bn: "মিলেছে এমন কোনো বিষয় নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching topics found. Try another search." },
 "learn.backAll": { bn:"সব বিষয়", en:"All topics"},
   "learn.notFound": { bn: "এই বিষয়টি পাওয়া গেল না।", en: "This topic wasn't found." },

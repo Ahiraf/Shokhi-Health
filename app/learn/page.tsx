@@ -7,8 +7,6 @@ import type { Condition } from "@/lib/types";
 import PageIntro from "@/components/PageIntro";
 import { useLang } from "@/components/LanguageProvider";
 import type { StringKey } from "@/lib/i18n";
-import { SOURCE_TOPICS, matchesSourceTopic } from "@/lib/source-topics";
-import { EmojiIcon } from "@/components/Icon";
 import Icon from "@/components/Icon";
 
 const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
@@ -35,11 +33,6 @@ export default function LearnPage() {
       .filter((value): value is string => Boolean(value))
       .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
   }), [conditions, normalizedSearch]);
-  const filteredSourceTopics = useMemo(
-    () => SOURCE_TOPICS.filter((topic) => matchesSourceTopic(topic, search)),
-    [search],
-  );
-
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
@@ -83,42 +76,7 @@ export default function LearnPage() {
         })}
       </div>
 
-      <section className="mt-10">
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <h2 className="font-display text-xl font-bold text-plum">{t("learn.sourcesTitle")}</h2>
-            <p className="mt-1 text-sm text-plum/55">{t("learn.sourcesSub")}</p>
-          </div>
-          <span className="rounded-full bg-sage-soft px-2.5 py-1 text-xs font-semibold text-sage-deep">WHO · DGFP · DGHS</span>
-        </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {filteredSourceTopics.map((topic) => (
-            <Link
-              key={topic.id}
-              href={`/guides/topic/${topic.id}`}
-              className="group rounded-2xl bg-surface/80 p-5 ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:shadow-card"
-            >
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blush text-rose-deep">
-                  <EmojiIcon glyph={topic.icon} size={22} />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold text-rose-deep">{topic.source}</p>
-                  <h3 className="mt-0.5 font-display text-base font-bold text-plum">
-                    {lang === "en" ? topic.title_en : topic.title_bn}
-                  </h3>
-                </div>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-plum/60">
-                {lang === "en" ? topic.desc_en : topic.desc_bn}
-              </p>
-              <span className="mt-3 inline-block text-sm font-semibold text-rose">{t("common.open")}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {normalizedSearch && filteredConditions.length === 0 && filteredSourceTopics.length === 0 && (
+      {normalizedSearch && filteredConditions.length === 0 && (
         <p className="mt-8 text-center text-sm text-plum/50">{t("learn.noResults")}</p>
       )}
 

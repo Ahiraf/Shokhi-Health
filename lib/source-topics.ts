@@ -78,6 +78,14 @@ export const SOURCE_TOPICS: SourceTopic[] = [
   },
 ];
 
+// These topics are already represented by a Learn condition or a curated Guide card.
+// Keep them available by direct URL, but do not render another copy in the source section.
+const COVERED_TOPIC_IDS = new Set([
+  "menstrual-health", "family-planning", "pcos-care", "endometriosis-care", "menopause-care",
+]);
+
+export const UNIQUE_SOURCE_TOPICS = SOURCE_TOPICS.filter((topic) => !COVERED_TOPIC_IDS.has(topic.id));
+
 export function getSourceTopic(id: string): SourceTopic | undefined {
   return SOURCE_TOPICS.find((topic) => topic.id === id);
 }
