@@ -33,8 +33,19 @@ export default function Mascot3D({
   position?: string;
 }) {
   // page-specific pose first, then the shared default
-  const variantSource = variant === "today" ? "/New Morning2.png" : variant ? `/mascot-3d-${variant}.png` : "/mascot-3d.png";
-  const sources = Array.from(new Set([variantSource, variant === "today" ? "/mascot-3d-today.png" : "/mascot-3d.png", "/mascot-3d.png"]));
+  const variantSource = variant === "today"
+    ? "/New Morning2.png"
+    : variant === "report"
+    ? "/NewReport.png"
+    : variant
+    ? `/mascot-3d-${variant}.png`
+    : "/mascot-3d.png";
+  const fallbackSource = variant === "today"
+    ? "/mascot-3d-today.png"
+    : variant === "report"
+    ? "/mascot-3d-report.png"
+    : "/mascot-3d.png";
+  const sources = Array.from(new Set([variantSource, fallbackSource, "/mascot-3d.png"]));
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
 
