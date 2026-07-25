@@ -112,21 +112,25 @@ export default function Nav() {
                   <Icon name="chevron" size={13} className={`rotate-90 transition ${menu === n.key ? "-scale-y-100" : ""}`} />
                 </button>
                 {menu === n.key && (
-                  <ul className="absolute left-0 top-full z-50 mt-1 min-w-[13rem] rounded-2xl bg-surface p-1.5 shadow-lift ring-1 ring-rose-soft">
-                    {n.children.map((c) => (
-                      <li key={c.href}>
-                        <Link
-                          href={c.href}
-                          onClick={() => setMenu(null)}
-                          className={`block rounded-xl px-3 py-2 text-sm font-semibold transition ${
-                            isActive(c.href) ? "bg-rose text-accentink" : "text-plum/70 hover:bg-blush hover:text-plum"
-                          }`}
-                        >
-                          {t(c.key)}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  // pt-1 is a hoverable "bridge" so moving from the button to the panel doesn't
+                  // cross an empty gap (which would fire mouseleave and close the menu)
+                  <div className="absolute left-0 top-full z-50 pt-1">
+                    <ul className="min-w-[13rem] rounded-2xl bg-surface p-1.5 shadow-lift ring-1 ring-rose-soft">
+                      {n.children.map((c) => (
+                        <li key={c.href}>
+                          <Link
+                            href={c.href}
+                            onClick={() => setMenu(null)}
+                            className={`block rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                              isActive(c.href) ? "bg-rose text-accentink" : "text-plum/70 hover:bg-blush hover:text-plum"
+                            }`}
+                          >
+                            {t(c.key)}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
               </li>
             ) : (
