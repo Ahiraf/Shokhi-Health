@@ -17,10 +17,12 @@ export async function POST(req: Request) {
 
   let image: File | null = null;
   let lang: "bn" | "en" = "bn";
+  let mode: "standard" | "specialist" = "standard";
   try {
     const form = await req.formData();
     image = form.get("image") as File | null;
     lang = readLanguage(form.get("lang"));
+    mode = form.get("mode") === "specialist" ? "specialist" : "standard";
   } catch {
     return errorJson("Expected multipart form data with an 'image' field.", 400);
   }
@@ -36,7 +38,7 @@ export async function POST(req: Request) {
       const send = (event: string, d: unknown) => controller.enqueue(encoder.encode(sse(event, d)));
       controller.enqueue(encoder.encode(": open\n\n"));
       try {
-        const analysis = await getBackend().analyzeReportImage(bytes, mime, lang);
+        const analysis = await getBackend().analyzeReportImage(bytes, mime, lang, mode);
         for (const chunk of analysis.match(/[^\n]+\n?|\n/g) ?? [analysis]) send("delta", chunk);
         send("done", {});
       } catch {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageIntro from "@/components/PageIntro";
 import PersonalToday from "@/components/PersonalToday";
 import WellnessTip from "@/components/WellnessTip";
+import WeeklyCompanion from "@/components/WeeklyCompanion";
 import { useLang } from "@/components/LanguageProvider";
 
 export default function TrackerTodayPage() {
@@ -18,6 +19,7 @@ export default function TrackerTodayPage() {
       </div>
       <div className="mt-8 space-y-5">
         <PersonalToday />
+        <WeeklyCompanion />
         <WellnessTip />
       </div>
     </main>

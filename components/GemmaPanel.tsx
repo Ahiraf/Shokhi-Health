@@ -17,7 +17,7 @@ export default function GemmaPanel({
   cta,
   title,
 }: {
-  kind: "today" | "cycle" | "report" | "mood" | "family";
+  kind: "today" | "cycle" | "report" | "mood" | "family" | "weekly";
   data: () => Record<string, unknown>;
   cta: string;
   title?: string;

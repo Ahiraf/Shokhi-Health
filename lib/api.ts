@@ -93,7 +93,7 @@ export async function sendMessageStream(
  * resolves with the full text. Throws on transport failure.
  */
 export async function composeStream(
-  kind: "today" | "cycle" | "report" | "mood" | "family",
+  kind: "today" | "cycle" | "report" | "mood" | "family" | "weekly",
   data: Record<string, unknown>,
   lang: "bn" | "en",
   onDelta: (chunk: string) => void
@@ -132,11 +132,13 @@ export async function composeStream(
 export async function reportImageStream(
   file: File,
   lang: "bn" | "en",
-  onDelta: (chunk: string) => void
+  onDelta: (chunk: string) => void,
+  mode: "standard" | "specialist" = "standard",
 ): Promise<string> {
   const form = new FormData();
   form.append("image", file);
   form.append("lang", lang);
+  form.append("mode", mode);
   const res = await fetch(`${BASE}/api/report-image`, { method: "POST", body: form });
   if (!res.ok || !res.body) throw new Error(`report-image failed: ${res.status}`);
   const reader = res.body.getReader();

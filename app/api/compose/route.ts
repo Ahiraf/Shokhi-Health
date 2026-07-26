@@ -14,7 +14,7 @@ function sse(event: string, data: unknown) {
   return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
-const KINDS = new Set<PersonalKind>(["today", "cycle", "report", "mood", "family"]);
+const KINDS = new Set<PersonalKind>(["today", "cycle", "report", "mood", "family", "weekly"]);
 
 export async function POST(req: Request) {
   const limited = enforceRateLimit(req);

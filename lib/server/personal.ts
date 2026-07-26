@@ -6,7 +6,7 @@
 // Predictions, urgency and safety stay deterministic elsewhere and are passed in as facts.
 
 type Lang = "bn" | "en";
-export type PersonalKind = "today" | "cycle" | "report" | "mood" | "family";
+export type PersonalKind = "today" | "cycle" | "report" | "mood" | "family" | "weekly";
 
 const BASE =
   "You are Shokhi (সখী), a warm, respectful Bangla-first women's health companion for women in " +
@@ -33,11 +33,11 @@ export function buildPersonal(kind: PersonalKind, data: any, lang: Lang): { syst
       };
     case "report":
       return {
-        system: BASE + " A woman shares a health test result (she typed it). In simple words, explain what each value generally means and whether it seems low, normal or high, and whether she should see a doctor. This is GENERAL information, not a diagnosis — always tell her to confirm with a doctor. Never give medicines or doses. If a value looks seriously off, clearly tell her to see a doctor soon.",
+        system: BASE + " A woman shares a health test result (she typed it). Return exactly four short sections with these headings: ## সহজ সারাংশ, ## রিপোর্টের মান, ## পরবর্তী পদক্ষেপ, ## ডাক্তারের কাছে জিজ্ঞেস করুন. In simple words, explain what each value generally means and whether it seems low, normal or high. This is GENERAL information, not a diagnosis — always tell her to confirm with a doctor. Never give medicines or doses. If a value looks seriously off, clearly tell her to see a doctor soon.",
         user: `Her test result (typed):\n${String(data?.text || "").slice(0, 1500)}\n\nExplain it kindly and simply.`,
         fallback: en
-          ? "Please show this report to a doctor or health worker — they can explain what it means for you and what to do next."
-          : "দয়া করে এই রিপোর্টটি একজন ডাক্তার বা স্বাস্থ্যকর্মীকে দেখান — তিনি বুঝিয়ে দেবেন এর অর্থ কী এবং পরে কী করতে হবে।",
+          ? "## Key takeaway\nPlease show this report to a doctor or health worker — they can explain what it means for you and what to do next.\n\n## Next step\nTake the report with you to the appointment."
+          : "## সহজ সারাংশ\nদয়া করে এই রিপোর্টটি একজন ডাক্তার বা স্বাস্থ্যকর্মীকে দেখান — তিনি বুঝিয়ে দেবেন এর অর্থ কী এবং পরে কী করতে হবে।\n\n## পরবর্তী পদক্ষেপ\nঅ্যাপয়েন্টমেন্টে রিপোর্টটি সঙ্গে নিন।",
       };
     case "mood":
       return {
@@ -47,13 +47,23 @@ export function buildPersonal(kind: PersonalKind, data: any, lang: Lang): { syst
           ? "What you're feeling is real and valid — thank you for noticing it. Be gentle with yourself today; a few slow breaths, a little rest, or talking to someone you trust can help. This feeling will pass. 🤍"
           : "আপনি যা অনুভব করছেন তা সত্যি ও গুরুত্বপূর্ণ — খেয়াল করার জন্য ধন্যবাদ। আজ নিজের প্রতি নরম থাকুন; কয়েকটি ধীর শ্বাস, একটু বিশ্রাম, বা বিশ্বস্ত কাউকে বলা সাহায্য করতে পারে। এই অনুভূতি কেটে যাবে। 🤍",
       };
-    case "family":
+    case "family": {
+      const audience = data?.audience === "partner" ? (en ? "her partner" : "তার সঙ্গী") : data?.audience === "mother" ? (en ? "her mother or an older family member" : "তার মা বা পরিবারের বড়দের") : (en ? "her family" : "তার পরিবার");
       return {
-        system: BASE + " Write a short, respectful message she can SHOW her family, explaining that her period/PMS mood changes are natural and real (not attitude), and how they can support her with patience, kind words and rest. Warm and simple. Address the family, not her.",
-        user: `Her situation (JSON, may be sparse):\n${JSON.stringify(data)}\n\nWrite the message for her family.`,
+        system: BASE + ` Write a short, respectful message addressed to ${audience}, explaining that her period/PMS mood changes are natural and real (not attitude), and how they can support her with patience, kind words and rest. Warm and simple. Do not shame or blame anyone.`,
+        user: `Her situation (JSON, may be sparse):\n${JSON.stringify(data)}\n\nWrite the message for ${audience}.`,
         fallback: en
-          ? "A note for family: before and during her period, natural hormone changes can bring mood swings, sadness or irritability. This is real — she isn't being difficult on purpose. Patience, kind words and a little rest help the most."
-          : "পরিবারের জন্য: মাসিকের আগে ও সময়ে হরমোনের স্বাভাবিক পরিবর্তনে মেজাজ ওঠানামা, মন খারাপ বা খিটখিটে ভাব আসতে পারে। এটি সত্যি — সে ইচ্ছে করে জেদ করছে না। ধৈর্য, নরম কথা আর একটু বিশ্রাম সবচেয়ে বেশি সাহায্য করে।",
+          ? `A note for ${audience}: before and during her period, natural hormone changes can bring mood swings, sadness or irritability. This is real — she isn't being difficult on purpose. Patience, kind words and a little rest help the most.`
+          : `${audience}-এর জন্য: মাসিকের আগে ও সময়ে হরমোনের স্বাভাবিক পরিবর্তনে মেজাজ ওঠানামা, মন খারাপ বা খিটখিটে ভাব আসতে পারে। এটি সত্যি — সে ইচ্ছে করে জেদ করছে না। ধৈর্য, নরম কথা আর একটু বিশ্রাম সবচেয়ে বেশি সাহায্য করে।`,
+      };
+    }
+    case "weekly":
+      return {
+        system: BASE + " Write a practical weekly companion note in 4 short sections: ## This week, ## Gentle priorities, ## One thing to watch, ## A kind reminder. Use only the supplied cycle, mood and profile facts. Keep it non-clinical; do not diagnose or prescribe. If there is no cycle data, say so instead of guessing.",
+        user: `Her local weekly facts (JSON):\n${JSON.stringify(data)}\n\nWrite her warm plan for the next seven days.`,
+        fallback: en
+          ? "## This week\nTake the week gently and notice how your body feels.\n\n## Gentle priorities\nChoose regular meals, water, rest and one small movement you enjoy.\n\n## One thing to watch\nIf a symptom feels new, severe or keeps disrupting life, write it down and speak with a health worker.\n\n## A kind reminder\nYou do not have to be perfect to take care of yourself."
+          : "## এই সপ্তাহ\nএই সপ্তাহে শরীরের কথা শুনে ধীরে চলুন।\n\n## কোমল অগ্রাধিকার\nনিয়মিত খাবার, পানি, বিশ্রাম আর পছন্দের একটি হালকা নড়াচড়া বেছে নিন।\n\n## যা খেয়াল রাখবেন\nনতুন, তীব্র বা দৈনন্দিন জীবন ব্যাহত করা কোনো লক্ষণ হলে লিখে রাখুন এবং স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।\n\n## নিজের প্রতি কথা\nনিজের যত্ন নিতে নিখুঁত হতে হয় না।",
       };
   }
 }
