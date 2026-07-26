@@ -51,6 +51,32 @@ Shokhi covers **menstrual health, PCOS, PMS, endometriosis, and common cramps**,
 harmful myths. An urban teenager gets private education; a rural woman gets **voice-first
 guidance**.
 
+### The upgraded report and companion experience
+
+The demo now shows how the same Gemma foundation can support a woman's next decisions, not
+just answer one question:
+
+1. **Structured report advice** — report explanations are divided into a simple summary,
+   value-by-value review, safe next steps, and questions for a doctor. This makes a long model
+   response easier to read on a phone.
+2. **Local report history and comparison** — up to twelve report summaries are kept in the
+   browser and repeated values such as haemoglobin or TSH can be compared locally. Image bytes
+   are not saved in the history.
+3. **Doctor handoff summary** — the woman can copy or download a compact visit summary with the
+   report source, visible values, and a reminder to confirm with a clinician.
+4. **Family explanation modes** — Gemma can rewrite the same health message for the whole
+   family, a partner, or a mother/older family member, reducing the social misunderstanding
+   around period-related mood changes.
+5. **Weekly personal companion** — cycle phase, local mood logs, known conditions, and the next
+   seven days are passed as context to generate a gentle, non-clinical weekly plan.
+6. **Specialist image review mode** — the report uploader can request a stricter multimodal
+   review focused on image quality, visibly readable values, printed reference ranges,
+   uncertainty, and safe next steps. It remains general information, not a diagnosis.
+
+These features keep the product's privacy boundary clear: the report timeline is local-first,
+while Gemma is used for language, explanation, and personalization. Safety-critical urgency
+and critical haemoglobin flags remain deterministic and are never delegated to the model.
+
 ## How Gemma 4 is integrated (and why it is core)
 
 Shokhi runs on a **"one Gemma brain, a safety rail underneath"** architecture:
@@ -80,7 +106,9 @@ deterministic logic for safety.* Gemma stays core (natural language), wrapped in
 
 **Voice is supported** for women who cannot type: supported browsers recognize spoken Bangla
 locally and send only the resulting text through the same pipeline. Read-aloud uses Gemini TTS.
-Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
+ Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
+ The report route also supports structured section prompts, local history comparison, doctor
+ handoff export, and a stricter specialist image-review prompt.
 Other supporting,
 non-generative tools assist Gemma — a curated knowledge base of red flags/conditions/myths,
 embeddings + cosine search for RAG, and two exported ML risk classifiers. **Gemma 4 is the only
@@ -131,12 +159,14 @@ with server logic in `lib/server/`:
   "traditional ML that supports, not replaces" Gemma 4: the signal **never overrides**
   urgency, and degrades gracefully if absent.
 - **Web UI** (Next.js) — chat, a symptom **checklist** (so a helper can assist a woman who
-  can't type), browser voice input, colored urgency cards, and optional **Bangla text-to-speech**.
+  can't type), browser voice input, colored urgency cards, report history, doctor handoff,
+  family audience modes, weekly companion cards, and optional **Bangla text-to-speech**.
 - **Pure-TypeScript runtime + tests** — ML risk classifiers are trained offline and
 **exported to plain JSON**, so inference runs in TypeScript with **no Python/ML runtime on
-the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (40 tests)
+the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (44 tests)
   locks the safety guarantees: emergencies are never downgraded, the ML signal never
-  overrides urgency, and RAG degrades gracefully.
+  overrides urgency, RAG degrades gracefully, and the new report/personalization helpers remain
+  deterministic and local-first.
 
 ### Retrieval-Augmented Generation (RAG)
 

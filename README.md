@@ -94,6 +94,24 @@ Report photos are sent directly to multimodal Gemma 4, which reads the visible t
 values, units and reference ranges and explains them in simple language. Unclear values are
 marked as uncertain rather than guessed; the result is general information, not a diagnosis.
 
+The report experience now uses Gemma as a structured companion rather than a single paragraph:
+
+- **Structured report advice** — Gemma returns a simple summary, value-by-value review, next
+  steps, and questions to ask a doctor; the UI renders these as readable cards.
+- **Local report history** — the browser keeps up to 12 report summaries and compares repeated
+  values such as haemoglobin or TSH on the device; uploaded image bytes are not stored.
+- **Doctor handoff** — a local, copyable/downloadable visit summary collects the report source,
+  visible values, and safety reminder without claiming a diagnosis.
+- **Family explanation modes** — the same Gemma family note can be addressed to family,
+  partner, or mother/older family members.
+- **Weekly personal companion** — cycle phase, mood logs, conditions, and the next seven days
+  become a gentle Gemma-written weekly plan.
+- **Specialist image review** — an optional stricter multimodal review checks image quality,
+  visible findings, printed reference ranges, uncertainty, and safe next steps.
+
+The specialist review is a prompting/review mode on the current multimodal Gemma backend; it
+does not present itself as a diagnosis or replace a clinician.
+
 Other supporting (non-generative, allowed) tools: the RAG corpus + embeddings, a knowledge
 base of red flags / conditions / myths, and the two logistic-regression risk classifiers.
 
@@ -165,6 +183,12 @@ to menopause — as **one warm companion**:
 | **AI health advisor** | Simple, spoken-style explanations grounded in Gemma 4 | `/chat` |
 | **Period tracker** | Private cycle logs, predictions, calendar, and pattern hints | `/tracker` |
 | **Report reader** | Type values or upload a report photo for a simple Gemma explanation | `/report` |
+| **Structured report advice** | Summary, value-by-value review, next steps, and doctor questions | `/report` |
+| **Report history** | Local history with comparisons between repeated lab values | `/report` |
+| **Doctor handoff** | Copy or download a concise visit summary | `/report` |
+| **Specialist image review** | Stricter image-quality and visible-value review mode | `/report` |
+| **Family modes** | Tailor the family explanation for family, partner, or mother/elders | `/tracker/mood` |
+| **Weekly companion** | Gemma-written weekly guidance from local cycle and mood context | `/tracker/today` |
 | **Voice input + read-aloud** | Browser-native Bangla voice input and fast female-preferred read-aloud | `/chat` · FAQ · guides |
 | **Guides, myths, and FAQ** | Trusted explainers with sources and listen buttons | `/guides` · `/myths` · `/faq` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
