@@ -54,7 +54,7 @@ export default function FamilyCard() {
           <button
             key={option}
             onClick={() => { setAudience(option); setCopied(false); }}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${audience === option ? "bg-white text-plum" : "bg-white/10 text-white/80 ring-1 ring-white/20 hover:bg-white/15"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${audience === option ? "bg-white text-panel-deep" : "bg-white/10 text-white/80 ring-1 ring-white/20 hover:bg-white/15"}`}
           >
             {option === "family" ? (en ? "Family" : "পরিবার") : option === "partner" ? (en ? "Partner" : "সঙ্গী") : (en ? "Mother / elders" : "মা / বড়রা")}
           </button>
@@ -63,7 +63,7 @@ export default function FamilyCard() {
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={share}
-          className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-plum transition hover:bg-white"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-panel-deep transition hover:bg-white"
         >
           <Icon name="upload" size={15} /> {copied ? (en ? "Copied!" : "কপি হয়েছে!") : en ? "Show my family" : "পরিবারকে দেখান"}
         </button>
