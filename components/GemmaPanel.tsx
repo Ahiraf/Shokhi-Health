@@ -42,7 +42,7 @@ export default function GemmaPanel({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {title && <p className="text-sm font-bold text-rose-deep">{title}</p>}
 
       {!text && (
@@ -57,9 +57,16 @@ export default function GemmaPanel({
       )}
 
       {text && (
-        <div className="rounded-2xl bg-rose-mist/70 p-4">
-          <div className="whitespace-pre-wrap text-sm leading-relaxed text-plum/85">{text}</div>
-          <div className="mt-2 flex items-center justify-end gap-2">
+        <div className="rounded-2xl bg-rose-mist/70 p-5 ring-1 ring-rose-soft/70 shadow-soft sm:p-6">
+          <div className="mb-4 flex items-center gap-2 text-xs font-semibold text-rose-deep">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-rose/20">
+              <Icon name="sparkle" size={14} />
+            </span>
+            {en ? "Shokhi’s note" : "সখীর কথা"}
+            {loading && <span className="ml-1 animate-pulse">…</span>}
+          </div>
+          <div className="whitespace-pre-wrap break-words text-[15px] leading-[1.85] text-plum/90 sm:text-base">{text}</div>
+          <div className="mt-5 flex items-center justify-end gap-3 border-t border-rose-soft/60 pt-3">
             {!loading && (
               <button onClick={run} className="text-xs font-semibold text-rose-deep/70 hover:text-rose-deep">
                 {en ? "Again" : "আবার"}

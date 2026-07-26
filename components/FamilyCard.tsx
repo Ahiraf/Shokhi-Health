@@ -41,7 +41,7 @@ export default function FamilyCard() {
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
           <Icon name="heart" size={17} />
         </span>
-        <h2 className="font-display text-base font-bold">
+        <h2 className="font-display text-base font-bold text-white">
           {en ? "Help your family understand" : "পরিবারকে বোঝাতে সাহায্য"}
         </h2>
       </div>

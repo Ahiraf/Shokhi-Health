@@ -50,7 +50,7 @@ export default function ReportPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-10">
+    <main className="mx-auto max-w-4xl px-5 py-8 sm:py-10">
       <PageIntro
         icon="🩺"
         title={en ? "Understand a test report" : "রিপোর্ট বুঝুন"}
@@ -99,7 +99,7 @@ export default function ReportPage() {
 
         {preview && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="report" className="mt-1 max-h-56 rounded-2xl ring-1 ring-rose-soft" />
+          <img src={preview} alt="report" className="mt-1 max-h-72 rounded-2xl ring-1 ring-rose-soft" />
         )}
       </div>
 
@@ -112,14 +112,32 @@ export default function ReportPage() {
       )}
 
       {text && (
-        <div className="mt-5 rounded-2xl bg-rose-mist/70 p-4">
-          <div className="whitespace-pre-wrap text-sm leading-relaxed text-plum/85">{text}</div>
+        <section className="mt-8 rounded-3xl bg-surface/95 p-5 ring-1 ring-rose-soft/80 shadow-card sm:p-8" aria-live="polite">
+          <div className="flex items-center gap-3 border-b border-rose-soft/70 pb-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-rose/15 text-rose-deep">
+              <Icon name="sparkle" size={21} />
+            </span>
+            <div>
+              <h2 className="font-display text-lg font-bold text-plum sm:text-xl">
+                {en ? "Shokhi’s report advice" : "রিপোর্ট নিয়ে সখীর পরামর্শ"}
+              </h2>
+              <p className="text-xs text-plum/55">
+                {loading ? (en ? "Shokhi is still reading…" : "সখী এখনও পড়ছে…") : en ? "A simple explanation for you" : "আপনার জন্য সহজ করে বলা"}
+              </p>
+            </div>
+            {loading && <span className="ml-auto animate-pulse text-rose-deep">●●●</span>}
+          </div>
+
+          <div className="mt-6 min-h-[18rem] rounded-2xl bg-rose-mist/65 p-5 sm:min-h-[22rem] sm:p-7">
+            <div className="whitespace-pre-wrap break-words text-base leading-[1.9] text-plum/90 sm:text-lg sm:leading-[1.85]">{text}</div>
+          </div>
+
           {!loading && (
-            <div className="mt-2 flex justify-end">
+            <div className="mt-4 flex justify-end">
               <SpeakButton text={text} size="sm" />
             </div>
           )}
-        </div>
+        </section>
       )}
 
       {error && <p className="mt-4 text-sm text-red-500">{en ? "Couldn't read that just now. Please try again." : "এখন পড়া গেল না। আবার চেষ্টা করুন।"}</p>}
