@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLang } from "./LanguageProvider";
 import GemmaPanel from "./GemmaPanel";
 import { currentPhase } from "@/lib/wellness";
@@ -11,12 +12,12 @@ import type { CycleLog } from "@/lib/types";
 const STORE = "shokhi_mood_logs";
 
 const MOODS = [
-  { id: "great", face: "😄", bn: "দারুণ", en: "Great", neg: false },
-  { id: "okay", face: "🙂", bn: "ঠিক আছে", en: "Okay", neg: false },
-  { id: "low", face: "😔", bn: "মন খারাপ", en: "Low", neg: true },
-  { id: "irritable", face: "😣", bn: "খিটখিটে", en: "Irritable", neg: true },
-  { id: "anxious", face: "😰", bn: "উদ্বিগ্ন", en: "Anxious", neg: true },
-  { id: "tearful", face: "😢", bn: "কান্না পাচ্ছে", en: "Tearful", neg: true },
+  { id: "great", image: "/Great.png", bn: "দারুণ", en: "Great", neg: false },
+  { id: "okay", image: "/Okay.png", bn: "ঠিক আছে", en: "Okay", neg: false },
+  { id: "low", image: "/Low.png", bn: "মন খারাপ", en: "Low", neg: true },
+  { id: "irritable", image: "/irritable.png", bn: "খিটখিটে", en: "Irritable", neg: true },
+  { id: "anxious", image: "/anxious.png", bn: "উদ্বিগ্ন", en: "Anxious", neg: true },
+  { id: "tearful", image: "/Tearful.png", bn: "কান্না পাচ্ছে", en: "Tearful", neg: true },
 ];
 
 function load(): Record<string, string> {
@@ -69,16 +70,24 @@ export default function MoodLog() {
   return (
     <div className="space-y-3 rounded-2xl border border-rose-soft bg-surface p-4">
       <h2 className="text-base font-bold text-rose-deep">{en ? "How do you feel today?" : "আজ আপনার মন কেমন?"}</h2>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
         {MOODS.map((m) => (
           <button
             key={m.id}
             onClick={() => set(m.id)}
-            className={`flex flex-col items-center gap-1 rounded-xl px-3 py-2 transition ${
+            className={`group flex min-w-0 flex-col items-center gap-1.5 rounded-xl p-1.5 transition ${
               chosen === m.id ? "bg-rose-deep text-accentink" : "bg-rose-mist/70 text-rose-deep hover:bg-rose-soft"
             }`}
           >
-            <span className="text-2xl">{m.face}</span>
+            <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-lg bg-plum/10">
+              <Image
+                src={m.image}
+                alt={en ? m.en : m.bn}
+                fill
+                sizes="(min-width: 640px) 90px, 30vw"
+                className="object-cover object-top transition duration-200 group-hover:scale-105"
+              />
+            </span>
             <span className="text-[11px] font-medium">{en ? m.en : m.bn}</span>
           </button>
         ))}
