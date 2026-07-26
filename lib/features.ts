@@ -105,6 +105,15 @@ export const FEATURES: Feature[] = [
     accent: "rose",
   },
   {
+    href: "/tracker/mood",
+    icon: "heart",
+    title_bn: "মন ও অনুভূতি",
+    title_en: "Mood & feelings",
+    desc_bn: "মনের অবস্থা লিখুন — নিজেকে ও পরিবারকে আরও ভালোভাবে বুঝুন।",
+    desc_en: "Track your mood and feelings — understand yourself and share with family.",
+    accent: "rose",
+  },
+  {
     href: "/faq",
     icon: "help",
     title_bn: "প্রশ্নোত্তর",
