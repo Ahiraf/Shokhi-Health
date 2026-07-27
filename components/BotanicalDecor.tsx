@@ -82,24 +82,31 @@ export default function BotanicalDecor() {
       <Orb color="rgb(var(--c-rose) / 0.45)" style={{ width: 340, height: 340, bottom: "4%", left: -120, animationDelay: "-11s" }} />
       <Orb color="rgb(var(--c-sage) / 0.4)" style={{ width: 300, height: 300, top: "6%", right: "14%", animationDelay: "-3s" }} />
 
-      {/* MID — scattered petals */}
-      <Petal style={{ top: "22%", left: "6%" }} s={1.2} />
-      <Petal style={{ top: "68%", left: "3%" }} s={0.85} />
-      <Petal style={{ top: "30%", right: "5%" }} s={1} />
-      <Petal style={{ bottom: "16%", right: "8%" }} s={1.3} />
-      <Petal style={{ top: "50%", right: "3%" }} s={0.75} />
-      <Petal style={{ top: "13%", left: "23%" }} s={0.7} />
-      <Petal style={{ top: "44%", left: "17%" }} s={0.95} />
-      <Petal style={{ top: "78%", left: "23%" }} s={0.65} />
-      <Petal style={{ top: "18%", right: "23%" }} s={0.72} />
-      <Petal style={{ top: "63%", right: "18%" }} s={0.9} />
-      <Petal style={{ bottom: "7%", right: "29%" }} s={0.65} />
-      {/* tiny stars / flowers fill the open middle field with the same quiet rhythm */}
+      {/* MID — scattered petals in the open middle field. The outer gutters are
+          reserved for the taller vines, so the small flowers do not compete with them. */}
+      <Petal style={{ top: "22%", left: "34%" }} s={1.2} />
+      <Petal style={{ top: "68%", left: "31%" }} s={0.85} />
+      <Petal style={{ top: "30%", right: "33%" }} s={1} />
+      <Petal style={{ bottom: "16%", right: "31%" }} s={1.3} />
+      <Petal style={{ top: "50%", right: "27%" }} s={0.75} />
+      <Petal style={{ top: "13%", left: "24%" }} s={0.7} />
+      <Petal style={{ top: "44%", left: "27%" }} s={0.95} />
+      <Petal style={{ top: "78%", left: "38%" }} s={0.65} />
+      <Petal style={{ top: "18%", right: "24%" }} s={0.72} />
+      <Petal style={{ top: "63%", right: "25%" }} s={0.9} />
+      <Petal style={{ bottom: "7%", right: "39%" }} s={0.65} />
+      <Petal style={{ top: "36%", left: "44%" }} s={0.58} />
+      <Petal style={{ top: "88%", right: "44%" }} s={0.72} />
+      {/* Extra tiny stars keep the larger open spaces lively without adding more
+          line-art to the already detailed left and right edges. */}
       <Sparkle style={{ top: "16%", left: "42%", animationDelay: "-2s" }} s={0.7} />
       <Sparkle style={{ top: "34%", right: "27%", animationDelay: "-5s" }} s={0.55} />
-      <Sparkle style={{ top: "54%", left: "29%", animationDelay: "-1s" }} s={0.85} />
+      <Sparkle style={{ top: "54%", left: "35%", animationDelay: "-1s" }} s={0.85} />
       <Sparkle style={{ top: "72%", right: "38%", animationDelay: "-4s" }} s={0.62} />
       <Sparkle style={{ bottom: "12%", left: "42%", animationDelay: "-6s" }} s={0.5} />
+      <Sparkle style={{ top: "27%", left: "50%", animationDelay: "-8s" }} s={0.48} />
+      <Sparkle style={{ top: "61%", right: "47%", animationDelay: "-3s" }} s={0.66} />
+      <Sparkle style={{ bottom: "22%", left: "49%", animationDelay: "-7s" }} s={0.42} />
       {/* top-left */}
       <svg viewBox="0 0 120 210" width="120" height="210" className="sway" style={{ top: "5rem", left: "-12px" }}>
         <Sprig />

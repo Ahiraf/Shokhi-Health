@@ -70,7 +70,7 @@ export default function Nav() {
     <Link
       href="/profile"
       onClick={() => setOpen(false)}
-      className={`flex h-10 items-center justify-center rounded-xl px-3 text-sm font-bold ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose ${
+      className={`flex h-10 min-w-[5.5rem] items-center justify-center rounded-xl px-3 text-sm font-bold ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose ${
         isActive("/profile") ? "bg-rose text-accentink" : "bg-surface/85 text-plum hover:bg-blush"
       }`}
       aria-label={t("nav.profile")}
@@ -154,30 +154,32 @@ export default function Nav() {
               </li>
             )
           )}
-          <li className="ml-2 flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70">
+          <li className="ml-2 shrink-0">{profileButton}</li>
+          <li className="ml-1 flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70">
             <NotificationBell />
-            {profileButton}
             {themeButton}
             {langButton("")}
           </li>
         </ul>
 
         {/* mobile: notifications + profile + theme + language toggle + menu button */}
-        <div className="flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70 lg:hidden">
-          <NotificationBell />
+        <div className="flex items-center gap-2 lg:hidden">
           {profileButton}
-          {themeButton}
-          {langButton("")}
-          <button
-            onClick={() => setOpen((o) => !o)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-blush text-plum ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose"
-            aria-label={t("nav.menu")}
-            aria-expanded={open}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-            </svg>
-          </button>
+          <div className="flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70">
+            <NotificationBell />
+            {themeButton}
+            {langButton("")}
+            <button
+              onClick={() => setOpen((o) => !o)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-blush text-plum ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose"
+              aria-label={t("nav.menu")}
+              aria-expanded={open}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
 
