@@ -59,9 +59,6 @@ export const STRINGS = {
 "common.open": { bn:"খুলুন", en:"Open"},
 "common.details": { bn:"বিস্তারিত", en:"Details"},
   "common.loading": { bn: "লোড হচ্ছে…", en: "Loading…" },
-"common.listen": { bn: "শুনুন", en: "Listen" },
-"common.stopListen": { bn: "থামান", en: "Stop" },
-"common.voiceUnavailable": { bn: "ভয়েস এখন পাওয়া যাচ্ছে না — আবার চেষ্টা করুন", en: "Voice is temporarily unavailable — try again" },
 "common.askShokhi": { bn: "সখীকে জিজ্ঞাসা করুন", en: "Ask Shokhi" },
 "common.seeDoctorHeading": { bn:"কখন ডাক্তার দেখাবেন", en:"When to see a doctor"},
   "common.generalInfoNote": {

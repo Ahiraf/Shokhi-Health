@@ -3,7 +3,6 @@
 import Link from "next/link";
 import PageIntro from "@/components/PageIntro";
 import { useLang } from "@/components/LanguageProvider";
-import SpeakButton from "@/components/SpeakButton";
 
 // Frequently asked questions about Shokhi. Bilingual and self-contained (like the
 // About page) — the health *content* lives in knowledge.json, but these are questions
@@ -42,8 +41,8 @@ const FAQS: { q_bn: string; q_en: string; a_bn: string; a_en: string }[] = [
   {
     q_bn: "আমি পড়তে পারি না — তবু কি ব্যবহার করতে পারব?",
     q_en: "I can't read — can I still use it?",
-    a_bn: "সমর্থিত ব্রাউজারে লেখার বদলে কণ্ঠে বাংলায় বলতে পারেন এবং সখীর উত্তর শুনতে পারেন।",
-    a_en: "In a supported browser, you can speak in Bangla instead of typing and listen to Shokhi’s reply.",
+    a_bn: "সমর্থিত ব্রাউজারে লেখার বদলে কণ্ঠে বাংলায় বলতে পারেন এবং সখীর লিখিত উত্তর পেতে পারেন।",
+    a_en: "In a supported browser, you can speak in Bangla instead of typing and receive Shokhi’s reply in text.",
   },
   {
     q_bn: "সখী কোন কোন বিষয়ে সাহায্য করে?",
@@ -97,14 +96,10 @@ export default function FaqPage() {
                 </svg>
               </span>
             </summary>
-            <div className="mt-3 flex items-start gap-3">
-              <p className="flex-1 text-sm leading-relaxed text-plum/70">
+            <div className="mt-3">
+              <p className="text-sm leading-relaxed text-plum/70">
                 {lang === "en" ? f.a_en : f.a_bn}
               </p>
-              <SpeakButton
-                text={`${lang === "en" ? f.q_en : f.q_bn}. ${lang === "en" ? f.a_en : f.a_bn}`}
-                size="sm"
-              />
             </div>
           </details>
         ))}

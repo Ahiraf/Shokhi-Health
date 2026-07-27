@@ -21,7 +21,7 @@ misinformation. The cost is measured in real health outcomes:
 The women who suffer most are the hardest to reach. Research is blunt: rural and
 less-educated women often own only **basic button phones**, are frequently **unable to
 read SMS or app text**, and face stigma that stops them asking anyone. They need
-**voice, in Bangla, on any phone**.
+**Bangla voice input on supported devices**, with guidance returned in simple text.
 
 ## Why existing tools don't close the gap
 
@@ -91,7 +91,7 @@ Symptom profile (JSON)
 Safety-checked result (JSON)
       │  explainTriage() / bustMyth()  ── Gemma 4 speaks back with warmth, at the
       ▼                                     right literacy level
-Bangla guidance (text + optional voice)
+Bangla guidance (text)
 ```
 
 **Gemma 4 does the genuinely hard, generative work** that no rule-tree can: interpreting
@@ -111,9 +111,9 @@ side-effect-free and bounded. Report images use a separate structured review sch
 quality, visible values, printed ranges, uncertainty, and safe next steps. In every path,
 deterministic triage remains the final urgency authority.
 
-**Voice is supported** for women who cannot type: the Voice Bridge transcribes a short recording,
-extracts structured symptoms with Gemma, and sends the result through the same safety-first
-pipeline. Read-aloud uses Gemini TTS in hosted mode and device speech in local mode.
+**Voice input is supported** for women who cannot type: the Voice Bridge transcribes a short
+recording, extracts structured symptoms with Gemma, and sends the result through the same
+safety-first pipeline. Guidance is returned as readable text.
  Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
  The report route also supports structured section prompts, local history comparison, doctor
  handoff export, and a stricter specialist image-review prompt.
@@ -139,7 +139,7 @@ serve multiple channels:
 |---|---|---|
 | Urban teen / literate woman | Web app (text + voice) | Built — the demo |
 | Health worker / NGO field staff | Same web app, checklist mode | Built |
-| **Rural, low-literacy woman** | **Browser voice help** — speak Bangla and hear guidance | Available in the demo |
+| **Rural, low-literacy woman** | **Browser voice input** — speak Bangla and receive written guidance | Available in the demo |
 
 ## Technical implementation
 
@@ -159,7 +159,7 @@ with server logic in `lib/server/`:
 - **`lib/server/assistant.ts`** — the orchestrator tying conversation → symptoms → triage →
   guidance (and RAG), holding state across turns.
 - **Voice Bridge** — the microphone path combines transcription, structured Gemma extraction,
-  deterministic triage, and spoken guidance in one turn, removing the typing step for
+  deterministic triage, and written guidance in one turn, removing the typing step for
   low-literacy users.
 - **`lib/server/knowledge.json`** — the clinical knowledge base (red flags, conditions with
   bilingual self-care, myths, 22-field symptom schema).
@@ -172,7 +172,7 @@ with server logic in `lib/server/`:
   urgency, and degrades gracefully if absent.
 - **Web UI** (Next.js) — chat, a symptom **checklist** (so a helper can assist a woman who
   can't type), browser voice input, colored urgency cards, report history, doctor handoff,
-  family audience modes, weekly companion cards, and optional **Bangla text-to-speech**.
+  family audience modes, and weekly companion cards.
 - **Pure-TypeScript runtime + tests** — ML risk classifiers are trained offline and
 **exported to plain JSON**, so inference runs in TypeScript with **no Python/ML runtime on
 the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (44 tests)
@@ -198,7 +198,7 @@ retrieval never affects safety — it only enriches and *cites* answers.
   deterministic engine owns that, so a hallucination can never miss an emergency.
 - **Messy, code-mixed Bangla:** Gemma handles free-form input; a defensive JSON parser
   tolerates prose or code fences that models sometimes add.
-- **Reaching non-readers:** voice input, Bangla TTS, and a checklist mode; a decoupled
+- **Reaching non-readers:** voice input and a checklist mode; a decoupled
   backend a phone IVR hotline can reuse.
 - **Avoiding harm:** conditions are surfaced only as "worth discussing with a doctor,"
   always alongside the free hotline (16263) and 999.

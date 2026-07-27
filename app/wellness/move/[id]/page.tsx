@@ -7,7 +7,6 @@ import { getWellness } from "@/lib/api";
 import type { WellnessMove } from "@/lib/types";
 import { useLang } from "@/components/LanguageProvider";
 import MoveVisual from "@/components/MoveVisual";
-import SpeakButton from "@/components/SpeakButton";
 
 export default function MoveDetailPage() {
   const { lang } = useLang();
@@ -47,9 +46,8 @@ export default function MoveDetailPage() {
                 <MoveVisual id={move.id} icon={move.icon} size={260} />
               </div>
             </div>
-            <div className="mt-3 flex items-center justify-center gap-2">
+            <div className="mt-3 text-center">
               <h1 className="font-display text-2xl font-bold text-plum">{pick("name")}</h1>
-              <SpeakButton text={`${pick("name")}. ${pick("how")}. ${pick("why")}`} />
             </div>
           </div>
 

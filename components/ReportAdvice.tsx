@@ -1,7 +1,6 @@
 "use client";
 
 import Icon from "./Icon";
-import SpeakButton from "./SpeakButton";
 
 type Section = { title: string; body: string };
 
@@ -59,7 +58,6 @@ export default function ReportAdvice({
             <Icon name="note" size={15} />
             {en ? "Prepare doctor summary" : "ডাক্তারের জন্য সারাংশ"}
           </button>
-          <SpeakButton text={text} size="sm" />
         </div>
       )}
     </section>

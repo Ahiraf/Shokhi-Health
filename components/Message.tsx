@@ -4,7 +4,6 @@ import type { ChatItem } from "@/lib/types";
 import UrgencyPill from "./UrgencyPill";
 import RiskBar from "./RiskBar";
 import LogoMark from "./LogoMark";
-import SpeakButton from "./SpeakButton";
 import { useLang } from "./LanguageProvider";
 import { pickField } from "@/lib/i18n";
 
@@ -65,12 +64,6 @@ export default function Message({ item }: { item: ChatItem }) {
           </div>
         )}
 
-        {/* voice output — read the reply aloud (for users who prefer listening) */}
-        {item.text.trim() && (
-          <div className="mt-2 flex justify-end">
-            <SpeakButton text={item.text} size="sm" withLabel />
-          </div>
-        )}
       </div>
     </div>
   );

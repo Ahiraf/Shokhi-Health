@@ -7,7 +7,6 @@ import { explainGuide } from "@/lib/api";
 import { getSourceTopic } from "@/lib/source-topics";
 import { useLang } from "@/components/LanguageProvider";
 import { EmojiIcon } from "@/components/Icon";
-import SpeakButton from "@/components/SpeakButton";
 
 export default function SourceTopicPage() {
   const { t, lang } = useLang();
@@ -37,7 +36,6 @@ export default function SourceTopicPage() {
               <p className="text-xs font-semibold text-rose-deep">{topic.source}</p>
               <h1 className="font-display text-2xl font-bold text-plum">{lang === "en" ? topic.title_en : topic.title_bn}</h1>
             </div>
-            {guidance && <SpeakButton className="ml-auto self-start" text={guidance} />}
           </div>
           {status === "loading" && <p className="mt-8 text-plum/50">{t("common.loading")}</p>}
           {status === "ok" && <p className="mt-6 whitespace-pre-wrap text-[15px] leading-relaxed text-plum/75">{guidance}</p>}

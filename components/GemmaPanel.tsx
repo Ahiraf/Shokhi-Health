@@ -4,12 +4,11 @@ import { useState } from "react";
 import { composeStream } from "@/lib/api";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
-import SpeakButton from "./SpeakButton";
 
 /**
  * A reusable on-demand Gemma panel: a button that, when tapped, streams a personalised note
  * (today plan, cycle explanation, mood reflection, family note, report explainer) written by
- * Gemma, with a listen button. Kept on-demand so the ~30s model latency never blocks a page.
+ * Gemma. Kept on-demand so the ~30s model latency never blocks a page.
  */
 export default function GemmaPanel({
   kind,
@@ -72,7 +71,6 @@ export default function GemmaPanel({
                 {en ? "Again" : "আবার"}
               </button>
             )}
-            <SpeakButton text={text} size="sm" />
           </div>
         </div>
       )}

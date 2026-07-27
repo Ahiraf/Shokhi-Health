@@ -21,8 +21,8 @@ what may be happening, what to do next, and when to contact a real health profes
 > No account required. Your profile and tracker data stay on your device. Chat and voice messages are securely processed by Shokhi and Gemini to generate replies. Please do not share your name, phone number, address, or identifying details.
 
 Gemma 4 is Shokhi's core generative health model. In the statement above, Gemini refers to
-the Google AI services used by supporting features: Advice voice transcription, read-aloud
-TTS, and optional RAG embeddings. Shokhi does not currently use an account system or a
+the Google AI services used by supporting features: Advice voice transcription and optional
+RAG embeddings. Shokhi does not currently use an account system or a
 database for user profiles, tracker logs, or chat history; hosting and AI providers may
 still process request data according to their own retention and logging policies.
 
@@ -94,16 +94,13 @@ rules, not the model**, so Gemma can **never under-triage an emergency** because
 hallucination. This is the standard safe pattern for health AI: *LLM for language,
 deterministic logic for safety-critical decisions.*
 
-### 🎙️ Voice input and output — fast, private, and device-aware
+### 🎙️ Voice input — fast, private, and device-aware
 
 A woman can **speak** her symptoms instead of typing. In the chat, the microphone now uses a
 Voice Bridge: audio is transcribed, passed through structured Gemma extraction, and sent through
 the same deterministic triage pipeline as typed input. The recognized words and guidance appear
 together, so the user does not need to type after speaking. Browsers without recording support
 can fall back to device-native speech recognition.
-
-Read-aloud uses Gemini TTS with a female voice and caches audio per message. In local/private
-mode, text is never sent to Google's TTS: Shokhi uses the device speech engine instead.
 
 Report photos are sent directly to multimodal Gemma 4, which reads the visible test names,
 values, units and reference ranges and explains them in simple language. Unclear values are
@@ -167,13 +164,12 @@ to a cloud model.
 |---|---|---|
 | Urban teen / literate woman | **Web app** (text + voice input) | ✅ this repo |
 | Health worker / NGO field staff | Same web app | ✅ this repo |
-| **Rural, low-literacy woman** | **Browser voice help** — speak Bangla, hear guidance, and use read-aloud support | ✅ available |
+| **Rural, low-literacy woman** | **Browser voice input** — speak Bangla and receive simple written guidance | ✅ available |
 
 Because the triage engine and Gemma backend are fully decoupled from the UI, the *same
-core* powers the web app and its voice-help experience. The app accepts **spoken Bangla**
-through supported browsers, then the identical triage runs;
-number with a separate speech-to-text and text-to-speech adapter, always with a spoken
-fallback to **16263 / 999**.
+core* powers the web app and its voice-input experience. The app accepts **spoken Bangla**
+through supported browsers, then the identical triage runs and returns simple written guidance.
+For emergencies, the app clearly displays **16263 / 999**.
 
 ## 🧰 Tech Stack
 
@@ -201,7 +197,7 @@ to menopause — as **one warm companion**:
 |---|---|---|
 | **Bangla ↔ English** | Bilingual interface and Gemma replies in the selected language | `lib/i18n.ts` |
 | **Real-time safe triage** | Free-form symptoms become urgency, red flags, and next steps | `/chat` · `lib/server/triage.ts` |
-| **AI health advisor** | Simple, spoken-style explanations grounded in Gemma 4 | `/chat` |
+| **AI health advisor** | Simple, conversational explanations grounded in Gemma 4 | `/chat` |
 | **Period tracker** | Private cycle logs, predictions, calendar, and pattern hints | `/tracker` |
 | **Report reader** | Type values or upload a report photo for a simple Gemma explanation | `/report` |
 | **Structured report advice** | Summary, value-by-value review, next steps, and doctor questions | `/report` |
@@ -210,10 +206,10 @@ to menopause — as **one warm companion**:
 | **Specialist image review** | Stricter image-quality and visible-value review mode | `/report` |
 | **Family modes** | Tailor the family explanation for family, partner, or mother/elders | `/tracker/mood` |
 | **Weekly companion** | Gemma-written weekly guidance from local cycle and mood context | `/tracker/today` |
-| **Voice input + read-aloud** | Browser-native Bangla voice input and fast female-preferred read-aloud | `/chat` · FAQ · guides |
-| **Guides, myths, and FAQ** | Trusted explainers with sources and listen buttons | `/guides` · `/myths` · `/faq` |
+| **Voice input** | Browser-native Bangla voice input for hands-free symptom sharing | `/chat` |
+| **Guides, myths, and FAQ** | Trusted explainers with sources | `/guides` · `/myths` · `/faq` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
-| **Voice help** | Speak through a supported browser and listen to Shokhi’s guidance | `/chat` |
+| **Voice help** | Speak through a supported browser and receive Shokhi’s written guidance | `/chat` |
 
 The **safety model is identical everywhere**: every urgency decision is made by
 deterministic rules in `triage.ts`/`cycle.ts`, never by the LLM; Gemma only understands
@@ -434,7 +430,6 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 |---|---|---|
 | `GOOGLE_API_KEY` | — | Google AI Studio key for live Gemma 4. Absent → deterministic mock backend. |
 | `GOOGLE_API_KEY_2`, `_3` | — | Optional second and third keys for automatic quota/access fallback. |
-| `GEMINI_TTS_MODEL` | `gemini-2.5-flash-preview-tts` | Optional Gemini TTS model override for natural female Bangla/English read-aloud. |
 | `SHOKHI_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Gemma 4 model on AI Studio (e.g. `gemma-4-31b-it`). |
 | `SHOKHI_BACKEND` | auto | `gemini`, `local`, or `mock`. Default: hosted Gemma when a key is present, otherwise mock. |
 | `SHOKHI_LOCAL_GEMMA_URL` | `http://127.0.0.1:11434/v1/chat/completions` | OpenAI-compatible local Gemma endpoint. |
@@ -460,9 +455,8 @@ can serve the same app with no UI changes:
   cloud. Same codebase, just a different backend behind the interface.
 
 ### Other planned work
-- **Bangla voice hotline (IVR):** the top priority for reaching phone-only, low-literacy
-  women — dial a number, speak Bangla, hear guidance. Same backend, phone front door.
-- **IVR speech adapter:** add a verified speech-to-text and text-to-speech service for phone audio.
+- **Bangla voice hotline (IVR):** a future priority for reaching phone-only, low-literacy
+  women — dial a number and speak Bangla. The same backend can support a verified phone adapter.
 - **Grounded knowledge expansion** validated against public research/clinical datasets.
 - **NGO pilot** to measure real referral and awareness outcomes.
 

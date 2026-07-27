@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { useLang } from "./LanguageProvider";
 import Icon from "./Icon";
-import SpeakButton from "./SpeakButton";
 import GemmaPanel from "./GemmaPanel";
 import { currentPhase } from "@/lib/wellness";
 
 /**
  * "Help them understand" — a simple, shareable explainer the woman can show her family so the
  * people around her stop reading her period mood changes as "attitude". Tackles the OTHER half
- * of the problem: the misunderstanding by others. Has a listen button and a native Share.
+ * of the problem: the misunderstanding by others. Includes a native Share.
  */
 export default function FamilyCard() {
   const { lang } = useLang();
@@ -67,7 +66,6 @@ export default function FamilyCard() {
         >
           <Icon name="upload" size={15} /> {copied ? (en ? "Copied!" : "কপি হয়েছে!") : en ? "Show my family" : "পরিবারকে দেখান"}
         </button>
-        <SpeakButton text={message} className="!bg-white/15 !text-white !ring-white/20" />
       </div>
 
       {/* let Gemma tailor the note to her situation */}

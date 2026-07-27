@@ -6,7 +6,6 @@ import { getWellness } from "@/lib/api";
 import type { Wellness } from "@/lib/types";
 import { useLang } from "./LanguageProvider";
 import { currentPhase, wellnessConditionIds } from "@/lib/wellness";
-import SpeakButton from "./SpeakButton";
 
 /**
  * Personalised wellness tip on the tracker: estimates the current cycle phase from the
@@ -31,16 +30,11 @@ export default function WellnessTip() {
   if (!w) return null;
   const phase = phaseId ? w.phases.find((p) => p.id === phaseId) : null;
   const cond = condIds.length ? w.conditions.find((c) => c.id === condIds[0]) : null;
-  const speechText = phase
-    ? `${pick(phase, "label")}. ${t("wellness.move")}: ${pick(phase, "move")}. ${t("wellness.food")}: ${pick(phase, "food")}.${cond ? ` ${pick(cond, "label")}: ${pick(cond, "move")}.` : ""}`
-    : t("wellness.tipNoData");
-
   return (
     <div className="mt-4 rounded-2xl bg-sage-soft/60 p-4 ring-1 ring-rose-soft">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-base font-bold text-sage-deep">{t("wellness.tipTitle")}</h2>
         <div className="flex items-center gap-2">
-          <SpeakButton text={speechText} size="sm" />
           <Link href="/wellness" className="shrink-0 text-xs font-semibold text-rose hover:underline">
             {t("wellness.seeAll")}
           </Link>
