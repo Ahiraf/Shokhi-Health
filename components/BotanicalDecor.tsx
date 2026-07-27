@@ -64,6 +64,15 @@ function Petal({ style, s = 1 }: { style: CSSProperties; s?: number }) {
   );
 }
 
+/** A four-point star to keep the wide background lively without competing with content. */
+function Sparkle({ style, s = 1 }: { style: CSSProperties; s?: number }) {
+  return (
+    <svg className="sparkle" width={18 * s} height={18 * s} viewBox="-10 -10 20 20" style={style} aria-hidden>
+      <path d="M0 -9 L1.8 -1.8 L9 0 L1.8 1.8 L0 9 L-1.8 1.8 L-9 0 L-1.8 -1.8 Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 export default function BotanicalDecor() {
   return (
     <div className="botanical-decor hidden lg:block" aria-hidden>
@@ -79,6 +88,18 @@ export default function BotanicalDecor() {
       <Petal style={{ top: "30%", right: "5%" }} s={1} />
       <Petal style={{ bottom: "16%", right: "8%" }} s={1.3} />
       <Petal style={{ top: "50%", right: "3%" }} s={0.75} />
+      <Petal style={{ top: "13%", left: "23%" }} s={0.7} />
+      <Petal style={{ top: "44%", left: "17%" }} s={0.95} />
+      <Petal style={{ top: "78%", left: "23%" }} s={0.65} />
+      <Petal style={{ top: "18%", right: "23%" }} s={0.72} />
+      <Petal style={{ top: "63%", right: "18%" }} s={0.9} />
+      <Petal style={{ bottom: "7%", right: "29%" }} s={0.65} />
+      {/* tiny stars / flowers fill the open middle field with the same quiet rhythm */}
+      <Sparkle style={{ top: "16%", left: "42%", animationDelay: "-2s" }} s={0.7} />
+      <Sparkle style={{ top: "34%", right: "27%", animationDelay: "-5s" }} s={0.55} />
+      <Sparkle style={{ top: "54%", left: "29%", animationDelay: "-1s" }} s={0.85} />
+      <Sparkle style={{ top: "72%", right: "38%", animationDelay: "-4s" }} s={0.62} />
+      <Sparkle style={{ bottom: "12%", left: "42%", animationDelay: "-6s" }} s={0.5} />
       {/* top-left */}
       <svg viewBox="0 0 120 210" width="120" height="210" className="sway" style={{ top: "5rem", left: "-12px" }}>
         <Sprig />

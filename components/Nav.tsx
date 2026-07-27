@@ -36,7 +36,7 @@ export default function Nav() {
   const themeButton = (
     <button
       onClick={toggleTheme}
-      className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-plum ring-1 ring-rose-soft transition hover:bg-blush"
+      className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface/85 text-plum ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose"
       aria-label={themeLabel}
       title={themeLabel}
     >
@@ -58,7 +58,7 @@ export default function Nav() {
   const langButton = (extra: string) => (
     <button
       onClick={toggle}
-      className={`rounded-full px-3 py-1.5 text-sm font-bold text-plum ring-1 ring-rose-soft transition hover:bg-blush ${extra}`}
+      className={`flex h-10 min-w-[4.25rem] items-center justify-center rounded-xl bg-surface/85 px-3 text-sm font-bold text-plum ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose ${extra}`}
       aria-label={lang === "bn" ? "Switch to English" : "বাংলায় দেখুন"}
       title={lang === "bn" ? "Switch to English" : "বাংলায় দেখুন"}
     >
@@ -70,22 +70,19 @@ export default function Nav() {
     <Link
       href="/profile"
       onClick={() => setOpen(false)}
-      className={`flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-rose-soft transition ${
-        isActive("/profile") ? "bg-rose text-accentink" : "bg-surface text-plum hover:bg-blush"
+      className={`flex h-10 items-center justify-center rounded-xl px-3 text-sm font-bold ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose ${
+        isActive("/profile") ? "bg-rose text-accentink" : "bg-surface/85 text-plum hover:bg-blush"
       }`}
       aria-label={t("nav.profile")}
       title={t("nav.profile")}
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-      </svg>
+      {t("nav.profile")}
     </Link>
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-rose-soft/70 bg-cream/85 backdrop-blur">
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
+    <header className="nav-shell sticky top-0 z-40 border-b border-rose-soft/60 backdrop-blur-xl">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
         <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
           <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ring-1 ring-rose-soft">
             <Image
@@ -101,7 +98,7 @@ export default function Nav() {
         </Link>
 
         {/* desktop links */}
-        <ul className="hidden items-center gap-1 md:flex">
+        <ul className="hidden items-center gap-1 lg:flex">
           {NAV.map((n) =>
             "children" in n ? (
               <li
@@ -157,21 +154,23 @@ export default function Nav() {
               </li>
             )
           )}
-          <li className="ml-1"><NotificationBell /></li>
-          <li>{profileButton}</li>
-          <li>{themeButton}</li>
-          <li>{langButton("")}</li>
+          <li className="ml-2 flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70">
+            <NotificationBell />
+            {profileButton}
+            {themeButton}
+            {langButton("")}
+          </li>
         </ul>
 
         {/* mobile: notifications + profile + theme + language toggle + menu button */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70 lg:hidden">
           <NotificationBell />
           {profileButton}
           {themeButton}
           {langButton("")}
           <button
             onClick={() => setOpen((o) => !o)}
-            className="rounded-full bg-blush p-2 text-plum ring-1 ring-rose-soft"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-blush text-plum ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose"
             aria-label={t("nav.menu")}
             aria-expanded={open}
           >
@@ -182,9 +181,13 @@ export default function Nav() {
         </div>
       </nav>
 
-      <div className="border-t border-rose-soft/40 px-5 py-1.5 text-center">
+      <div className="border-t border-rose-soft/35 px-5 py-1.5 text-center">
         <span
-          className="inline-flex items-center gap-1.5 rounded-full bg-sage-soft/80 px-3 py-1 text-[11px] font-semibold text-sage-deep ring-1 ring-sage-deep/10"
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold ring-1 ${
+            theme === "dark"
+              ? "bg-sage-soft/80 text-sage-deep ring-sage-deep/20"
+              : "bg-rose-mist/85 text-rose-deep ring-rose-soft/90"
+          }`}
           title={t("privacy.badge")}
           aria-label={t("privacy.badge")}
         >
@@ -195,7 +198,7 @@ export default function Nav() {
 
       {/* mobile menu — all pages flattened (dropdowns expanded) */}
       {open && (
-        <ul className="grid grid-cols-2 gap-1.5 px-5 pb-4 md:hidden">
+        <ul className="grid grid-cols-2 gap-1.5 px-5 pb-4 lg:hidden">
           {NAV_LINKS.map((n) => (
             <li key={n.href}>
               <Link

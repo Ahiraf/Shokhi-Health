@@ -7,10 +7,8 @@ import Icon from "@/components/Icon";
 import { useLang } from "@/components/LanguageProvider";
 import type { StringKey } from "@/lib/i18n";
 
-// Sub-features of the tracker, each on its own page (linked from the "Tracker" nav dropdown too).
+// Tracker's focused companion tool; personal daily/mood pages now live under Wellness.
 const MORE: { href: string; key: StringKey; icon: "sparkle" | "heart" | "clock" }[] = [
-  { href: "/tracker/today", key: "nav.tracker.today", icon: "sparkle" },
-  { href: "/tracker/mood", key: "nav.tracker.mood", icon: "heart" },
   { href: "/tracker/reminder", key: "nav.tracker.pad", icon: "clock" },
 ];
 
@@ -21,7 +19,7 @@ export default function TrackerPage() {
       <PageIntro icon="🩸" title={t("tracker.title")} sub={t("tracker.sub")} variant="tracker" side="left" size={140} />
       <CycleTracker />
 
-      {/* jump to the other tracker features (each its own page) */}
+      {/* jump to the tracker's supporting reminder */}
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
         {MORE.map((m) => (
           <Link

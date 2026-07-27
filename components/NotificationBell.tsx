@@ -73,7 +73,7 @@ export default function NotificationBell() {
         onClick={toggle}
         aria-label={t("notif.title")}
         aria-expanded={open}
-        className="relative flex h-9 w-9 items-center justify-center rounded-full bg-surface text-plum ring-1 ring-rose-soft transition hover:bg-blush"
+        className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-surface/85 text-plum ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose"
       >
         <Icon name="bell" size={17} />
         {badge > 0 && (

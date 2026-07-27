@@ -85,6 +85,16 @@ body {
   overflow-x: hidden;
 }
 
+/* A translucent shell lets the rose/sage texture continue behind the navbar instead of
+   creating a hard horizontal color break at the top of the landing page. */
+.nav-shell {
+  background: rgb(var(--c-cream) / 0.58);
+}
+
+.dark .nav-shell {
+  background: rgb(var(--c-cream) / 0.72);
+}
+
 /* Botanical line-art decor (see components/BotanicalDecor). Delicate single-line
    jasmine/vine motifs drift in the wide empty gutters the centered max-w layout
    leaves behind. Kept faint and behind all content; a slow sway makes them feel
@@ -146,6 +156,17 @@ body {
 .dark .botanical-decor .petal {
   color: rgb(var(--c-rose-deep));
   opacity: 0.2;
+}
+
+.botanical-decor .sparkle {
+  position: absolute;
+  color: rgb(var(--c-gold));
+  opacity: 0.24;
+  animation: drift 9s ease-in-out infinite;
+}
+.dark .botanical-decor .sparkle {
+  color: rgb(var(--c-apricot));
+  opacity: 0.34;
 }
 
 /* MICRO scale — a faint film-grain / paper texture so the empty fields never

@@ -10,6 +10,21 @@ import { useLang } from "@/components/LanguageProvider";
 import { getWellness } from "@/lib/api";
 import type { Wellness } from "@/lib/types";
 
+const COMPANIONS = [
+  {
+    href: "/tracker/today",
+    icon: "✨",
+    title: { en: "For you today", bn: "আজকের জন্য" },
+    body: { en: "A gentle personal note from your cycle, mood, and local context.", bn: "আপনার চক্র, মন আর নিজের তথ্য থেকে আজকের কোমল পরামর্শ।" },
+  },
+  {
+    href: "/tracker/mood",
+    icon: "🫂",
+    title: { en: "Mood & feelings", bn: "মন ও অনুভূতি" },
+    body: { en: "Notice how you feel and create a kinder conversation with family.", bn: "মন কেমন খেয়াল করুন, পরিবারকে বোঝাতেও সাহায্য নিন।" },
+  },
+] as const;
+
 export default function WellnessPage() {
   const { t, lang } = useLang();
   const [w, setW] = useState<Wellness | null>(null);
@@ -99,6 +114,31 @@ export default function WellnessPage() {
                     <p className="mt-0.5 line-clamp-2 text-sm leading-relaxed text-plum/65">{pick(m, "how")}</p>
                   </div>
                   <Icon name="chevron" size={18} className="shrink-0 text-rose-deep/50 transition group-hover:translate-x-0.5 group-hover:text-rose-deep" />
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          {/* personal companion panel — daily plan and mood now belong with Wellness */}
+          <section className="rounded-3xl bg-gradient-to-br from-panel to-panel-deep p-5 text-white shadow-card sm:p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">{lang === "en" ? "Your companions" : "আপনার সঙ্গী"}</p>
+                <h2 className="mt-1 font-display text-xl font-bold">{lang === "en" ? "Small check-ins for every day" : "প্রতিদিনের ছোট্ট যত্ন"}</h2>
+              </div>
+              <span className="text-2xl" aria-hidden>✦</span>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {COMPANIONS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group rounded-2xl bg-white/10 p-4 ring-1 ring-white/15 transition hover:-translate-y-0.5 hover:bg-white/15"
+                >
+                  <span className="text-xl" aria-hidden>{item.icon}</span>
+                  <h3 className="mt-2 font-display font-bold text-white">{lang === "en" ? item.title.en : item.title.bn}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-white/70">{lang === "en" ? item.body.en : item.body.bn}</p>
+                  <span className="mt-3 inline-block text-xs font-semibold text-white/80 transition group-hover:translate-x-0.5">{lang === "en" ? "Open →" : "খুলুন →"}</span>
                 </Link>
               ))}
             </div>
