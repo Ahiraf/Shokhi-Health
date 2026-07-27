@@ -3,7 +3,7 @@
 
 import { triage as runTriage, knowledge, type Profile } from "./triage";
 import { riskSignals } from "./risk";
-import { getBackend, deterministicExtract, llmExtractEnabled, type Backend } from "./gemma";
+import { getBackend, deterministicExtract, llmExtractEnabled, type Backend, type ExtractionResult } from "./gemma";
 import { retrieve, type Retrieved } from "./rag";
 import type { Lang } from "./prompts";
 
@@ -111,22 +111,30 @@ export class Assistant {
   profile: Profile;
   history: string[];
   backend: Backend;
+  extraction: ExtractionResult;
 
   constructor(profile: Profile = {}, history: string[] = []) {
     this.profile = { ...profile };
     this.history = [...history];
     this.backend = getBackend();
+    this.extraction = { profile: {}, evidence: [], uncertain_fields: [], method: "deterministic" };
   }
 
   async addUserMessage(message: string): Promise<void> {
     this.history.push(message);
-    // Default: fast, offline deterministic extraction (one fewer Gemma round-trip, so the
-    // hot path fits the serverless time budget). SHOKHI_LLM_EXTRACT=1 opts into Gemma extraction.
+    // Gemma/local backends use structured extraction by default. Set SHOKHI_LLM_EXTRACT=0
+    // when a deployment deliberately prefers the faster deterministic intake path.
     const convo = this.history.join("\n");
-    const updates = llmExtractEnabled()
+    const useGemma = this.backend.name !== "mock" && llmExtractEnabled();
+    this.extraction = useGemma
       ? await this.backend.extractSymptoms(convo, this.profile)
-      : deterministicExtract(convo, this.profile);
-    this.profile = { ...this.profile, ...updates };
+      : {
+          profile: deterministicExtract(convo, this.profile),
+          evidence: [],
+          uncertain_fields: [],
+          method: "deterministic",
+        };
+    this.profile = { ...this.profile, ...this.extraction.profile };
   }
 
   triage(): any {

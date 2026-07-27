@@ -36,11 +36,7 @@ function loadAudio(text: string, lang: string): Promise<Blob> {
   return request;
 }
 
-/**
- * Natural Gemini neural read-aloud. We do not silently fall back to the browser voice: that
- * voice is robotic on many devices and makes it look like the selected natural voice failed.
- * Audio is cached per message so repeated listens start immediately.
- */
+/** Natural hosted read-aloud, with a device-only fallback for local/private mode. */
 export default function SpeakButton({
   text,
   size = "md",
@@ -90,13 +86,22 @@ export default function SpeakButton({
       await player.play();
       setState("playing");
     } catch {
-      setState("error");
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(text.replace(/[#*_`]/g, ""));
+        utterance.lang = lang === "bn" ? "bn-BD" : "en-US";
+        utterance.onend = () => setState("idle");
+        utterance.onerror = () => setState("error");
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+        setState("playing");
+      } else setState("error");
     }
   }
 
   function toggle() {
     if (state === "loading" || state === "playing") {
       audioRef.current?.pause();
+      if (typeof window !== "undefined") window.speechSynthesis?.cancel();
       setState("idle");
       return;
     }

@@ -6,6 +6,7 @@
 
 import * as P from "./prompts";
 import type { Lang } from "./prompts";
+import { detectCriticalLab } from "./personal";
 
 type Profile = Record<string, unknown>;
 
@@ -14,9 +15,22 @@ export interface SafetyResult {
   reason: string | null;
 }
 
+export interface ExtractionEvidence {
+  field: string;
+  text: string;
+  confidence: number;
+}
+
+export interface ExtractionResult {
+  profile: Profile;
+  evidence: ExtractionEvidence[];
+  uncertain_fields: string[];
+  method: "gemma" | "deterministic";
+}
+
 export interface Backend {
   name: string;
-  extractSymptoms(conversation: string, known: Profile): Promise<Profile>;
+  extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult>;
   explainTriage(triage: any, lang: Lang): Promise<string>;
   bustMyth(belief: string, fact: string, lang: Lang): Promise<string>;
   explainGuide(guide: any, question: string, lang: Lang): Promise<string>;
@@ -133,10 +147,8 @@ const T = {
   },
 } as const;
 
-// Deterministic, offline symptom extraction (negation-aware). Exported so the orchestrator
-// can use it as the DEFAULT extractor even on the Gemini backend — that keeps the hot path to
-// a single (slow) Gemma call for the warm reply, instead of two sequential calls that blow past
-// the serverless time budget. Set SHOKHI_LLM_EXTRACT=1 to use Gemma for extraction instead.
+// Deterministic, offline symptom extraction (negation-aware). This remains the safety fallback
+// and can be selected explicitly with SHOKHI_LLM_EXTRACT=0.
 export function deterministicExtract(conversation: string, known: Profile): Profile {
   const text = conversation;
   const low = text.toLowerCase();
@@ -168,16 +180,23 @@ export function deterministicExtract(conversation: string, known: Profile): Prof
   return Object.fromEntries(Object.entries(out).filter(([k, v]) => known[k] !== v));
 }
 
-/** Whether to use Gemma (slow, more robust) for extraction. Off by default for latency. */
+/** Whether to use Gemma (more robust) for extraction. On by default for Gemma/local backends. */
 export function llmExtractEnabled(): boolean {
-  return process.env.SHOKHI_LLM_EXTRACT === "1";
+  // Gemma extraction is the default when a hosted/local Gemma backend is active.
+  // Set this to 0 only for a deliberately faster deterministic intake path.
+  return process.env.SHOKHI_LLM_EXTRACT !== "0";
 }
 
 class MockBackend implements Backend {
   name = "mock";
 
-  async extractSymptoms(conversation: string, known: Profile): Promise<Profile> {
-    return deterministicExtract(conversation, known);
+  async extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult> {
+    return {
+      profile: deterministicExtract(conversation, known),
+      evidence: [],
+      uncertain_fields: [],
+      method: "deterministic",
+    };
   }
 
   async explainTriage(tr: any, lang: Lang): Promise<string> {
@@ -272,7 +291,7 @@ class MockBackend implements Backend {
     for (const line of (fallback || "").split("\n")) yield line + "\n";
   }
 
-  async analyzeReportImage(_bytes: ArrayBuffer, _mime: string, lang: Lang): Promise<string> {
+  async analyzeReportImage(_bytes: ArrayBuffer, _mime: string, lang: Lang, _mode: "standard" | "specialist" = "standard"): Promise<string> {
     return lang === "en"
       ? "I couldn't read the uploaded image clearly. Please type the test name, result, unit and reference range, or show the report to a doctor or health worker."
       : "আপলোড করা ছবিটি পরিষ্কারভাবে পড়া গেল না। পরীক্ষার নাম, ফল, একক ও স্বাভাবিক সীমা লিখে দিন, অথবা রিপোর্টটি একজন ডাক্তার বা স্বাস্থ্যকর্মীকে দেখান।";
@@ -332,6 +351,165 @@ const parseJson = (text: string): Profile => {
   return {};
 };
 
+const EXTRACTION_TOOL = {
+  name: "record_symptoms",
+  description: "Record only symptoms and demographic facts explicitly stated by the user.",
+  parametersJsonSchema: {
+    type: "object",
+    properties: {
+      profile: {
+        type: "object",
+        properties: Object.fromEntries(P.SYMPTOM_FIELDS.map((field) => [
+          field,
+          field === "age" ? { type: "integer" } : { type: "boolean" },
+        ])),
+        additionalProperties: false,
+      },
+      evidence: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            field: { type: "string" },
+            text: { type: "string" },
+            confidence: { type: "number" },
+          },
+          required: ["field", "text", "confidence"],
+          additionalProperties: false,
+        },
+      },
+      uncertain_fields: {
+        type: "array",
+        items: { type: "string" },
+      },
+    },
+    required: ["profile"],
+    additionalProperties: false,
+  },
+};
+
+const SUPPORT_TOOL = {
+  name: "get_bd_support_numbers",
+  description: "Return Bangladesh health support numbers for a safe referral. This tool has no side effects.",
+  parametersJsonSchema: {
+    type: "object",
+    properties: {
+      reason: { type: "string", description: "Short reason for the referral" },
+    },
+    additionalProperties: false,
+  },
+};
+
+const REPORT_TOOL = {
+  name: "record_report_review",
+  description: "Record only values visibly readable in the uploaded report image. Never guess missing values.",
+  parametersJsonSchema: {
+    type: "object",
+    properties: {
+      image_quality: { type: "string" },
+      key_findings: { type: "array", items: { type: "string" } },
+      values: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            test: { type: "string" },
+            value: { type: "string" },
+            unit: { type: "string" },
+            reference_range: { type: "string" },
+            status: { type: "string", enum: ["within", "low", "high", "uncertain"] },
+            confidence: { type: "number" },
+          },
+          required: ["test", "value", "status", "confidence"],
+          additionalProperties: false,
+        },
+      },
+      uncertain_values: { type: "array", items: { type: "string" } },
+      safe_next_step: { type: "string" },
+    },
+    required: ["image_quality", "values", "uncertain_values", "safe_next_step"],
+    additionalProperties: false,
+  },
+};
+
+function reportPrompt(lang: Lang, mode: "standard" | "specialist"): string {
+  const specialist = mode === "specialist";
+  return lang === "en"
+    ? `You are reviewing a medical report image for Shokhi. ${specialist ? "Use strict specialist review." : "Use a careful general review."} Call record_report_review exactly once. Record only text and numbers visibly readable in the image. Compare a result only with the reference range printed beside it. If blurry, omit it and list it in uncertain_values. Never diagnose, prescribe, or invent a value. Keep the safe next step short.`
+    : `আপনি সখীর জন্য একটি মেডিকেল রিপোর্টের ছবি যাচাই করছেন। ${specialist ? "কঠোর বিশেষজ্ঞ যাচাই করুন।" : "সতর্ক সাধারণ যাচাই করুন।"} ঠিক একবার record_report_review কল করুন। ছবিতে স্পষ্ট দেখা যায় এমন লেখা ও সংখ্যাই লিখুন। শুধু রিপোর্টে ছাপা স্বাভাবিক সীমার সঙ্গে তুলনা করুন। ঝাপসা হলে বাদ দিয়ে uncertain_values-এ লিখুন। রোগ নির্ণয়, ওষুধ বা অনুমান করবেন না। নিরাপদ পরবর্তী পদক্ষেপ সংক্ষিপ্ত রাখুন।`;
+}
+
+function renderReportReview(raw: any, lang: Lang): string {
+  const en = lang === "en";
+  const quality = typeof raw?.image_quality === "string" ? raw.image_quality.trim() : "";
+  const findings = Array.isArray(raw?.key_findings) ? raw.key_findings.filter((x: unknown) => typeof x === "string").slice(0, 8) : [];
+  const values = Array.isArray(raw?.values) ? raw.values.slice(0, 30) : [];
+  const uncertain = Array.isArray(raw?.uncertain_values) ? raw.uncertain_values.filter((x: unknown) => typeof x === "string").slice(0, 12) : [];
+  const lines: string[] = [];
+  lines.push(en ? "## Image quality" : "## ছবির মান");
+  lines.push(quality || (en ? "The image quality could not be confirmed." : "ছবির মান নিশ্চিত করা যায়নি।"));
+  lines.push("");
+  lines.push(en ? "## Key findings" : "## প্রধান ফল");
+  if (findings.length) findings.forEach((item: string) => lines.push(`• ${item}`));
+  else lines.push(en ? "No clear finding was extracted." : "কোনো স্পষ্ট ফল পড়া যায়নি।");
+  lines.push("");
+  lines.push(en ? "## Value-by-value review" : "## প্রতিটি মানের পর্যালোচনা");
+  if (values.length) {
+    for (const item of values) {
+      if (!item || typeof item.test !== "string" || typeof item.value !== "string") continue;
+      const range = typeof item.reference_range === "string" && item.reference_range ? `; ${en ? "range" : "সীমা"}: ${item.reference_range}` : "";
+      const unit = typeof item.unit === "string" && item.unit ? ` ${item.unit}` : "";
+      const status = item.status === "low" ? (en ? "low" : "কম") : item.status === "high" ? (en ? "high" : "বেশি") : item.status === "within" ? (en ? "within the printed range" : "ছাপা সীমার মধ্যে") : (en ? "uncertain" : "অনিশ্চিত");
+      lines.push(`• ${item.test}: ${item.value}${unit} — ${status}${range}`);
+    }
+  } else lines.push(en ? "No test value was clear enough to list." : "কোনো পরীক্ষার মান যথেষ্ট স্পষ্ট নয়।");
+  if (uncertain.length) {
+    lines.push(en ? "Uncertain:" : "অনিশ্চিত:");
+    lines.push(...uncertain.map((item: string) => `• ${item}`));
+  }
+  lines.push("");
+  lines.push(en ? "## Safe next step" : "## নিরাপদ পরবর্তী পদক্ষেপ");
+  lines.push(typeof raw?.safe_next_step === "string" && raw.safe_next_step.trim()
+    ? raw.safe_next_step.trim()
+    : en ? "Please confirm this report with a doctor or qualified health worker." : "এই রিপোর্টটি একজন ডাক্তার বা যোগ্য স্বাস্থ্যকর্মীর সঙ্গে নিশ্চিত করুন।");
+  return lines.join("\n");
+}
+
+function normaliseExtraction(args: any, known: Profile, method: "gemma" | "deterministic"): ExtractionResult {
+  const rawProfile = args?.profile && typeof args.profile === "object" ? args.profile : args;
+  const allowed = new Set(P.SYMPTOM_FIELDS);
+  const profile: Profile = {};
+  for (let [key, value] of Object.entries(rawProfile ?? {})) {
+    if (!allowed.has(key)) continue;
+    if (key === "age") {
+      const n = Number(value);
+      if (!Number.isInteger(n) || n <= 0 || n > 120) continue;
+      value = n;
+    } else if (typeof value === "string") {
+      const lv = value.toLowerCase();
+      if (["true", "yes", "হ্যাঁ"].includes(lv)) value = true;
+      else if (["false", "no", "না"].includes(lv)) value = false;
+      else continue;
+    }
+    if (typeof value !== "boolean" && typeof value !== "number") continue;
+    if (known[key] !== value) profile[key] = value;
+  }
+  const evidence = Array.isArray(args?.evidence)
+    ? args.evidence
+      .filter((item: any) => item && allowed.has(String(item.field)) && typeof item.text === "string")
+      .slice(0, 12)
+      .map((item: any) => ({
+        field: String(item.field),
+        text: item.text.slice(0, 160),
+        confidence: Math.max(0, Math.min(1, Number(item.confidence) || 0)),
+      }))
+    : [];
+  const uncertain_fields = Array.isArray(args?.uncertain_fields)
+    ? args.uncertain_fields.filter((field: unknown): field is string => typeof field === "string" && allowed.has(field)).slice(0, 12)
+    : [];
+  return { profile, evidence, uncertain_fields, method };
+}
+
 class GeminiBackend implements Backend {
   name = "gemini";
   private keys = geminiKeys();
@@ -370,25 +548,39 @@ class GeminiBackend implements Backend {
     throw new Error(`All Gemini API keys exhausted. Last error: ${lastErr}`);
   }
 
-  private async generate(system: string, user: string, temperature = 0.3): Promise<string> {
-    const prompt = `${system}\n\n${user}`;
+  private thinkingLevel(kind: "routine" | "ambiguous" = "routine"): "minimal" | "high" {
+    if (process.env.SHOKHI_THINKING === "high") return "high";
+    if (process.env.SHOKHI_THINKING === "minimal") return "minimal";
+    return kind === "ambiguous" ? "high" : "minimal";
+  }
+
+  private async generate(system: string, user: string, temperature = 0.3, kind: "routine" | "ambiguous" = "routine"): Promise<string> {
     const resp: any = await this.withFallback((c) =>
       c.models.generateContent({
         model: this.model,
-        contents: prompt,
-        config: { temperature, maxOutputTokens: 500, thinkingConfig: { thinkingLevel: "minimal" } },
+        contents: user,
+        config: {
+          systemInstruction: system,
+          temperature,
+          maxOutputTokens: 500,
+          thinkingConfig: { thinkingLevel: this.thinkingLevel(kind) },
+        },
       }));
     return (resp.text ?? "").trim();
   }
 
-  private async *generateStream(system: string, user: string, temperature = 0.4): AsyncGenerator<string> {
-    const prompt = `${system}\n\n${user}`;
+  private async *generateStream(system: string, user: string, temperature = 0.4, kind: "routine" | "ambiguous" = "routine"): AsyncGenerator<string> {
     // Open the stream through the same multi-key fallback used for non-streaming calls.
     const stream: any = await this.withFallback((c) =>
       c.models.generateContentStream({
         model: this.model,
-        contents: prompt,
-        config: { temperature, maxOutputTokens: 500, thinkingConfig: { thinkingLevel: "minimal" } },
+        contents: user,
+        config: {
+          systemInstruction: system,
+          temperature,
+          maxOutputTokens: 500,
+          thinkingConfig: { thinkingLevel: this.thinkingLevel(kind) },
+        },
       }));
     for await (const chunk of stream) {
       const t = chunk?.text ?? "";
@@ -396,42 +588,92 @@ class GeminiBackend implements Backend {
     }
   }
 
-  async extractSymptoms(conversation: string, known: Profile): Promise<Profile> {
-    const raw = await this.generate(P.EXTRACT_SYSTEM,
-      P.extractUser(conversation, JSON.stringify(known)), 0.0);
-    const data = parseJson(raw);
-    const allowed = new Set(P.SYMPTOM_FIELDS);
-    const out: Profile = {};
-    for (let [k, v] of Object.entries(data)) {
-      if (!allowed.has(k)) continue;
-      if (k === "age") { const n = Number(v); if (Number.isNaN(n)) continue; v = n; }
-      else if (typeof v === "string") {
-        const lv = v.toLowerCase();
-        if (["true", "yes", "হ্যাঁ"].includes(lv)) v = true;
-        else if (["false", "no", "না"].includes(lv)) v = false;
-      }
-      if (known[k] !== v) out[k] = v;
+  private async generateWithSafeTools(
+    system: string,
+    user: string,
+    temperature = 0.3,
+    kind: "routine" | "ambiguous" = "routine",
+  ): Promise<string> {
+    let contents: any[] = [{ role: "user", parts: [{ text: user }] }];
+    for (let round = 0; round < 2; round++) {
+      const response: any = await this.withFallback((c) => c.models.generateContent({
+        model: this.model,
+        contents,
+        config: {
+          systemInstruction: system,
+          temperature,
+          maxOutputTokens: 500,
+          thinkingConfig: { thinkingLevel: this.thinkingLevel(kind) },
+          tools: [{ functionDeclarations: [SUPPORT_TOOL] }],
+          toolConfig: {
+            functionCallingConfig: {
+              mode: "AUTO",
+              allowedFunctionNames: [SUPPORT_TOOL.name],
+            },
+          },
+        },
+      }));
+      const calls = response.functionCalls ?? [];
+      if (!calls.length) return (response.text ?? "").trim();
+      const modelContent = response.candidates?.[0]?.content ?? {
+        role: "model",
+        parts: calls.map((call: any) => ({ functionCall: call })),
+      };
+      contents.push(modelContent);
+      contents.push({
+        role: "user",
+        parts: calls.map((call: any) => ({
+          functionResponse: {
+            name: call.name,
+            response: {
+              emergency_number: "999",
+              health_hotline: "16263",
+              reason: typeof call.args?.reason === "string" ? call.args.reason.slice(0, 160) : "health guidance",
+            },
+          },
+        })),
+      });
     }
-    return out;
+    return "";
+  }
+
+  async extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult> {
+    const raw = await this.withFallback((c) => c.models.generateContent({
+      model: this.model,
+      contents: P.extractUser(conversation, JSON.stringify(known)),
+      config: {
+        systemInstruction: P.EXTRACT_SYSTEM,
+        temperature: 0,
+        maxOutputTokens: 700,
+        thinkingConfig: { thinkingLevel: this.thinkingLevel("ambiguous") },
+        tools: [{ functionDeclarations: [EXTRACTION_TOOL] }],
+        toolConfig: {
+          functionCallingConfig: {
+            mode: "ANY",
+            allowedFunctionNames: ["record_symptoms"],
+          },
+        },
+      },
+    })) as any;
+    const call = raw.functionCalls?.[0];
+    const data = call?.args ?? parseJson(raw.text ?? "");
+    return normaliseExtraction(data, known, "gemma");
   }
 
   explainTriage(tr: any, lang: Lang) {
-    return this.generate(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr)), 0.4);
+    const system = P.withLanguage(P.EXPLAIN_SYSTEM, lang);
+    const user = P.explainUser(JSON.stringify(tr));
+    const kind = tr.urgency === "emergency" || tr.urgency === "see_doctor_soon" ? "ambiguous" : "routine";
+    return this.generateWithSafeTools(system, user, 0.4, kind);
   }
   explainTriageStream(tr: any, lang: Lang) {
-    return this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr)), 0.4);
+    const ambiguous = tr.urgency === "emergency" || (tr.outstanding_questions && Object.keys(tr.outstanding_questions).length > 0);
+    return this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr)), 0.4, ambiguous ? "ambiguous" : "routine");
   }
   composeStream(system: string, user: string, lang: Lang, _fallback: string) {
     return this.generateStream(P.withLanguage(system, lang), user, 0.5);
   }
   async analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang, mode: "standard" | "specialist" = "standard"): Promise<string> {
-    const prompt = lang === "en"
-      ? mode === "specialist"
-        ? "Act as Shokhi's medical-report specialist review mode. First check whether the image is a readable laboratory report and briefly state image quality. Return exactly four short sections with these headings: ## Image quality, ## Key findings, ## Value-by-value review, ## Safe next step. Extract only visibly readable test names, results, units and reference ranges. Compare only with the range printed on this report. Mark uncertainty clearly and never guess. This is general information, not a diagnosis. Do not prescribe medicines or doses. If a clearly concerning result is visible, advise prompt medical review and end by asking the person to confirm with a qualified doctor or health worker."
-        : "Read this medical or laboratory report image carefully. Return exactly four short sections with these headings: ## Image quality, ## Key findings, ## Value-by-value review, ## Safe next step. Explain only what is visibly readable. List each visible test name, result, unit and the reference range shown on the report. For each result, say whether it appears within, below or above the reference range shown, while noting that ranges vary by laboratory. If anything is blurry or uncertain, say so and do not guess. Use simple, kind language. Do not diagnose, prescribe medicines or doses, or replace a doctor. If a clearly concerning result is visible, advise prompt medical review. End by reminding the person to confirm the report with a doctor or qualified health worker."
-      : mode === "specialist"
-        ? "সখীর মেডিকেল-রিপোর্ট বিশেষজ্ঞ যাচাই মোডে কাজ করুন। প্রথমে ছবিটি পড়ার মতো ল্যাব রিপোর্ট কিনা এবং ছবির মান কেমন—সংক্ষেপে বলুন। ঠিক এই চারটি শিরোনাম ব্যবহার করুন: ## ছবির মান, ## প্রধান ফল, ## প্রতিটি মানের পর্যালোচনা, ## নিরাপদ পরবর্তী পদক্ষেপ। শুধু ছবিতে স্পষ্ট দেখা যাওয়া পরীক্ষার নাম, ফল, একক ও রিপোর্টে লেখা স্বাভাবিক সীমা লিখুন। শুধু এই রিপোর্টের ছাপা সীমার সঙ্গে তুলনা করুন। অনিশ্চিত হলে স্পষ্ট বলুন, অনুমান করবেন না। এটি সাধারণ তথ্য, রোগ নির্ণয় নয়। ওষুধ বা ডোজ দেবেন না। স্পষ্টভাবে উদ্বেগজনক ফল দেখা গেলে দ্রুত ডাক্তার দেখাতে বলুন এবং শেষে যোগ্য ডাক্তার বা স্বাস্থ্যকর্মীর সঙ্গে নিশ্চিত করতে বলুন।"
-        : "এই চিকিৎসা বা ল্যাব রিপোর্টের ছবিটি মন দিয়ে পড়ুন। ঠিক এই চারটি শিরোনাম ব্যবহার করুন: ## ছবির মান, ## প্রধান ফল, ## প্রতিটি মানের পর্যালোচনা, ## নিরাপদ পরবর্তী পদক্ষেপ। ছবিতে স্পষ্ট দেখা যাচ্ছে এমন তথ্যই ব্যাখ্যা করুন। প্রতিটি দেখা যাওয়া পরীক্ষার নাম, ফল, একক এবং রিপোর্টে লেখা স্বাভাবিক সীমা তালিকা করুন। প্রতিটি ফল রিপোর্টের ওই সীমার মধ্যে, কম না বেশি—সহজ ভাষায় বলুন; মনে করিয়ে দিন যে ল্যাবভেদে সীমা বদলাতে পারে। কোনো অংশ ঝাপসা বা অনিশ্চিত হলে তা স্পষ্ট বলুন, অনুমান করবেন না। রোগ নির্ণয়, ওষুধ বা ডোজ দেবেন না এবং ডাক্তারের বিকল্প হবেন না। কোনো স্পষ্টভাবে উদ্বেগজনক ফল দেখা গেলে দ্রুত ডাক্তার বা স্বাস্থ্যকর্মীর পরামর্শ নিতে বলুন। শেষে রিপোর্টটি একজন ডাক্তার বা যোগ্য স্বাস্থ্যকর্মীর সঙ্গে নিশ্চিত করতে বলুন।";
     const response: any = await this.withFallback((c) => c.models.generateContent({
       model: this.model,
       contents: [{
@@ -439,14 +681,23 @@ class GeminiBackend implements Backend {
         // Gemma 4's image guidance recommends putting the image before the text.
         parts: [
           { inlineData: { mimeType: mime.split(";")[0], data: Buffer.from(bytes).toString("base64") } },
-          { text: prompt },
+          { text: reportPrompt(lang, mode) },
         ],
       }],
       config: {
         maxOutputTokens: 700,
-        thinkingConfig: { thinkingLevel: "minimal" },
+        thinkingConfig: { thinkingLevel: "high" },
+        tools: [{ functionDeclarations: [REPORT_TOOL] }],
+        toolConfig: { functionCallingConfig: { mode: "ANY", allowedFunctionNames: [REPORT_TOOL.name] } },
       },
     }));
+    const call = response.functionCalls?.[0];
+    if (call?.args) {
+      const structured = renderReportReview(call.args, lang);
+      // Keep the deterministic report guard independent of the model's wording.
+      const critical = detectCriticalLab(structured);
+      return critical.level ? `${structured}\n\n${lang === "en" ? critical.note_en : critical.note_bn}` : structured;
+    }
     const text = (response.text ?? "").trim();
     if (!text) throw new Error("Gemma returned no report analysis.");
     return text;
@@ -475,6 +726,92 @@ class GeminiBackend implements Backend {
 
 }
 
+// Local Gemma adapter. It speaks the OpenAI-compatible API exposed by Ollama,
+// llama.cpp servers, and similar local runtimes. This keeps the app's orchestration
+// identical while allowing a privacy/offline deployment with SHOKHI_BACKEND=local.
+class LocalGemmaBackend implements Backend {
+  name = "local-gemma";
+  private url = process.env.SHOKHI_LOCAL_GEMMA_URL || "http://127.0.0.1:11434/v1/chat/completions";
+  private model = process.env.SHOKHI_LOCAL_GEMMA_MODEL || "gemma-4-e4b-it";
+  private fallback = new MockBackend();
+
+  private async chat(system: string, user: string, image?: { bytes: ArrayBuffer; mime: string }): Promise<string> {
+    const content: any = image
+      ? [{ type: "image_url", image_url: { url: `data:${image.mime};base64,${Buffer.from(image.bytes).toString("base64")}` } }, { type: "text", text: user }]
+      : user;
+    const response = await fetch(this.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: this.model,
+        messages: [{ role: "system", content: system }, { role: "user", content }],
+        temperature: 0.2,
+      }),
+    });
+    const data = await response.json().catch(() => ({})) as any;
+    if (!response.ok) throw new Error(data?.error?.message || `Local Gemma request failed: ${response.status}`);
+    const text = data?.choices?.[0]?.message?.content;
+    if (Array.isArray(text)) return text.map((part: any) => part?.text || "").join("").trim();
+    if (typeof text !== "string" || !text.trim()) throw new Error("Local Gemma returned no text.");
+    return text.trim();
+  }
+
+  async extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult> {
+    try {
+      const text = await this.chat(P.EXTRACT_SYSTEM, P.extractUser(conversation, JSON.stringify(known)));
+      return normaliseExtraction(parseJson(text), known, "gemma");
+    } catch {
+      return { profile: deterministicExtract(conversation, known), evidence: [], uncertain_fields: [], method: "deterministic" };
+    }
+  }
+
+  async explainTriage(tr: any, lang: Lang): Promise<string> {
+    try { return await this.chat(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr))); }
+    catch { return this.fallback.explainTriage(tr, lang); }
+  }
+
+  async bustMyth(belief: string, fact: string, lang: Lang): Promise<string> {
+    try { return await this.chat(P.withLanguage(P.MYTH_SYSTEM, lang), P.mythUser(belief, fact)); }
+    catch { return this.fallback.bustMyth(belief, fact, lang); }
+  }
+
+  async explainGuide(guide: any, question: string, lang: Lang): Promise<string> {
+    try { return await this.chat(P.withLanguage(P.GUIDE_SYSTEM, lang), P.guideUser(JSON.stringify(guide), question)); }
+    catch { return this.fallback.explainGuide(guide, question, lang); }
+  }
+
+  async answerGrounded(question: string, context: string, lang: Lang): Promise<string> {
+    try { return await this.chat(P.withLanguage(P.GROUNDED_SYSTEM, lang), P.groundedUser(context, question)); }
+    catch { return this.fallback.answerGrounded(question, context, lang); }
+  }
+
+  async safetyCheck(message: string): Promise<SafetyResult> {
+    try {
+      const data: any = parseJson(await this.chat(P.SAFETY_SYSTEM, P.safetyUser(message)));
+      return { emergency: data?.emergency === true, reason: typeof data?.reason === "string" ? data.reason : null };
+    } catch { return this.fallback.safetyCheck(message); }
+  }
+
+  async *explainTriageStream(tr: any, lang: Lang): AsyncGenerator<string> {
+    const full = await this.explainTriage(tr, lang);
+    for (const line of full.split("\n")) yield line + "\n";
+  }
+
+  async *composeStream(system: string, user: string, lang: Lang, fallback: string): AsyncGenerator<string> {
+    let full = fallback;
+    try { full = await this.chat(P.withLanguage(system, lang), user); } catch { /* fallback stays local */ }
+    for (const line of (full || "").split("\n")) yield line + "\n";
+  }
+
+  async analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang, mode: "standard" | "specialist" = "standard"): Promise<string> {
+    try {
+      return await this.chat(reportPrompt(lang, mode), lang === "en" ? "Read the attached report image and return the four requested sections." : "সংযুক্ত রিপোর্টের ছবিটি পড়ে চারটি চাওয়া অংশে উত্তর দিন।", { bytes, mime: mime.split(";")[0] });
+    } catch {
+      return this.fallback.analyzeReportImage(bytes, mime, lang, mode);
+    }
+  }
+}
+
 // --- Factory: gemini if a key is present (or SHOKHI_BACKEND=gemini), else mock ---
 let cached: Backend | null = null;
 export function getBackend(): Backend {
@@ -482,6 +819,7 @@ export function getBackend(): Backend {
   const forced = process.env.SHOKHI_BACKEND;
   const hasKey = geminiKeys().length > 0;
   cached = forced === "mock" ? new MockBackend()
+    : forced === "local" ? new LocalGemmaBackend()
     : forced === "gemini" || hasKey ? new GeminiBackend()
     : new MockBackend();
   return cached;

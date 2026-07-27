@@ -104,8 +104,16 @@ deterministic engine, so Gemma **can never under-triage an emergency because of 
 hallucination**. This is the responsible pattern for health AI: *LLM for language,
 deterministic logic for safety.* Gemma stays core (natural language), wrapped in a guardrail.
 
-**Voice is supported** for women who cannot type: supported browsers recognize spoken Bangla
-locally and send only the resulting text through the same pipeline. Read-aloud uses Gemini TTS.
+The Gemma 4 implementation is deliberately structured rather than a single free-form prompt:
+symptom intake uses an allow-listed function schema with evidence and uncertainty, thinking is
+minimal for routine turns and high for ambiguous turns, and support-number tool calls are
+side-effect-free and bounded. Report images use a separate structured review schema for image
+quality, visible values, printed ranges, uncertainty, and safe next steps. In every path,
+deterministic triage remains the final urgency authority.
+
+**Voice is supported** for women who cannot type: the Voice Bridge transcribes a short recording,
+extracts structured symptoms with Gemma, and sends the result through the same safety-first
+pipeline. Read-aloud uses Gemini TTS in hosted mode and device speech in local mode.
  Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
  The report route also supports structured section prompts, local history comparison, doctor
  handoff export, and a stricter specialist image-review prompt.
@@ -117,10 +125,10 @@ LLM in the system.**
 ### Multi-Provider AI Fallback (reliability by design)
 
 Hosted Gemma 4 calls rotate through up to three Google AI Studio keys when quota, access,
-rate-limit, or transient service errors occur. If no hosted key works, the deterministic mock
-backend keeps the prototype usable offline. This is a reliability layer, not a second LLM:
-guidance always comes from Gemma 4; browser speech, image understanding, embeddings, rules, and traditional ML
-are non-generative support.
+rate-limit, or transient service errors occur. A local Gemma adapter can be selected for
+privacy-first operation, with deterministic fallback when its endpoint is unavailable. This
+is a provider layer, not a second LLM: guidance still comes from Gemma 4; speech adapters,
+image understanding, embeddings, rules, and traditional ML are supporting components.
 
 ## System architecture: one brain, many front doors
 
@@ -142,13 +150,17 @@ with server logic in `lib/server/`:
   urgency, fires red flags, suspects conditions (PCOS, endometriosis, PMS), and asks
   screening questions. **Never fires an emergency on a missing field**, and **never
   downgrades** one.
-- **Gemma backend** — a `Backend` interface with a deterministic **Mock** (offline
-  tests) and a hosted **Gemma 4** implementation. Symptom extraction asks for JSON and uses
-  defensive parsing because model responses can include formatting noise.
+- **Gemma backend** — a `Backend` interface with deterministic **Mock**, hosted **Gemma 4**,
+  and OpenAI-compatible **local Gemma 4** implementations. Symptom and report extraction use
+  structured function calls where supported, with defensive parsing and evidence/uncertainty
+  fields because model responses can include formatting noise.
 - **`lib/server/prompts.ts`** — carefully-scoped Gemma prompts (extract, explain, myth,
   RAG-grounded), instructed to extract only stated facts, never diagnose, never override urgency.
 - **`lib/server/assistant.ts`** — the orchestrator tying conversation → symptoms → triage →
   guidance (and RAG), holding state across turns.
+- **Voice Bridge** — the microphone path combines transcription, structured Gemma extraction,
+  deterministic triage, and spoken guidance in one turn, removing the typing step for
+  low-literacy users.
 - **`lib/server/knowledge.json`** — the clinical knowledge base (red flags, conditions with
   bilingual self-care, myths, 22-field symptom schema).
 - **Supporting ML risk models** — two lightweight, *non-generative* classifiers that add a

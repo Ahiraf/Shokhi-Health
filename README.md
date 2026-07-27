@@ -72,6 +72,22 @@ Shokhi is built on a **"one Gemma brain, a safety rail underneath"** architectur
   Bangla guidance (text + optional voice)
 ```
 
+### What the Gemma 4 upgrade adds
+
+- **Structured intake:** hosted Gemma 4 uses a constrained `record_symptoms` function call.
+  Shokhi keeps only allowed fields, records evidence snippets and confidence, and marks
+  uncertainty instead of turning guesses into symptoms. The deterministic extractor remains
+  available with `SHOKHI_LLM_EXTRACT=0`.
+- **Adaptive reasoning:** routine turns use minimal thinking for speed; ambiguous or urgent turns
+  use high thinking. The model never controls the urgency decision.
+- **Safe tools:** Gemma may request only the allow-listed Bangladesh support-number tool. It has
+  no external side effects, is bounded to two rounds, and cannot change triage urgency.
+- **Structured vision:** report photos use a constrained review tool for image quality, key
+  findings, visible values, uncertainty, and safe next steps. A deterministic haemoglobin check
+  runs independently on the rendered review.
+- **Privacy mode:** the same backend interface supports hosted Gemma 4, local Gemma 4, and a
+  deterministic mock, so a clinic or kiosk can keep local-mode text on the device.
+
 **Gemma 4 does the hard, generative work** — understanding messy real-world Bangla, and
 speaking back with warmth at the right literacy level. The **triage decision is made by
 rules, not the model**, so Gemma can **never under-triage an emergency** because of a
@@ -80,15 +96,14 @@ deterministic logic for safety-critical decisions.*
 
 ### 🎙️ Voice input and output — fast, private, and device-aware
 
-A woman can **speak** her symptoms instead of typing. On the Advice page, a short recording is
-sent to Gemini speech-to-text with Bangla (`bn-BD`) or English selected from the language
-toggle. The resulting text goes through the **same Gemma 4 + deterministic-triage pipeline**
-as typed input. Browsers without recording support can fall back to device-native speech
-recognition.
+A woman can **speak** her symptoms instead of typing. In the chat, the microphone now uses a
+Voice Bridge: audio is transcribed, passed through structured Gemma extraction, and sent through
+the same deterministic triage pipeline as typed input. The recognized words and guidance appear
+together, so the user does not need to type after speaking. Browsers without recording support
+can fall back to device-native speech recognition.
 
-Read-aloud uses Gemini TTS with a female voice and caches audio per message. If the TTS
-service is unavailable, Shokhi keeps the written answer and asks the user to retry instead of
-silently switching to a robotic device voice.
+Read-aloud uses Gemini TTS with a female voice and caches audio per message. In local/private
+mode, text is never sent to Google's TTS: Shokhi uses the device speech engine instead.
 
 Report photos are sent directly to multimodal Gemma 4, which reads the visible test names,
 values, units and reference ranges and explains them in simple language. Unclear values are
@@ -137,6 +152,12 @@ Deterministic mock backend (no-key / offline mode)
 This is deliberately **Gemma 4 only** for generated health guidance — there is no alternate
 LLM hidden behind the fallback. Browser speech, image understanding, non-generative embeddings, deterministic
 triage, and the mock backend remain supporting paths permitted by the hackathon rules.
+
+For privacy mode, set `SHOKHI_BACKEND=local` and point `SHOKHI_LOCAL_GEMMA_URL` at an
+OpenAI-compatible local server (for example an Ollama-compatible endpoint). The app keeps the
+same safety rules and UI, but the generated text and structured extraction stay on that device.
+If a local request fails, it falls back to deterministic guidance rather than silently switching
+to a cloud model.
 
 ---
 
@@ -349,13 +370,16 @@ npm run dev                          # open http://localhost:3001
 
 - **Without a key** the app runs on a **deterministic mock backend** — the full flow works
   offline, just with keyword-based (not real Gemma) understanding.
-- **For live Gemma 4**, put a Google AI Studio key in `.env.local` as `GOOGLE_API_KEY`
+- **For live hosted Gemma 4**, put a Google AI Studio key in `.env.local` as `GOOGLE_API_KEY`
   (optionally `GOOGLE_API_KEY_2`/`_3` for three-key quota fallback). The server auto-selects Gemma.
+- **For local/private Gemma 4**, set `SHOKHI_BACKEND=local`, `SHOKHI_LOCAL_GEMMA_URL`, and
+  `SHOKHI_LOCAL_GEMMA_MODEL`; no Google key is required. Add `SHOKHI_LOCAL_ASR_URL` if local
+  speech-to-text is also available.
 
 Run the **safety tests** (Vitest — verifies emergencies are never downgraded, the ML signal
 never overrides urgency, and RAG degrades gracefully):
 ```bash
-npm test                       # 9 tests, no key/network needed
+npm test                       # 44 tests, no key/network needed
 ```
 
 The two risk classifiers are retrained/exported offline (Python, not needed to run the app):
@@ -412,8 +436,12 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 | `GOOGLE_API_KEY_2`, `_3` | — | Optional second and third keys for automatic quota/access fallback. |
 | `GEMINI_TTS_MODEL` | `gemini-2.5-flash-preview-tts` | Optional Gemini TTS model override for natural female Bangla/English read-aloud. |
 | `SHOKHI_GEMMA_MODEL` | `gemma-4-26b-a4b-it` | Gemma 4 model on AI Studio (e.g. `gemma-4-31b-it`). |
-| `SHOKHI_BACKEND` | auto | Force `gemini` or `mock`. Default: `gemini` if a key is present, else `mock`. |
-| `SHOKHI_LLM_EXTRACT` | off | Optional Gemma symptom extraction; leave off for the faster deterministic intake path. |
+| `SHOKHI_BACKEND` | auto | `gemini`, `local`, or `mock`. Default: hosted Gemma when a key is present, otherwise mock. |
+| `SHOKHI_LOCAL_GEMMA_URL` | `http://127.0.0.1:11434/v1/chat/completions` | OpenAI-compatible local Gemma endpoint. |
+| `SHOKHI_LOCAL_GEMMA_MODEL` | `gemma-4-e4b-it` | Local model name. |
+| `SHOKHI_LOCAL_ASR_URL` | — | Optional local speech-to-text endpoint used in local mode. |
+| `SHOKHI_THINKING` | adaptive | `minimal` or `high`; by default routine turns use minimal and ambiguous turns use high. |
+| `SHOKHI_LLM_EXTRACT` | on for Gemma/local | Set to `0` to use the deterministic intake extractor. |
 | `SHOKHI_SAFETY_NET` | off | Optional second Gemma emergency check; deterministic safety triage always remains enabled. |
 
 ## 🔮 Future plans
@@ -421,13 +449,12 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 ### Offline, edge deployment for no-internet rural clinics
 
 The Gemma backend sits behind **one swappable interface** (`lib/server/gemma.ts` —
-today `mock` and hosted `gemini`). A **local Gemma 4** backend (e.g. via Ollama) can drop
-into that same interface with zero changes to the rest of the app — which unlocks a future
-for offline, local health support:
+`mock`, hosted `gemini`, and local `local-gemma`). A local Gemma 4 backend (e.g. via Ollama)
+can serve the same app with no UI changes:
 
 - **Hosted (API key) — reach the whole country over the internet.** The cloud runs Gemma 4;
   any woman opens the web link from any browser. *This is the near-term product.*
-- **Local (roadmap) — genuinely offline, for places with no internet.** A single device
+- **Local — privacy-first and offline-capable, for places with no internet.** A single device
   (laptop / mini-PC / kiosk) at a **rural health center or Union Parishad office** runs
   Gemma 4 on-device, serving whoever is physically there — no internet, no data cost, no
   cloud. Same codebase, just a different backend behind the interface.

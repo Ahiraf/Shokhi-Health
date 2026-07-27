@@ -77,10 +77,10 @@ export default function ReportPage() {
     setInput("");
     setDoctorRecord(null);
     setShowDoctorSummary(false);
-    setCritical(null); // can't reliably parse a photo deterministically; the model flags in-text
+    setCritical(null);
     setPreview(URL.createObjectURL(file));
     try {
-      const result = await reportImageStream(file, lang, (c) => setText((p) => p + c), imageMode);
+      const result = await reportImageStream(file, lang, (c) => setText((p) => p + c), imageMode, (meta) => setCritical(meta.critical ?? null));
       keepRecord(makeReportRecord({ source: "image", label: file.name || (en ? "Photo report" : "ছবির রিপোর্ট"), analysis: result }));
     } catch {
       setError(true);

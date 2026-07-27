@@ -62,6 +62,7 @@ export async function POST(req: Request) {
 
         send("meta", {
           profile: a.profile,
+          extraction: a.extraction,
           triage: result,
           next_question: a.nextQuestion(),
           is_emergency: result.urgency === "emergency",

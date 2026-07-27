@@ -14,6 +14,12 @@ export async function POST(req: Request) {
   const text = readText(body, "text", MAX_MESSAGE_LENGTH, true);
   if (!text) return errorJson("Text is required.", 400);
 
+  // Privacy mode must never send text to Google's TTS service. The client uses the
+  // device speech engine in this case.
+  if (process.env.SHOKHI_BACKEND === "local") {
+    return errorJson("Local mode uses device speech.", 501);
+  }
+
   try {
     const audio = await synthesize(text, readLanguage(body.lang));
     return new NextResponse(audio, {

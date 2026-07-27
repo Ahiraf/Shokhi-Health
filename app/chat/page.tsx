@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { sendMessage, sendMessageStream, explainGuide } from "@/lib/api";
+import { sendMessage, sendMessageStream, explainGuide, voiceBridge } from "@/lib/api";
 import type { ChatItem } from "@/lib/types";
 import Message from "@/components/Message";
 import Composer from "@/components/Composer";
@@ -111,6 +111,20 @@ export default function ChatPage() {
     }
   }
 
+  async function handleVoiceBridge(blob: Blob) {
+    setBusy(true);
+    try {
+      const res = await voiceBridge(blob, lang, profile, history);
+      setProfile(res.profile);
+      setHistory((h) => [...h, res.transcript]);
+      setChat((c) => [...c, { role: "user", text: res.transcript }, { role: "assistant", text: res.guidance, data: res }]);
+    } catch {
+      setChat((c) => [...c, { role: "assistant", text: t("chat.errorConnect") }]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const started = chat.length > 0;
 
   return (
@@ -143,7 +157,7 @@ export default function ChatPage() {
           </p>
 
           <div className="mt-7 w-full">
-            <Composer onSend={handleSend} busy={busy} />
+            <Composer onSend={handleSend} onVoiceBridge={handleVoiceBridge} busy={busy} />
           </div>
 
           <div className="mt-8 w-full">
@@ -202,7 +216,7 @@ export default function ChatPage() {
             <div className="mb-3">
               <Examples onPick={handleSend} />
             </div>
-            <Composer onSend={handleSend} busy={busy} />
+            <Composer onSend={handleSend} onVoiceBridge={handleVoiceBridge} busy={busy} />
             <p className="mt-2.5 text-center text-xs text-plum/45">{t("chat.privacyLine")}</p>
           </div>
         </div>

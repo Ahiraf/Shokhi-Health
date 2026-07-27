@@ -20,9 +20,11 @@ type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
 export default function Composer({
   onSend,
   busy,
+  onVoiceBridge,
 }: {
   onSend: (text: string) => void;
   busy: boolean;
+  onVoiceBridge?: (blob: Blob) => void;
 }) {
   const { t, lang } = useLang();
   const [text, setText] = useState("");
@@ -132,7 +134,10 @@ export default function Composer({
           recorderRef.current = null;
           const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || "audio/webm" });
           audioChunksRef.current = [];
-          if (blob.size > 0) void transcribe(blob);
+          if (blob.size > 0) {
+            if (onVoiceBridge) onVoiceBridge(blob);
+            else void transcribe(blob);
+          }
           else setVoiceError(t("composer.voiceNoSpeech"));
         };
         recorder.onerror = () => {

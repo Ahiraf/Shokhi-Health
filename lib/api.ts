@@ -32,6 +32,24 @@ export function sendMessage(
   return post<MessageResponse>("/api/message", { message, profile, history, lang });
 }
 
+/** Voice Bridge: upload audio and receive transcript + the normal safety-first reply. */
+export async function voiceBridge(
+  file: Blob,
+  lang: "bn" | "en",
+  profile: Record<string, unknown>,
+  history: string[],
+): Promise<MessageResponse & { transcript: string }> {
+  const form = new FormData();
+  form.append("audio", file, "voice.webm");
+  form.append("lang", lang);
+  form.append("profile", JSON.stringify(profile));
+  form.append("history", JSON.stringify(history));
+  const res = await fetch(`${BASE}/api/voice/bridge`, { method: "POST", body: form });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.detail || `voice bridge failed: ${res.status}`);
+  return data;
+}
+
 /**
  * Streaming chat over Server-Sent Events. Calls `onMeta` once with the triage/profile
  * payload, then `onDelta` for each guidance chunk. Resolves with the assembled full text.
@@ -134,6 +152,7 @@ export async function reportImageStream(
   lang: "bn" | "en",
   onDelta: (chunk: string) => void,
   mode: "standard" | "specialist" = "standard",
+  onMeta?: (meta: { critical?: { level: "urgent" | "low" | null; note_bn: string; note_en: string } }) => void,
 ): Promise<string> {
   const form = new FormData();
   form.append("image", file);
@@ -158,7 +177,8 @@ export async function reportImageStream(
       const dataLine = lines.find((l) => l.startsWith("data:"))?.slice(5).trim();
       if (!event || dataLine === undefined) continue;
       const parsed = JSON.parse(dataLine);
-      if (event === "delta") { full += parsed; onDelta(parsed as string); }
+      if (event === "meta") onMeta?.(parsed);
+      else if (event === "delta") { full += parsed; onDelta(parsed as string); }
       else if (event === "error") throw new Error(parsed.detail || "report-image error");
     }
   }

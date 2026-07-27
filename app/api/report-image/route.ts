@@ -1,4 +1,5 @@
 import { getBackend } from "@/lib/server/gemma";
+import { detectCriticalLab } from "@/lib/server/personal";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
 import { errorJson, readLanguage } from "@/lib/server/request";
 
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
       controller.enqueue(encoder.encode(": open\n\n"));
       try {
         const analysis = await getBackend().analyzeReportImage(bytes, mime, lang, mode);
+        send("meta", { critical: detectCriticalLab(analysis) });
         for (const chunk of analysis.match(/[^\n]+\n?|\n/g) ?? [analysis]) send("delta", chunk);
         send("done", {});
       } catch {

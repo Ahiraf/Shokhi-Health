@@ -53,6 +53,12 @@ export interface TriageResult {
 
 export interface MessageResponse {
   profile: Record<string, unknown>;
+  extraction?: {
+    profile: Record<string, unknown>;
+    evidence: { field: string; text: string; confidence: number }[];
+    uncertain_fields: string[];
+    method: "gemma" | "deterministic";
+  } | null;
   triage: TriageResult;
   guidance: string;
   next_question: string | null;

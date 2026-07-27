@@ -52,6 +52,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       profile: a.profile,
+      extraction: a.extraction,
       triage: result,
       guidance: await a.backend.explainTriage(result, lang),
       next_question: a.nextQuestion(),

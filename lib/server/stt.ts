@@ -15,6 +15,18 @@ export async function transcribeAudio(
   lang: "bn" | "en",
 ): Promise<string> {
   if (audio.length === 0 || audio.length > MAX_AUDIO_BYTES) throw new Error("Audio is too large.");
+  const localUrl = process.env.SHOKHI_LOCAL_ASR_URL;
+  if (process.env.SHOKHI_BACKEND === "local" && localUrl) {
+    const response = await fetch(localUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ audio_base64: audio.toString("base64"), mime_type: mimeType, language: lang }),
+    });
+    const data = await response.json().catch(() => ({})) as any;
+    const transcript = typeof data?.transcript === "string" ? data.transcript.trim() : "";
+    if (!response.ok || !transcript) throw new Error(data?.error || `Local ASR failed: ${response.status}`);
+    return transcript.slice(0, 2_000);
+  }
   const keys = geminiKeys();
   if (!keys.length) throw new Error("No Gemini API key configured.");
 
