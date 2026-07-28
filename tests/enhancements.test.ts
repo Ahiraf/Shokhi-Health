@@ -5,9 +5,10 @@ process.env.SHOKHI_BACKEND = "mock";
 
 import { describe, it, expect } from "vitest";
 import { retrieve, corpusInfo } from "../lib/server/rag";
-import { applySafetyNet } from "../lib/server/assistant";
+import { applySafetyNet, Assistant } from "../lib/server/assistant";
 import { getBackend } from "../lib/server/gemma";
 import { detectCrisis, crisisResponse } from "../lib/server/crisis";
+import { guideJourney } from "../lib/journeys";
 
 describe("#5 escalate-only LLM safety net", () => {
   it("ESCALATES an 'info' result to emergency when the classifier flags one", () => {
@@ -74,5 +75,25 @@ describe("#1/#3 retrieval metadata + topics", () => {
     // gibberish still returns nothing even with a topic boost set
     const none = await retrieve("zzzxqwk vvv qqqq", 3, { boostTopic: "pcos" });
     expect(none).toHaveLength(0);
+  });
+});
+
+describe("situation-first learning journeys", () => {
+  it("maps a plain Bangla question to a journey without diagnosing", async () => {
+    const result = await new Assistant().classifyJourney("আমার প্রথম মাসিক হয়েছে, প্যাড কীভাবে ব্যবহার করব?", "bn");
+    expect(result.journey).toBe("first_period");
+    expect(result.uncertain).toBe(false);
+  });
+
+  it("keeps an ambiguous message in the general symptom journey", async () => {
+    const result = await new Assistant().classifyJourney("I do not know where to start", "en");
+    expect(result.journey).toBe("understand_symptoms");
+    expect(result.uncertain).toBe(true);
+  });
+
+  it("keeps new guides attached to a user-facing journey", () => {
+    expect(guideJourney("period_cramps")).toBe("period_pain");
+    expect(guideJourney("first_pregnancy")).toBe("pregnant_now");
+    expect(guideJourney("missed_pill")).toBe("avoid_pregnancy");
   });
 });

@@ -7,6 +7,7 @@
 import * as P from "./prompts";
 import type { Lang } from "./prompts";
 import { detectCriticalLab } from "./personal";
+import { JOURNEY_KEYS, validJourney, type JourneyIntent } from "../journeys";
 
 type Profile = Record<string, unknown>;
 
@@ -31,6 +32,7 @@ export interface ExtractionResult {
 export interface Backend {
   name: string;
   extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult>;
+  classifyJourney(message: string, lang: Lang): Promise<JourneyIntent>;
   explainTriage(triage: any, lang: Lang): Promise<string>;
   bustMyth(belief: string, fact: string, lang: Lang): Promise<string>;
   explainGuide(guide: any, question: string, lang: Lang): Promise<string>;
@@ -189,6 +191,25 @@ export function llmExtractEnabled(): boolean {
 
 class MockBackend implements Backend {
   name = "mock";
+
+  async classifyJourney(message: string, _lang?: Lang): Promise<JourneyIntent> {
+    const low = message.toLocaleLowerCase();
+    const groups: Array<[JourneyIntent["journey"], string[]]> = [
+      ["first_period", ["প্রথম মাসিক", "প্রথম পিরিয়ড", "first period", "menarche", "প্যাড"]],
+      ["period_pain", ["মাসিকের ব্যথা", "পিরিয়ডের ব্যথা", "ক্র্যাম্প", "cramp", "period pain", "তলপেট ব্যথা"]],
+      ["avoid_pregnancy", ["জন্মনিয়ন্ত্রণ", "গর্ভনিরোধ", "পিল", "কনডম", "contraception", "birth control", "avoid pregnancy"]],
+      ["plan_pregnancy", ["সন্তান নিতে", "সন্তান নেওয়ার", "পরিবার পরিকল্পনা", "trying", "conceive", "planning a pregnancy"]],
+      ["pregnant_now", ["গর্ভবতী", "গর্ভধারণের সম্ভাবনা", "pregnancy", "pregnant", "মাসিক বন্ধ"]],
+      ["after_birth", ["প্রসবের পর", "বাচ্চা হওয়ার পর", "after birth", "postpartum", "breastfeeding"]],
+    ];
+    let best: JourneyIntent["journey"] = "understand_symptoms";
+    let score = 0;
+    for (const [journey, terms] of groups) {
+      const hits = terms.filter((term) => low.includes(term.toLocaleLowerCase())).length;
+      if (hits > score) { best = journey; score = hits; }
+    }
+    return { journey: best, confidence: best === "understand_symptoms" ? 0.35 : Math.min(0.95, 0.55 + score * 0.15), uncertain: best === "understand_symptoms", evidence: [] };
+  }
 
   async extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult> {
     return {
@@ -400,6 +421,22 @@ const SUPPORT_TOOL = {
   },
 };
 
+const JOURNEY_TOOL = {
+  name: "classify_shokhi_journey",
+  description: "Choose the safest educational starting journey from the user's explicitly stated situation.",
+  parametersJsonSchema: {
+    type: "object",
+    properties: {
+      journey: { type: "string", enum: [...JOURNEY_KEYS] },
+      confidence: { type: "number" },
+      uncertain: { type: "boolean" },
+      evidence: { type: "array", items: { type: "string" } },
+    },
+    required: ["journey", "confidence", "uncertain", "evidence"],
+    additionalProperties: false,
+  },
+};
+
 const REPORT_TOOL = {
   name: "record_report_review",
   description: "Record only values visibly readable in the uploaded report image. Never guess missing values.",
@@ -508,6 +545,18 @@ function normaliseExtraction(args: any, known: Profile, method: "gemma" | "deter
     ? args.uncertain_fields.filter((field: unknown): field is string => typeof field === "string" && allowed.has(field)).slice(0, 12)
     : [];
   return { profile, evidence, uncertain_fields, method };
+}
+
+function normaliseJourney(args: any): JourneyIntent {
+  const confidence = Math.max(0, Math.min(1, Number(args?.confidence) || 0));
+  const journey = validJourney(args?.journey);
+  const evidence = Array.isArray(args?.evidence)
+    ? args.evidence
+      .filter((item: unknown): item is string => typeof item === "string")
+      .slice(0, 4)
+      .map((item: string) => item.slice(0, 140))
+    : [];
+  return { journey, confidence, uncertain: args?.uncertain === true || journey === "understand_symptoms", evidence };
 }
 
 class GeminiBackend implements Backend {
@@ -660,6 +709,22 @@ class GeminiBackend implements Backend {
     return normaliseExtraction(data, known, "gemma");
   }
 
+  async classifyJourney(message: string, lang: Lang): Promise<JourneyIntent> {
+    const raw = await this.withFallback((c) => c.models.generateContent({
+      model: this.model,
+      contents: P.journeyUser(message, lang),
+      config: {
+        systemInstruction: P.JOURNEY_SYSTEM,
+        temperature: 0,
+        maxOutputTokens: 180,
+        thinkingConfig: { thinkingLevel: "minimal" },
+        tools: [{ functionDeclarations: [JOURNEY_TOOL] }],
+        toolConfig: { functionCallingConfig: { mode: "ANY", allowedFunctionNames: [JOURNEY_TOOL.name] } },
+      },
+    })) as any;
+    return normaliseJourney(raw.functionCalls?.[0]?.args ?? parseJson(raw.text ?? ""));
+  }
+
   explainTriage(tr: any, lang: Lang) {
     const system = P.withLanguage(P.EXPLAIN_SYSTEM, lang);
     const user = P.explainUser(JSON.stringify(tr));
@@ -762,6 +827,15 @@ class LocalGemmaBackend implements Backend {
       return normaliseExtraction(parseJson(text), known, "gemma");
     } catch {
       return { profile: deterministicExtract(conversation, known), evidence: [], uncertain_fields: [], method: "deterministic" };
+    }
+  }
+
+  async classifyJourney(message: string, lang: Lang): Promise<JourneyIntent> {
+    try {
+      const text = await this.chat(P.JOURNEY_SYSTEM, P.journeyUser(message, lang));
+      return normaliseJourney(parseJson(text));
+    } catch {
+      return this.fallback.classifyJourney(message, lang);
     }
   }
 

@@ -432,6 +432,98 @@
       "when_see_doctor_en": "If your mood is very low every month and it stops your daily life/studies (PMDD), or you feel sad, hopeless, or think of harming yourself for a long time — please talk to a doctor. In a crisis, call Kaan Pete Roi 09612-119911 or 999."
     },
     {
+      "id": "period_cramps",
+      "icon": "🌸",
+      "title_bn": "মাসিকের ব্যথা — কী করলে আরাম পাবেন",
+      "title_en": "Period cramps — what may help",
+      "keywords": ["মাসিকের ব্যথা", "পিরিয়ডের ব্যথা", "ক্র্যাম্প", "period cramps", "period pain", "dysmenorrhea"],
+      "summary_bn": "হালকা বা মাঝারি মুচড়ানো ব্যথা অনেকের হয়; গরম সেঁক, বিশ্রাম ও হালকা নড়াচড়ায় আরাম মিলতে পারে।",
+      "summary_en": "Mild-to-moderate cramping is common; heat, rest and gentle movement may help.",
+      "points_bn": [
+        "গরম পানির ব্যাগ বা গরম সেঁক তলপেট বা কোমরে দিতে পারেন।",
+        "হালকা হাঁটা, স্ট্রেচিং, বিশ্রাম ও পানি খাওয়া সাহায্য করতে পারে।",
+        "কখন ব্যথা হচ্ছে, কতক্ষণ থাকে এবং কাজ বা পড়াশোনায় বাধা দেয় কি না লিখে রাখুন।",
+        "ব্যথা মাসিক ছাড়াও হলে বা প্রতি মাসে বাড়লে পরীক্ষা করানো দরকার হতে পারে।"
+      ],
+      "points_en": [
+        "Try a warm water bottle or heat pad on the lower belly or back.",
+        "A gentle walk, stretching, rest and water may help.",
+        "Note when the pain happens, how long it lasts, and whether it stops school or work.",
+        "Pain outside periods or pain that gets worse each month deserves a check-up."
+      ],
+      "when_see_doctor_bn": "অসহনীয় ব্যথা, জ্বর, অজ্ঞানভাব, খুব বেশি রক্ত, গর্ভধারণের সম্ভাবনা বা দৈনন্দিন কাজ বন্ধ হলে দ্রুত ডাক্তার দেখান।",
+      "when_see_doctor_en": "See a doctor promptly for unbearable pain, fever, fainting, very heavy bleeding, possible pregnancy, or pain that stops daily life."
+    },
+    {
+      "id": "missed_pill",
+      "icon": "⏰",
+      "title_bn": "পিল খেতে ভুলে গেলে কী করবেন",
+      "title_en": "What to do after a missed pill",
+      "keywords": ["পিল ভুলে", "পিল খেতে ভুলে", "পিল দেরি", "missed pill", "late pill", "contraceptive pill"],
+      "summary_bn": "পিলের ধরন ও কতটি বাদ গেছে তার ওপর নিয়ম বদলায় — প্যাকেটের নাম দেখে সঠিক পরামর্শ নিন।",
+      "summary_en": "The advice changes by pill type and how many were missed — check the pack and get specific advice.",
+      "points_bn": [
+        "পিলের প্যাকেট বা নামটি আগে দেখুন; কম্বাইন্ড পিল ও মিনি-পিলের নিয়ম এক নয়।",
+        "অনেক দৈনিক পিলের ক্ষেত্রে একটি পিল দেরি হলে মনে পড়ার সাথে খেয়ে নিয়ম চালিয়ে যেতে বলা হয়, তবে প্যাকেটের নির্দেশনা মেনে চলুন।",
+        "একাধিক পিল বাদ গেলে বা অসুরক্ষিত সহবাস হলে আজই ফার্মাসিস্ট বা পরিবার-পরিকল্পনা কর্মীর পরামর্শ নিন।",
+        "জরুরি পিল যত তাড়াতাড়ি নেওয়া যায় তত ভালো; কিছু পদ্ধতি অসুরক্ষিত সহবাসের ৫ দিনের মধ্যে ব্যবহার করা যায়।"
+      ],
+      "points_en": [
+        "First check the pack or medicine name; combined pills and mini-pills do not have identical rules.",
+        "For many daily pills, one late pill is taken when remembered and the schedule continues, but follow the pack instructions.",
+        "After more than one missed pill or unprotected sex, ask a pharmacist or family-planning worker today.",
+        "Emergency contraception works best as soon as possible; some options can be used within 5 days of unprotected sex."
+      ],
+      "when_see_doctor_bn": "পিলের নাম জানা না থাকলে, গর্ভধারণের সম্ভাবনা থাকলে, বুকের দুধ খাওয়ালে বা বারবার পিল ভুলে গেলে স্বাস্থ্যকর্মীর সাথে কথা বলুন।",
+      "when_see_doctor_en": "Ask a health worker if you do not know the pill name, pregnancy is possible, you are breastfeeding, or missed pills keep happening."
+    },
+    {
+      "id": "first_pregnancy",
+      "icon": "🤰",
+      "title_bn": "প্রথমবার গর্ভধারণের শুরু",
+      "title_en": "Your first pregnancy — getting started",
+      "keywords": ["প্রথম গর্ভধারণ", "গর্ভবতী হতে পারি", "প্রেগন্যান্সি", "first pregnancy", "possibly pregnant", "antenatal"],
+      "summary_bn": "মাসিক বন্ধ হলে পরীক্ষা করুন এবং যত তাড়াতাড়ি সম্ভব গর্ভকালীন চেকআপের পরিকল্পনা করুন।",
+      "summary_en": "If your period is late, test and arrange antenatal care as early as you can.",
+      "points_bn": [
+        "শেষ মাসিকের প্রথম দিনের তারিখ লিখে রাখুন এবং স্বাস্থ্যকর্মীকে বলুন।",
+        "আপনি যে ওষুধ খান বা আগে থেকে যে রোগ আছে, প্রথম চেকআপে সব জানান।",
+        "গর্ভকালীন চেকআপে রক্তচাপ, রক্ত ও প্রস্রাব পরীক্ষা এবং প্রয়োজনীয় টিকা/সাপ্লিমেন্ট নিয়ে কথা হয়।",
+        "নিজে থেকে কোনো ওষুধ শুরু বা বন্ধ করবেন না; স্বাস্থ্যকর্মীর পরামর্শ নিন।"
+      ],
+      "points_en": [
+        "Write down the first day of your last period and tell the health worker.",
+        "Mention every medicine and any health condition at the first visit.",
+        "Antenatal care may include blood pressure, blood and urine checks, and discussion of vaccines or supplements.",
+        "Do not start or stop medicine on your own; ask a health worker."
+      ],
+      "when_see_doctor_bn": "রক্তপাত, তীব্র পেটব্যথা, তীব্র মাথাব্যথা, ঝাপসা দেখা, হঠাৎ মুখ/হাত ফুলে যাওয়া বা খিঁচুনি হলে এখনই হাসপাতালে যান।",
+      "when_see_doctor_en": "Go to a hospital now for bleeding, severe belly pain, severe headache, blurred vision, sudden face/hand swelling, or fits."
+    },
+    {
+      "id": "after_birth",
+      "icon": "🫶",
+      "title_bn": "সন্তান হওয়ার পর মায়ের যত্ন",
+      "title_en": "Caring for yourself after birth",
+      "keywords": ["প্রসবের পর", "বাচ্চা হওয়ার পর", "after birth", "postpartum", "breastfeeding", "প্রসবোত্তর"],
+      "summary_bn": "প্রসবের পর শরীর ও মনকে সুস্থ হতে সময়, বিশ্রাম এবং সাহায্য দরকার।",
+      "summary_en": "After birth, your body and mind need time, rest and support to recover.",
+      "points_bn": [
+        "অতিরিক্ত রক্তপাত, জ্বর, দুর্গন্ধযুক্ত স্রাব বা তীব্র ব্যথা হলে দ্রুত স্বাস্থ্যকেন্দ্রে যান।",
+        "মন খারাপ, কান্না, ভয় বা শিশুর যত্ন নিতে না পারার অনুভূতি হলে একা থাকবেন না — বিশ্বস্ত কাউকে বলুন।",
+        "বুকের দুধ খাওয়ানো ও জন্মনিয়ন্ত্রণের নিরাপদ বিকল্প নিয়ে স্বাস্থ্যকর্মীর সাথে কথা বলুন।",
+        "পরের গর্ভধারণের আগে শরীরকে সুস্থ হওয়ার সময় দিন এবং পরিবার পরিকল্পনা নিয়ে আলোচনা করুন।"
+      ],
+      "points_en": [
+        "Seek care quickly for heavy bleeding, fever, foul-smelling discharge or severe pain.",
+        "If you feel low, tearful, afraid, or unable to care for the baby, do not stay alone — tell someone you trust.",
+        "Talk with a health worker about breastfeeding and contraception options that fit you.",
+        "Give your body time to recover and discuss family planning before another pregnancy."
+      ],
+      "when_see_doctor_bn": "অতিরিক্ত রক্তপাত, জ্বর, দুর্গন্ধযুক্ত স্রাব বা নিজেকে ক্ষতি করার চিন্তা হলে জরুরি সাহায্য নিন।",
+      "when_see_doctor_en": "Get urgent help for heavy bleeding, fever, foul-smelling discharge, or thoughts of harming yourself."
+    },
+    {
       "id": "contraception",
       "icon": "🛡️",
       "title_bn": "জন্মনিয়ন্ত্রণ পদ্ধতি",
@@ -442,14 +534,14 @@
       "points_bn": [
         "স্বল্পমেয়াদি: খাওয়ার পিল, কনডম (যৌনরোগ থেকেও বাঁচায়), মাসিক ইনজেকশন।",
         "দীর্ঘমেয়াদি (ফেরানো যায়): আইইউডি/কপার-টি, ইমপ্লান্ট — ৩–১০ বছর কার্যকর।",
-        "জরুরি পিল সহবাসের ৭২ ঘণ্টার মধ্যে কাজ করে, তবে এটি নিয়মিত পদ্ধতি নয়।",
+        "জরুরি পিল যত তাড়াতাড়ি নেওয়া যায় তত ভালো; কিছু পদ্ধতি অসুরক্ষিত সহবাসের ৫ দিনের মধ্যে ব্যবহার করা যায়। এটি নিয়মিত পদ্ধতি নয়।",
         "স্থায়ী: লাইগেশন (নারী) বা ভ্যাসেকটমি (পুরুষ) — পরিবার সম্পূর্ণ হলে।",
         "বাংলাদেশে সরকারি স্বাস্থ্যকেন্দ্র ও পরিবার পরিকল্পনা কর্মীর কাছে বিনামূল্যে/স্বল্পমূল্যে পাওয়া যায়।"
       ],
       "points_en": [
         "Short-term: daily pills, condoms (also protect from STIs), monthly injections.",
         "Long-term (reversible): IUD/copper-T, implants — effective for 3–10 years.",
-        "Emergency pills work within 72 hours of sex, but are not a regular method.",
+        "Emergency contraception works best as soon as possible; some options can be used within 5 days of unprotected sex. It is not a regular method.",
         "Permanent: ligation (women) or vasectomy (men) — once your family is complete.",
         "In Bangladesh these are free or low-cost at government health centres and from family-planning workers."
       ],

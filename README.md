@@ -18,11 +18,12 @@ what may be happening, what to do next, and when to contact a real health profes
 
 ## 🔒 Privacy
 
-> No account required. Your profile and tracker data stay on your device. Chat and voice messages are securely processed by Shokhi and Gemini to generate replies. Please do not share your name, phone number, address, or identifying details.
+> No account required. Your profile and tracker data stay on your device. Chat messages are
+> processed by Shokhi and Gemma 4 when hosted mode is enabled; browser voice input is handled
+> by the device, and optional RAG embeddings are non-generative. Please do not share your name,
+> phone number, address, or identifying details.
 
-Gemma 4 is Shokhi's core generative health model. In the statement above, Gemini refers to
-the Google AI services used by supporting features: Advice voice transcription and optional
-RAG embeddings. Shokhi does not currently use an account system or a
+Gemma 4 is Shokhi's only generative health model. Shokhi does not currently use an account system or a
 database for user profiles, tracker logs, or chat history; hosting and AI providers may
 still process request data according to their own retention and logging policies.
 
@@ -177,7 +178,7 @@ For emergencies, the app clearly displays **16263 / 999**.
 | ----- | ---------- |
 | Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
 | Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
-| AI | Google Gemma 4 for language and report-image understanding · Gemini speech adapters · non-generative embeddings |
+| AI | Google Gemma 4 for language, structured tools, and report-image understanding · browser speech input · non-generative embeddings |
 | Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
 | Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
 | Retrieval | Local Markdown corpus · precomputed embeddings · grounded RAG responses |
@@ -208,6 +209,9 @@ to menopause — as **one warm companion**:
 | **Weekly companion** | Gemma-written weekly guidance from local cycle and mood context | `/tracker/today` |
 | **Voice input** | Browser-native Bangla voice input for hands-free symptom sharing | `/chat` |
 | **Guides, myths, and FAQ** | Trusted explainers with sources | `/guides` · `/myths` · `/faq` |
+| **Situation-first learning** | Start from first period, cramps, pregnancy planning, pregnancy, postpartum, or symptoms | `/learn` · `/guides` |
+| **Missed-pill helper** | Conservative product-aware questions for missed, late, or emergency contraception | `/guides/contraception` |
+| **Illustration direction** | Reusable, age-appropriate prompts for consistent Shokhi learning scenes | `docs/ILLUSTRATION_PROMPTS.md` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
 | **Voice help** | Speak through a supported browser and receive Shokhi’s written guidance | `/chat` |
 
@@ -316,6 +320,9 @@ in the file's frontmatter. Current documents:
 | Endometriosis | WHO — Endometriosis (fact sheet) | https://www.who.int/news-room/fact-sheets/detail/endometriosis | CC BY-NC-SA 3.0 IGO |
 | Menopause | NHS — Menopause and perimenopause | https://www.nhs.uk/conditions/menopause/ | Crown / NHS, OGL v3.0 |
 | Contraceptive safety | WHO — Medical eligibility criteria for contraceptive use, 6th ed. (2025) | https://www.who.int/publications/b/81082 | CC BY-NC-SA 3.0 IGO |
+| Missed pills & emergency contraception | WHO — Selected practice recommendations for contraceptive use, 4th ed. (2025) | https://www.who.int/publications/b/81080 | CC BY-NC-SA 3.0 IGO |
+| Antenatal care | WHO — Recommendations on antenatal care for a positive pregnancy experience | https://www.who.int/publications/i/item/9789241549912 | CC BY-NC-SA 3.0 IGO |
+| Postnatal care | WHO — Recommendations on maternal and newborn care for a positive postnatal experience | https://www.who.int/publications/i/item/9789240045989 | CC BY-NC-SA 3.0 IGO |
 | Postpregnancy family planning | WHO — Scaling up postpregnancy family planning: practical guide (2025) | https://www.who.int/publications/i/item/9789240111073 | CC BY-NC-SA 3.0 IGO |
 | HIV services | WHO — Consolidated HIV guidelines: service delivery (2026) | https://www.who.int/publications/i/item/9789240124233 | CC BY-NC-SA 3.0 IGO |
 | Antenatal care (Bangladesh) | DGHS/DGFP national ANC schedule + WHO ANC recommendations | https://old.dghs.gov.bd/index.php/en/publications | Govt of Bangladesh (public) + WHO CC BY-NC-SA 3.0 IGO |
@@ -375,7 +382,7 @@ npm run dev                          # open http://localhost:3001
 Run the **safety tests** (Vitest — verifies emergencies are never downgraded, the ML signal
 never overrides urgency, and RAG degrades gracefully):
 ```bash
-npm test                       # 44 tests, no key/network needed
+npm test                       # 47 tests, no key/network needed
 ```
 
 The two risk classifiers are retrained/exported offline (Python, not needed to run the app):

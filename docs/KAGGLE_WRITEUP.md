@@ -51,6 +51,18 @@ Shokhi covers **menstrual health, PCOS, PMS, endometriosis, and common cramps**,
 harmful myths. An urban teenager gets private education; a rural woman gets **voice-first
 guidance**.
 
+### Situation-first learning paths
+
+Learn and Health Guides now begin with a question a real user can answer: **"What brings you
+here today?"** Instead of forcing a first-time user to choose a diagnosis, Shokhi offers paths
+for a first period, period cramps, avoiding pregnancy, planning a pregnancy, possible pregnancy,
+after birth, and general symptoms. Each path turns a long article into three small decisions:
+**start here**, **next step**, and **get help if**.
+
+The contraception path includes a conservative missed-pill helper. It asks for the pill type and
+what happened before showing general next steps, because pill instructions differ by product. The
+helper never gives a brand-specific dose or replaces a pharmacist/health worker.
+
 ### The upgraded report and companion experience
 
 The demo now shows how the same Gemma foundation can support a woman's next decisions, not
@@ -127,7 +139,7 @@ LLM in the system.**
 Hosted Gemma 4 calls rotate through up to three Google AI Studio keys when quota, access,
 rate-limit, or transient service errors occur. A local Gemma adapter can be selected for
 privacy-first operation, with deterministic fallback when its endpoint is unavailable. This
-is a provider layer, not a second LLM: guidance still comes from Gemma 4; speech adapters,
+is a provider layer, not a second LLM: guidance still comes from Gemma 4; browser speech,
 image understanding, embeddings, rules, and traditional ML are supporting components.
 
 ## System architecture: one brain, many front doors
@@ -175,7 +187,7 @@ with server logic in `lib/server/`:
   family audience modes, and weekly companion cards.
 - **Pure-TypeScript runtime + tests** — ML risk classifiers are trained offline and
 **exported to plain JSON**, so inference runs in TypeScript with **no Python/ML runtime on
-the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (44 tests)
+the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (47 tests)
   locks the safety guarantees: emergencies are never downgraded, the ML signal never
   overrides urgency, RAG degrades gracefully, and the new report/personalization helpers remain
   deterministic and local-first.
@@ -218,5 +230,10 @@ fact sheets/guidelines under **CC BY-NC-SA 3.0 IGO** (adapted with WHO's require
 **NHS** under the **Open Government Licence**, and **Bangladesh DGHS/DGFP** and **icddr,b**
 summarised with attribution. Full credits in `ATTRIBUTION.md`. Shokhi is free and
 non-commercial.
+
+The repository stores concise, attributed Markdown summaries rather than copying whole
+publications into the app. The current additions cover WHO's antenatal-care guidance,
+postnatal-care guidance, and the 2025 contraceptive-practice recommendations; the original
+publication links and licences remain in each document's frontmatter.
 
 *Repository & public demo attached. Gemma 4 is the only LLM used.*

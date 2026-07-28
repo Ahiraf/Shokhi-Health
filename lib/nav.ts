@@ -16,6 +16,13 @@ export const NAV: NavNode[] = [
     ],
   },
   {
+    key: "nav.learn",
+    children: [
+      { href: "/learn", key: "nav.learn.conditions" },
+      { href: "/guides", key: "nav.guides" },
+    ],
+  },
+  {
     key: "nav.wellness",
     children: [
       { href: "/tracker/today", key: "nav.tracker.today" },
@@ -24,13 +31,6 @@ export const NAV: NavNode[] = [
     ],
   },
   { href: "/report", key: "nav.report" },
-  {
-    key: "nav.learn",
-    children: [
-      { href: "/learn", key: "nav.learn.conditions" },
-      { href: "/guides", key: "nav.guides" },
-    ],
-  },
   { href: "/myths", key: "nav.myths" },
   { href: "/faq", key: "nav.faq" },
 ];

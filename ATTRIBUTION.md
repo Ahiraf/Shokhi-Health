@@ -28,6 +28,9 @@ Documents used:
 - **Polycystic ovary syndrome** (fact sheet). Geneva: World Health Organization. https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome
 - **Endometriosis** (fact sheet). Geneva: World Health Organization. https://www.who.int/news-room/fact-sheets/detail/endometriosis
 - **Medical eligibility criteria for contraceptive use, sixth edition**. Geneva: World Health Organization; 2025. Licence: CC BY-NC-SA 3.0 IGO. https://www.who.int/publications/b/81082
+- **Selected practice recommendations for contraceptive use, fourth edition**. Geneva: World Health Organization; 2025. Licence: CC BY-NC-SA 3.0 IGO. https://www.who.int/publications/b/81080
+- **WHO recommendations on antenatal care for a positive pregnancy experience**. Geneva: World Health Organization; 2016. Licence: CC BY-NC-SA 3.0 IGO. https://www.who.int/publications/i/item/9789241549912
+- **WHO recommendations on maternal and newborn care for a positive postnatal experience**. Geneva: World Health Organization; 2022. Licence: CC BY-NC-SA 3.0 IGO. https://www.who.int/publications/i/item/9789240045989
 - **Scaling up postpregnancy family planning: practical guide**. Geneva: World Health Organization; 2025. Licence: CC BY-NC-SA 3.0 IGO. https://www.who.int/publications/i/item/9789240111073
 - **Consolidated HIV guidelines: service delivery**. Geneva: World Health Organization; 2026. Licence: CC BY-NC-SA 3.0 IGO. https://www.who.int/publications/i/item/9789240124233
 

@@ -6,6 +6,7 @@ import { riskSignals } from "./risk";
 import { getBackend, deterministicExtract, llmExtractEnabled, type Backend, type ExtractionResult } from "./gemma";
 import { retrieve, type Retrieved } from "./rag";
 import type { Lang } from "./prompts";
+import type { JourneyIntent } from "../journeys";
 
 type Citation = { source: string; url: string; section?: string; pub_year?: string };
 
@@ -163,6 +164,11 @@ export class Assistant {
       title_bn: g.title_bn ?? "", title_en: g.title_en ?? "",
       summary_bn: g.summary_bn ?? "", summary_en: g.summary_en ?? "",
     }));
+  }
+
+  /** Let Gemma choose a situation-based educational starting point; never a diagnosis or triage decision. */
+  classifyJourney(message: string, lang: Lang = "bn"): Promise<JourneyIntent> {
+    return this.backend.classifyJourney(message, lang);
   }
 
   getGuide(gid: string): any | null {

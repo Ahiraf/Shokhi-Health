@@ -9,6 +9,9 @@ import { useLang } from "@/components/LanguageProvider";
 import { EmojiIcon } from "@/components/Icon";
 import MethodFinder from "@/components/MethodFinder";
 import { pickField } from "@/lib/i18n";
+import GuideJourneyPath from "@/components/GuideJourneyPath";
+import PillHelper from "@/components/PillHelper";
+import { guideJourney } from "@/lib/journeys";
 
 export default function GuideDetailPage() {
   const { t, lang } = useLang();
@@ -49,6 +52,8 @@ export default function GuideDetailPage() {
             {pickField<string>(lang, guide as unknown as Record<string, unknown>, "summary")}
           </p>
 
+          <GuideJourneyPath journey={guideJourney(guide.id) ?? "understand_symptoms"} guideId={guide.id} />
+
           <ul className="mt-6 space-y-3">
             {(pickField<string[]>(lang, guide as unknown as Record<string, unknown>, "points") ?? []).map((p, i) => (
               <li
@@ -82,8 +87,9 @@ export default function GuideDetailPage() {
             </Link>
           </div>
 
-          {/* interactive tool on the contraception guide: a method finder */}
+          {/* interactive tools keep sensitive choices practical, while the written guide stays short */}
           {id === "contraception" && <MethodFinder />}
+          {(id === "contraception" || id === "missed_pill") && <PillHelper />}
 
           <p className="mt-6 text-xs leading-relaxed text-plum/45">{t("common.generalInfoNote")}</p>
         </article>

@@ -9,32 +9,50 @@ import { EmojiIcon } from "@/components/Icon";
 import { useLang } from "@/components/LanguageProvider";
 import { UNIQUE_SOURCE_TOPICS, matchesSourceTopic } from "@/lib/source-topics";
 import Icon from "@/components/Icon";
+import JourneyPicker from "@/components/JourneyPicker";
+import { getJourney, guideJourney, type JourneyKey } from "@/lib/journeys";
 
 export default function GuidesPage() {
   const { t, lang } = useLang();
   const [guides, setGuides] = useState<GuideCard[]>([]);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedJourney, setSelectedJourney] = useState<JourneyKey | null>(null);
 
   useEffect(() => {
     getGuides().then(setGuides).catch(() => setError(true));
   }, []);
 
+  useEffect(() => {
+    const key = new URLSearchParams(window.location.search).get("journey");
+    setSelectedJourney(getJourney(key)?.key ?? null);
+  }, []);
+
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const filteredGuides = useMemo(() => guides.filter((guide) => {
+    if (selectedJourney && guideJourney(guide.id) !== selectedJourney) return false;
     if (!normalizedSearch) return true;
     return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en]
       .filter((value): value is string => Boolean(value))
       .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
-  }), [guides, normalizedSearch]);
+  }), [guides, normalizedSearch, selectedJourney]);
   const filteredSourceTopics = useMemo(
-    () => UNIQUE_SOURCE_TOPICS.filter((topic) => matchesSourceTopic(topic, search)),
-    [search],
+    () => UNIQUE_SOURCE_TOPICS.filter((topic) => {
+      if (selectedJourney && !(
+        (selectedJourney === "pregnant_now" && topic.id === "pregnancy-care") ||
+        (selectedJourney === "after_birth" && topic.id === "after-pregnancy") ||
+        (selectedJourney === "avoid_pregnancy" && topic.id === "family-planning")
+      )) return false;
+      return matchesSourceTopic(topic, search);
+    }),
+    [search, selectedJourney],
   );
 
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
       <PageIntro icon="📚" title={t("guides.title")} sub={t("guides.sub")} variant="guides" side="left" size={165} />
+
+      <JourneyPicker page="guides" selected={selectedJourney as JourneyKey | null} />
 
       <label className="relative mt-8 block">
         <span className="sr-only">{t("guides.searchLabel")}</span>
@@ -49,6 +67,13 @@ export default function GuidesPage() {
 
       {error && (
         <p className="mt-8 text-center text-sm text-plum/50">{t("guides.error")}</p>
+      )}
+
+      {selectedJourney && (
+        <div className="mt-6 flex items-center justify-between rounded-2xl bg-rose-mist/70 px-4 py-3 text-sm text-plum/70 ring-1 ring-rose-soft">
+          <span>{lang === "en" ? `Showing guides for: ${getJourney(selectedJourney)?.title_en}` : `দেখানো হচ্ছে: ${getJourney(selectedJourney)?.title_bn}`}</span>
+          <Link href="/guides" className="font-semibold text-rose">{t("guides.backAll")}</Link>
+        </div>
       )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

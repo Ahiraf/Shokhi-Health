@@ -8,6 +8,8 @@ import PageIntro from "@/components/PageIntro";
 import { useLang } from "@/components/LanguageProvider";
 import type { StringKey } from "@/lib/i18n";
 import Icon from "@/components/Icon";
+import JourneyPicker from "@/components/JourneyPicker";
+import { conditionJourneys, getJourney, type JourneyKey, conditionsForJourney } from "@/lib/journeys";
 
 const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
   emergency: { key: "urgency.emergency.short", cls: "bg-red-100 text-red-700" },
@@ -21,21 +23,30 @@ export default function LearnPage() {
   const [conditions, setConditions] = useState<Condition[]>([]);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedJourney, setSelectedJourney] = useState<JourneyKey | null>(null);
 
   useEffect(() => {
     getKnowledge().then((k) => setConditions(k.conditions)).catch(() => setError(true));
   }, []);
 
+  useEffect(() => {
+    const key = new URLSearchParams(window.location.search).get("journey");
+    setSelectedJourney(getJourney(key)?.key ?? null);
+  }, []);
+
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const filteredConditions = useMemo(() => conditions.filter((condition) => {
+    if (selectedJourney && !conditionsForJourney(condition.id, selectedJourney)) return false;
     if (!normalizedSearch) return true;
-    return [condition.name_bn, condition.name_en, condition.about_bn, condition.about_en]
+    return [condition.name_bn, condition.name_en, condition.about_bn, condition.about_en, ...conditionJourneys(condition.id)]
       .filter((value): value is string => Boolean(value))
       .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
-  }), [conditions, normalizedSearch]);
+  }), [conditions, normalizedSearch, selectedJourney]);
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
+
+      <JourneyPicker page="learn" selected={selectedJourney as JourneyKey | null} />
 
       <label className="relative mt-8 block">
         <span className="sr-only">{t("learn.searchLabel")}</span>
@@ -49,6 +60,13 @@ export default function LearnPage() {
       </label>
 
       {error && <p className="mt-8 text-center text-sm text-plum/50">{t("learn.error")}</p>}
+
+      {selectedJourney && (
+        <div className="mt-6 flex items-center justify-between rounded-2xl bg-rose-mist/70 px-4 py-3 text-sm text-plum/70 ring-1 ring-rose-soft">
+          <span>{lang === "en" ? `Showing topics for: ${getJourney(selectedJourney)?.title_en}` : `দেখানো হচ্ছে: ${getJourney(selectedJourney)?.title_bn}`}</span>
+          <Link href="/learn" className="font-semibold text-rose">{t("learn.backAll")}</Link>
+        </div>
+      )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {filteredConditions.map((c) => {
@@ -75,6 +93,19 @@ export default function LearnPage() {
           );
         })}
       </div>
+
+      {selectedJourney && filteredConditions.length === 0 && (
+        <div className="mt-8 rounded-2xl bg-blush/70 px-5 py-5 text-center">
+          <p className="text-sm leading-relaxed text-plum/75">
+            {lang === "en"
+              ? "This situation is mostly about practical next steps rather than a condition. See the short guides for it."
+              : "এই পরিস্থিতিতে রোগের তালিকার চেয়ে কী করবেন তা জানা বেশি দরকার। ছোট গাইডগুলো দেখুন।"}
+          </p>
+          <Link href={`/guides?journey=${selectedJourney}`} className="mt-3 inline-block rounded-full bg-rose px-5 py-2 text-sm font-semibold text-accentink">
+            {lang === "en" ? "Open the practical guides" : "ব্যবহারিক গাইড দেখুন"}
+          </Link>
+        </div>
+      )}
 
       {normalizedSearch && filteredConditions.length === 0 && (
         <p className="mt-8 text-center text-sm text-plum/50">{t("learn.noResults")}</p>

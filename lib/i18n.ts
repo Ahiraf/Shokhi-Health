@@ -175,6 +175,8 @@ export const STRINGS = {
     en: "Explore more topics grounded in WHO, DGFP, and Bangladesh health guidance.",
   },
   "guides.noResults": { bn: "মিলেছে এমন কোনো গাইড নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching guides found. Try another search." },
+  "guides.startTitle": { bn: "আপনার পরিস্থিতি দিয়ে শুরু করুন", en: "Start with your situation" },
+  "guides.startSub": { bn: "কঠিন রোগের নাম না জানলেও চলবে — আপনার কাছাকাছি বিষয়টি বেছে নিন।", en: "You do not need to know a medical word — choose the situation closest to yours." },
 
   // --- learn ---------------------------------------------------------------
   "learn.title": { bn: "রোগ সম্পর্কে জানুন", en: "Learn about conditions" },
@@ -186,6 +188,8 @@ export const STRINGS = {
   "learn.searchLabel": { bn: "বিষয় খুঁজুন", en: "Search topics" },
   "learn.searchPlaceholder": { bn: "রোগ বা স্বাস্থ্য বিষয় খুঁজুন…", en: "Search a condition or health topic…" },
   "learn.noResults": { bn: "মিলেছে এমন কোনো বিষয় নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching topics found. Try another search." },
+  "learn.startTitle": { bn: "আগে বুঝুন, তারপর খুঁজুন", en: "Start with what is happening" },
+  "learn.startSub": { bn: "আপনার শরীরের কথা বুঝতে কোনো রোগের নাম আগে থেকে জানা দরকার নেই।", en: "You do not need a diagnosis to find a helpful starting point." },
 "learn.backAll": { bn:"সব বিষয়", en:"All topics"},
   "learn.notFound": { bn: "এই বিষয়টি পাওয়া গেল না।", en: "This topic wasn't found." },
 "learn.whatYouCanDo": { bn:"যা করতে পারেন", en:"What you can do"},

@@ -114,8 +114,8 @@ export default function Composer({
 
   async function startRecording() {
     setVoiceError("");
-    // Gemini transcription is the primary Advice voice path. Browser recognition remains a
-    // local fallback for browsers that do not expose MediaRecorder or microphone access.
+    // Browser recognition is the primary Advice voice path. A server transcription bridge is
+    // available only when the deployment explicitly provides a local ASR service.
     if (typeof navigator.mediaDevices?.getUserMedia === "function" && typeof MediaRecorder !== "undefined") {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
