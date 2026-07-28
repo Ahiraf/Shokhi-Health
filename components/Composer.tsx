@@ -114,8 +114,8 @@ export default function Composer({
 
   async function startRecording() {
     setVoiceError("");
-    // Browser recognition is the primary Advice voice path. A server transcription bridge is
-    // available only when the deployment explicitly provides a local ASR service.
+    // Recorded audio is sent only to an explicitly configured local ASR service. If recording
+    // is unavailable, use the browser SpeechRecognition path below.
     if (typeof navigator.mediaDevices?.getUserMedia === "function" && typeof MediaRecorder !== "undefined") {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
