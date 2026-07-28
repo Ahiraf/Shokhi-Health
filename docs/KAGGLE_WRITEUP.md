@@ -197,9 +197,9 @@ the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (
 For open questions about a topic, Shokhi does not answer from memory. It first **retrieves**
 the most relevant passages from a small library of **trusted health documents** (WHO,
 national guidelines), then **Gemma 4 answers using only those passages** and cites the
-source. Retrieval uses **non-generative embeddings** + cosine
-search — both **non-generative**, which the rules permit as support — so **Gemma 4 stays the
-only LLM**. The pipeline is **TypeScript** (RAG is an architecture, not a Python library)
+source. Retrieval uses **Gemini Embedding 2**, a non-generative embedding model that only
+turns documents and queries into numerical vectors. It never writes the answer; **Gemma 4
+stays the only generative LLM**. The pipeline is **TypeScript** (RAG is an architecture, not a Python library)
 inside the one Next.js app. If nothing relevant is
 found it falls back to the knowledge base; **urgency is still decided by rules**, so
 retrieval never affects safety — it only enriches and *cites* answers.

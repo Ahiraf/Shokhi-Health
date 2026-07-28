@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useLang } from "./LanguageProvider";
 import Mascot3D from "./Mascot3D";
 import { JOURNEYS, type JourneyKey } from "@/lib/journeys";
@@ -9,9 +9,11 @@ import { JOURNEYS, type JourneyKey } from "@/lib/journeys";
 export default function JourneyPicker({
   page,
   selected,
+  onSelect,
 }: {
   page: "learn" | "guides";
   selected?: JourneyKey | null;
+  onSelect?: (journey: JourneyKey) => void;
 }) {
   const { lang } = useLang();
   const [message, setMessage] = useState("");
@@ -49,13 +51,19 @@ export default function JourneyPicker({
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-              {en ? "Start with your situation" : "আপনার পরিস্থিতি দিয়ে শুরু করুন"}
+              {page === "learn"
+                ? en ? "Find a health topic" : "স্বাস্থ্য বিষয় খুঁজুন"
+                : en ? "Start with your situation" : "আপনার পরিস্থিতি দিয়ে শুরু করুন"}
             </p>
             <h2 className="mt-1 font-display text-xl font-bold">
-              {en ? "What brings you here today?" : "আজ কী জানতে চান?"}
+              {page === "learn"
+                ? en ? "What would you like to understand?" : "কোন বিষয়টি বুঝতে চান?"
+                : en ? "What brings you here today?" : "আজ কী জানতে চান?"}
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-white/75">
-              {en ? "You do not need to know a medical word. Pick the closest situation." : "কোনো কঠিন রোগের নাম জানা দরকার নেই — আপনার কাছাকাছি বিষয়টি বেছে নিন।"}
+              {page === "learn"
+                ? en ? "Search a word like PCOS, or pick a situation to see the right topics." : "PCOS-এর মতো কোনো শব্দ খুঁজুন, বা আপনার পরিস্থিতি বেছে নিন।"
+                : en ? "You do not need to know a medical word. Pick the closest situation." : "কোনো কঠিন রোগের নাম জানা দরকার নেই — আপনার কাছাকাছি বিষয়টি বেছে নিন।"}
             </p>
           </div>
         </div>
@@ -90,6 +98,8 @@ export default function JourneyPicker({
             <Link
               key={journey.key}
               href={`/${page}?journey=${journey.key}`}
+              onClick={() => onSelect?.(journey.key)}
+              aria-current={active ? "page" : undefined}
               className={`group flex min-h-[5.7rem] items-center gap-2 rounded-2xl px-3 py-2.5 transition hover:-translate-y-0.5 ${
                 active ? "bg-white text-panel-deep shadow-lift" : "bg-white/10 text-white hover:bg-white/18"
               }`}

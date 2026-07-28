@@ -1,7 +1,7 @@
 // Build the RAG corpus: read lib/server/rag/sources/*.md, chunk each document, embed
 // every chunk, and write lib/server/rag/corpus.json.  Run with:  npm run ingest
 //
-// Embedder is chosen automatically: Google gemini-embedding-001 if GOOGLE_API_KEY is set,
+// Embedder is chosen automatically: Google gemini-embedding-2 if GOOGLE_API_KEY is set,
 // otherwise the offline mock embedder (so a fresh clone works with no key). Re-run this
 // (with the key set) and commit corpus.json to get real semantic retrieval on Vercel.
 //

@@ -2,8 +2,8 @@
 // imports the built corpus.json) so the ingest script can use them before the corpus
 // exists. All TypeScript — no Python.
 //
-//   * "google" -> Google's `gemini-embedding-001` EMBEDDING model (same GOOGLE_API_KEY as
-//                 Gemma). NOTE: this is an *embedding* model, not the Gemini chat LLM — it
+//   * "google" -> Google's `gemini-embedding-2` EMBEDDING model (same GOOGLE_API_KEY as
+//                 Gemma). NOTE: this is an *embedding* model, not a generative LLM — it
 //                 only turns text into vectors and generates NO text, so it is a
 //                 rules-allowed non-generative supporting technique. Gemma 4 stays the only
 //                 LLM that generates answers.
@@ -18,7 +18,7 @@ export type Embedder = "google" | "bge-m3" | "mock";
 export const BGE_MODEL = "Xenova/bge-m3";
 
 const EMBED_DIM = 256;
-export const EMBED_MODEL = "gemini-embedding-001";
+export const EMBED_MODEL = "gemini-embedding-2";
 const EMBED_OUTPUT_DIM = 768; // keep vectors compact; cosine handles normalization
 
 // FNV-1a hash -> bucket index.
@@ -63,7 +63,7 @@ export function activeEmbedder(): Embedder {
   return embedKey() ? "google" : "mock";
 }
 
-/** Embed with Google's gemini-embedding-001 EMBEDDING model (non-generative). Throws if no key. */
+/** Embed with Google's Gemini Embedding 2 model (non-generative). Throws if no key. */
 export async function googleEmbed(text: string): Promise<number[]> {
   const key = embedKey();
   if (!key) throw new Error("No GOOGLE_API_KEY for embeddings.");

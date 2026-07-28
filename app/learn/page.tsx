@@ -46,7 +46,7 @@ export default function LearnPage() {
     <main className="mx-auto max-w-4xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
 
-      <JourneyPicker page="learn" selected={selectedJourney as JourneyKey | null} />
+      <JourneyPicker page="learn" selected={selectedJourney} onSelect={setSelectedJourney} />
 
       <label className="relative mt-8 block">
         <span className="sr-only">{t("learn.searchLabel")}</span>

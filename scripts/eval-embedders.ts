@@ -1,13 +1,13 @@
 // Embedder benchmark for Shokhi's RAG — compares retrieval quality of different embedders
 // on a labelled set of Bangla-first health queries, WITHOUT overwriting the live corpus.
 //
-//   EMBEDDER=google  npx tsx scripts/eval-embedders.ts   # gemini-embedding-001 (needs key)
+//   EMBEDDER=google  npx tsx scripts/eval-embedders.ts   # gemini-embedding-2 (needs key)
 //   EMBEDDER=bge-m3  npx tsx scripts/eval-embedders.ts   # BAAI/bge-m3 via transformers.js
 //   EMBEDDER=mock    npx tsx scripts/eval-embedders.ts   # offline lexical baseline
 //
 // It embeds the corpus in memory with the chosen embedder, runs each labelled query, and
 // reports Precision@k and MRR against the expected topic. Use it to decide whether a
-// multilingual embedder (bge-m3) beats gemini-embedding-001 on Bangla — the "#7" question.
+// multilingual embedder (bge-m3) beats gemini-embedding-2 on Bangla — the "#7" question.
 // 100% TypeScript — no Python.
 
 import { readFileSync, readdirSync } from "fs";

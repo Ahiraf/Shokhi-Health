@@ -52,7 +52,7 @@ export default function GuidesPage() {
     <main className="mx-auto max-w-4xl px-5 py-10">
       <PageIntro icon="📚" title={t("guides.title")} sub={t("guides.sub")} variant="guides" side="left" size={165} />
 
-      <JourneyPicker page="guides" selected={selectedJourney as JourneyKey | null} />
+      <JourneyPicker page="guides" selected={selectedJourney} onSelect={setSelectedJourney} />
 
       <label className="relative mt-8 block">
         <span className="sr-only">{t("guides.searchLabel")}</span>

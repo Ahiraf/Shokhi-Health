@@ -70,7 +70,54 @@ Shokhi is built on a **"one Gemma brain, a safety rail underneath"** architectur
   └───────────────────┘
           │
           ▼
-  Bangla guidance (text + optional voice)
+  Bangla guidance (text)
+```
+
+## 🏗️ System architecture
+
+The diagram below shows the complete path from trusted health sources and user input to a
+grounded, safety-checked Gemma 4 response. The embedding model only performs numerical
+retrieval; it never generates the answer.
+
+```mermaid
+flowchart TB
+  subgraph INGEST["Trusted knowledge ingestion"]
+    SOURCES["WHO, DGHS, DGFP, NHS, icddr,b\ncurated Markdown sources"]
+    CHUNK["TypeScript chunking\nmetadata + citations"]
+    EMBED["Gemini Embedding 2\nnon-generative vectors"]
+    CORPUS["lib/server/rag/corpus.json\n31 grounded chunks"]
+    SOURCES --> CHUNK --> EMBED --> CORPUS
+  end
+
+  subgraph APP["Shokhi Next.js application"]
+    USER["User\nBangla text or voice input"]
+    FRONTEND["Web UI\nChat · Learn · Guides · Tracker"]
+    INPUT["Input adapters\ntext · browser speech · local ASR\nreport image upload"]
+    RETRIEVE["RAG retrieval\nquery embedding + cosine search"]
+    SAFETY["Deterministic safety rail\ncrisis checks · red flags · triage"]
+    GEMMA["Gemma 4\nonly generative LLM\nextraction · tools · explanation"]
+    ANSWER["Grounded Bangla guidance\ncitations · next steps · referrals"]
+
+    USER --> FRONTEND --> INPUT
+    INPUT --> SAFETY
+    INPUT --> RETRIEVE
+    RETRIEVE --> GEMMA
+    SAFETY --> GEMMA
+    GEMMA --> ANSWER
+    SAFETY -. "urgency always wins" .-> ANSWER
+  end
+
+  CORPUS --> RETRIEVE
+  RETRIEVE -. "trusted passages" .-> GEMMA
+
+  classDef source fill:#17202b,stroke:#7aa2f7,color:#f4f7fb
+  classDef safety fill:#3a2025,stroke:#f38ba8,color:#fff1f3
+  classDef model fill:#243c34,stroke:#8bd5a8,color:#effff3
+  classDef output fill:#352b1d,stroke:#f6c56b,color:#fff9e9
+  class SOURCES,CHUNK,EMBED,CORPUS source
+  class SAFETY safety
+  class GEMMA model
+  class ANSWER output
 ```
 
 ### What the Gemma 4 upgrade adds
@@ -278,8 +325,8 @@ simple Bangla answer **and shows which source it came from**.
 **How it works here (three steps):**
 
 1. **Retrieve** — the question is turned into a list of numbers (an *embedding*) with
-   Google embedding model, and compared (cosine similarity) against the pre-embedded
-   passages in `lib/server/rag/corpus.json`. The closest few win.
+   Google's **Gemini Embedding 2** model, and compared (cosine similarity) against the
+   pre-embedded passages in `lib/server/rag/corpus.json`. The closest few win.
 2. **Augment** — those passages become the *context* inside the prompt.
 3. **Generate** — **Gemma 4** writes the final answer from that context, and the app appends
    a **📚 Sources** line with links.
@@ -294,9 +341,10 @@ retrieval — so RAG makes the *information* richer without ever affecting safet
 TypeScript equivalent, so the whole pipeline runs in this one Next.js app — **no Python, no
 separate service.**
 
-**Rules compliance.** Browser speech, image understanding, embeddings and vector search are **supporting,
-non-generative** techniques, which the hackathon rules explicitly permit. **Gemma 4 remains
-the only LLM that generates answers**.
+**Rules compliance.** Gemma 4 is the only generative LLM in Shokhi. Gemini Embedding 2 is used
+only as a non-generative numerical representation for retrieval; it cannot write text, answer
+questions, or replace Gemma. Browser speech, image understanding, embeddings and vector search
+are supporting non-generative techniques, which the hackathon rules explicitly permit.
 
 **Build / update the corpus** (100% TypeScript):
 

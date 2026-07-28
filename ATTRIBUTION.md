@@ -9,6 +9,13 @@ information, not a diagnosis**.
 Shokhi is a **free, non-commercial** educational/hackathon project. No organisation's logo
 is used, and no source endorses Shokhi.
 
+## Google Gemini Embedding 2
+
+Gemini Embedding 2 is used only as a **non-generative embedding service** for semantic
+retrieval. It converts source passages and user queries into numerical vectors; it does not
+generate health advice. Gemma 4 remains the only generative LLM in the application.
+Documentation: https://ai.google.dev/gemini-api/docs/models/gemini-embedding-2
+
 ---
 
 ## World Health Organization (WHO)
