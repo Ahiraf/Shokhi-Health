@@ -8,6 +8,7 @@ import * as P from "./prompts";
 import type { Lang } from "./prompts";
 import { detectCriticalLab } from "./personal";
 import { JOURNEY_KEYS, validJourney, type JourneyIntent } from "../journeys";
+import type { PersonalizationContext } from "../personalization";
 
 type Profile = Record<string, unknown>;
 
@@ -33,7 +34,7 @@ export interface Backend {
   name: string;
   extractSymptoms(conversation: string, known: Profile): Promise<ExtractionResult>;
   classifyJourney(message: string, lang: Lang): Promise<JourneyIntent>;
-  explainTriage(triage: any, lang: Lang): Promise<string>;
+  explainTriage(triage: any, lang: Lang, personalization?: PersonalizationContext): Promise<string>;
   bustMyth(belief: string, fact: string, lang: Lang): Promise<string>;
   explainGuide(guide: any, question: string, lang: Lang): Promise<string>;
   /** RAG: answer a question grounded ONLY in the retrieved context passages. */
@@ -41,7 +42,7 @@ export interface Backend {
   /** Escalate-only safety net: does this message look like an emergency? Never downgrades. */
   safetyCheck(message: string): Promise<SafetyResult>;
   /** Streaming variant of explainTriage — yields the guidance in chunks for a live feel. */
-  explainTriageStream(triage: any, lang: Lang): AsyncGenerator<string>;
+  explainTriageStream(triage: any, lang: Lang, personalization?: PersonalizationContext): AsyncGenerator<string>;
   /** Generic on-demand generation for personalised features (notes, explanations, etc.). */
   composeStream(system: string, user: string, lang: Lang, fallback: string): AsyncGenerator<string>;
   /** Read and explain a medical report image using Gemma's multimodal input. */
@@ -220,7 +221,7 @@ class MockBackend implements Backend {
     };
   }
 
-  async explainTriage(tr: any, lang: Lang): Promise<string> {
+  async explainTriage(tr: any, lang: Lang, personalization: PersonalizationContext = {}): Promise<string> {
     const t = T[lang] ?? T.bn;
     const f = (o: any, base: string) => pickField(o, base, lang);
     const urgency = tr.urgency ?? "info";
@@ -250,6 +251,14 @@ class MockBackend implements Backend {
     if (signals.length) {
       lines.push(t.risk);
       for (const s of signals) lines.push(t.riskLine(f(s, "name"), Math.round(s.probability * 100)));
+    }
+    const cycle = personalization.cycle;
+    if (urgency !== "emergency" && cycle) {
+      const notes: string[] = [];
+      if (cycle.regular === false) notes.push(lang === "en" ? "Your tracker shows that your periods may not be regular. Keep logging and discuss the pattern with a health worker if it continues." : "আপনার ট্র্যাকার বলছে মাসিকের সময়ে অনিয়ম থাকতে পারে। লগ করতে থাকুন; এটি চলতে থাকলে স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।");
+      if ((cycle.recentPain ?? 0) >= 2) notes.push(lang === "en" ? "You recently logged moderate or strong pain. If it keeps affecting daily life, please ask a health worker for advice." : "আপনি সম্প্রতি মাঝারি বা বেশি ব্যথা লিখেছেন। দৈনন্দিন কাজে প্রভাব পড়লে স্বাস্থ্যকর্মীর পরামর্শ নিন।");
+      if (cycle.recentHeavyBleeding) notes.push(lang === "en" ? "You recently logged heavy flow. If bleeding becomes very heavy, you feel faint, or you are worried, seek care promptly." : "আপনি সম্প্রতি বেশি রক্তপাতের কথা লিখেছেন। রক্তপাত খুব বেড়ে গেলে, মাথা ঘুরলে বা দুশ্চিন্তা হলে দ্রুত চিকিৎসা নিন।");
+      if (notes.length) lines.push(`\n📌 ${lang === "en" ? "From your private tracker:" : "আপনার ব্যক্তিগত ট্র্যাকার থেকে:"}\n${notes.join("\n")}`);
     }
     if (tr.health_hotline_bd) lines.push(t.hotline(tr.health_hotline_bd));
     const disclaimer = f(tr, "disclaimer");
@@ -302,8 +311,8 @@ class MockBackend implements Backend {
 
   // Mock "streaming": yield the deterministic guidance in line-sized pieces so the client
   // stream path works offline. The GeminiBackend streams real Gemma tokens.
-  async *explainTriageStream(tr: any, lang: Lang): AsyncGenerator<string> {
-    const full = await this.explainTriage(tr, lang);
+  async *explainTriageStream(tr: any, lang: Lang, personalization?: PersonalizationContext): AsyncGenerator<string> {
+    const full = await this.explainTriage(tr, lang, personalization);
     for (const line of full.split("\n")) yield line + "\n";
   }
 
@@ -725,15 +734,15 @@ class GeminiBackend implements Backend {
     return normaliseJourney(raw.functionCalls?.[0]?.args ?? parseJson(raw.text ?? ""));
   }
 
-  explainTriage(tr: any, lang: Lang) {
+  explainTriage(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
     const system = P.withLanguage(P.EXPLAIN_SYSTEM, lang);
-    const user = P.explainUser(JSON.stringify(tr));
+    const user = P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization));
     const kind = tr.urgency === "emergency" || tr.urgency === "see_doctor_soon" ? "ambiguous" : "routine";
     return this.generateWithSafeTools(system, user, 0.4, kind);
   }
-  explainTriageStream(tr: any, lang: Lang) {
+  explainTriageStream(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
     const ambiguous = tr.urgency === "emergency" || (tr.outstanding_questions && Object.keys(tr.outstanding_questions).length > 0);
-    return this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr)), 0.4, ambiguous ? "ambiguous" : "routine");
+    return this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization)), 0.4, ambiguous ? "ambiguous" : "routine");
   }
   composeStream(system: string, user: string, lang: Lang, _fallback: string) {
     return this.generateStream(P.withLanguage(system, lang), user, 0.5);
@@ -839,9 +848,9 @@ class LocalGemmaBackend implements Backend {
     }
   }
 
-  async explainTriage(tr: any, lang: Lang): Promise<string> {
-    try { return await this.chat(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUser(JSON.stringify(tr))); }
-    catch { return this.fallback.explainTriage(tr, lang); }
+  async explainTriage(tr: any, lang: Lang, personalization: PersonalizationContext = {}): Promise<string> {
+    try { return await this.chat(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization))); }
+    catch { return this.fallback.explainTriage(tr, lang, personalization); }
   }
 
   async bustMyth(belief: string, fact: string, lang: Lang): Promise<string> {
@@ -866,8 +875,8 @@ class LocalGemmaBackend implements Backend {
     } catch { return this.fallback.safetyCheck(message); }
   }
 
-  async *explainTriageStream(tr: any, lang: Lang): AsyncGenerator<string> {
-    const full = await this.explainTriage(tr, lang);
+  async *explainTriageStream(tr: any, lang: Lang, personalization?: PersonalizationContext): AsyncGenerator<string> {
+    const full = await this.explainTriage(tr, lang, personalization);
     for (const line of full.split("\n")) yield line + "\n";
   }
 

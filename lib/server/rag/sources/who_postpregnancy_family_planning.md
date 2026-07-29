@@ -4,6 +4,7 @@ source: WHO — Scaling up postpregnancy family planning: practical guide (2025)
 url: https://www.who.int/publications/i/item/9789240111073
 license: © WHO 2025, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## What postpregnancy family planning means

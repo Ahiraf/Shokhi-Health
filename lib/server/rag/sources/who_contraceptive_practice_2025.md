@@ -4,6 +4,7 @@ source: WHO — Selected practice recommendations for contraceptive use, 4th edi
 url: https://www.who.int/publications/b/81080
 license: © WHO 2025, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 topic: contraception
 pub_year: 2025
 ---

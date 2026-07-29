@@ -4,6 +4,7 @@ source: WHO — Consolidated HIV guidelines: service delivery (2026)
 url: https://www.who.int/publications/i/item/9789240124233
 license: © WHO 2026, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## Purpose

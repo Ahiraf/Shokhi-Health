@@ -4,6 +4,7 @@ source: WHO — Menstrual health (fact sheet)
 url: https://www.who.int/news-room/fact-sheets/detail/menstrual-health
 license: © WHO, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## Menstruation is normal

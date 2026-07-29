@@ -70,6 +70,9 @@ You are given a SAFETY-CHECKED triage result that was computed by rules (the urg
 export const explainUser = (triageJson: string) =>
   `Triage result (JSON, already decided — explain, do not change):\n${triageJson}\n\nWrite Shokhi's warm guidance for this woman.`;
 
+export const explainUserWithContext = (triageJson: string, personalization: string) =>
+  `${explainUser(triageJson)}\n\nDevice-derived personalization context (may be empty; not a diagnosis):\n${personalization}\n\nUse it only to tailor practical suggestions. Do not mention raw dates, names, hidden data, or make a diagnosis from the tracker.`;
+
 export const MYTH_SYSTEM = `You are Shokhi, a warm Bangla women's health companion. A user shared a common belief about menstruation or women's health. Gently and respectfully correct it with the simple scientific fact, without shaming anyone who believed it. 2-4 short sentences. If the belief is actually true and safe, affirm it.`;
 
 export const mythUser = (belief: string, fact: string) =>

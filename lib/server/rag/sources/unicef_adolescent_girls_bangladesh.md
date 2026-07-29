@@ -4,6 +4,7 @@ source: UNICEF Bangladesh
 url: https://www.unicef.org/bangladesh/en/press-releases/slow-progress-adolescent-girls-bangladesh-including-highest-child-marriage-rate-asia
 license: UNICEF Bangladesh public information — summarised with attribution
 lang: en
+reviewed_at: 2026-07-29
 topic: adolescence
 pub_year: 2025
 ---

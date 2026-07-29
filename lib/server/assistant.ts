@@ -7,6 +7,7 @@ import { getBackend, deterministicExtract, llmExtractEnabled, type Backend, type
 import { retrieve, type Retrieved } from "./rag";
 import type { Lang } from "./prompts";
 import type { JourneyIntent } from "../journeys";
+import type { PersonalizationContext } from "../personalization";
 
 type Citation = { source: string; url: string; section?: string; pub_year?: string };
 
@@ -113,11 +114,13 @@ export class Assistant {
   history: string[];
   backend: Backend;
   extraction: ExtractionResult;
+  personalization: PersonalizationContext;
 
-  constructor(profile: Profile = {}, history: string[] = []) {
+  constructor(profile: Profile = {}, history: string[] = [], personalization: PersonalizationContext = {}) {
     this.profile = { ...profile };
     this.history = [...history];
     this.backend = getBackend();
+    this.personalization = personalization;
     this.extraction = { profile: {}, evidence: [], uncertain_fields: [], method: "deterministic" };
   }
 
@@ -143,13 +146,13 @@ export class Assistant {
     const signals = riskSignals(this.profile);
     if (signals.length) result.risk_signals = signals;
     // life stage lets Gemma tailor tone/advice to where she is in life (context, not a rule)
-    const stage = lifeStageOf(this.profile);
+    const stage = lifeStageOf(this.profile) || this.personalization.profile?.lifeStage || "";
     if (stage) result.life_stage = stage;
     return result;
   }
 
   explain(lang: Lang = "bn"): Promise<string> {
-    return this.backend.explainTriage(this.triage(), lang);
+    return this.backend.explainTriage(this.triage(), lang, this.personalization);
   }
 
   nextQuestion(): string | null {
@@ -204,8 +207,13 @@ export class Assistant {
     // improve recall). If anything is found, Gemma answers grounded ONLY in that context
     // and we cite the sources. Otherwise we fall back to the static knowledge-base guide.
     const query = [topic, g?.title_en, g?.title_bn, g?.summary_en].filter(Boolean).join(" ");
-    const stage = lifeStageOf(this.profile);
-    const hits = await retrieve(query, 4, { boostTopic: topicForStage(stage) });
+    const stage = lifeStageOf(this.profile) || this.personalization.profile?.lifeStage || "";
+    const hits = await retrieve(query, 4, {
+      boostTopic: topicForStage(stage),
+      lifeStage: stage || undefined,
+      audience: stage || undefined,
+      language: lang,
+    });
     if (!g && !hits.length) return null;
 
     const guideMeta = g
@@ -215,7 +223,9 @@ export class Assistant {
     if (hits.length) {
       const context = hits.map((h, i) => `[${i + 1}] (${h.source})\n${h.text}`).join("\n\n");
       // give Gemma the life-stage as context so the same topic is answered stage-appropriately
-      const question = stage ? `${topic}\n(Reader's life stage: ${stage}.)` : topic;
+      const cycle = this.personalization.cycle;
+      const tracker = cycle ? `\n(Private tracker context: regular=${cycle.regular ?? "unknown"}, recent pain=${cycle.recentPain ?? "unknown"}.)` : "";
+      const question = stage ? `${topic}\n(Reader's life stage: ${stage}.)${tracker}` : `${topic}${tracker}`;
       const answer = await this.backend.answerGrounded(question, context, lang);
       return {
         guide: guideMeta,

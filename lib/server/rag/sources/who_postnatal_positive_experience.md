@@ -4,6 +4,7 @@ source: WHO — WHO recommendations on maternal and newborn care for a positive 
 url: https://www.who.int/publications/i/item/9789240045989
 license: © WHO 2022, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 topic: pregnancy
 pub_year: 2022
 ---

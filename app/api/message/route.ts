@@ -8,6 +8,7 @@ import {
   readHistory,
   readJson,
   readLanguage,
+  readPersonalization,
   readProfile,
   readText,
 } from "@/lib/server/request";
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const a = new Assistant(readProfile(body.profile), readHistory(body.history));
+    const a = new Assistant(readProfile(body.profile), readHistory(body.history), readPersonalization(body.personalization));
 
     // Run the (independent) LLM safety net CONCURRENTLY with symptom extraction so it adds
     // no extra latency — both only need the raw message. Deterministic triage still decides
@@ -54,7 +55,7 @@ export async function POST(req: Request) {
       profile: a.profile,
       extraction: a.extraction,
       triage: result,
-      guidance: await a.backend.explainTriage(result, lang),
+      guidance: await a.backend.explainTriage(result, lang, a.personalization),
       next_question: a.nextQuestion(),
       is_emergency: result.urgency === "emergency",
       backend: a.backend.name,

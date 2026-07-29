@@ -11,11 +11,13 @@ import Mascot3D from "@/components/Mascot3D";
 import LogoMark from "@/components/LogoMark";
 import { useLang } from "@/components/LanguageProvider";
 import { loadProfile, toChatProfile } from "@/lib/profile";
+import { buildPersonalizationContext } from "@/lib/personalization";
 
 export default function ChatPage() {
   const { t, lang } = useLang();
   const [chat, setChat] = useState<ChatItem[]>([]);
   const [profile, setProfile] = useState<Record<string, unknown>>({});
+  const [personalization, setPersonalization] = useState(buildPersonalizationContext({}));
   const [history, setHistory] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [name, setName] = useState("");
@@ -25,6 +27,7 @@ export default function ChatPage() {
   useEffect(() => {
     const saved = loadProfile();
     setProfile(toChatProfile(saved));
+    setPersonalization(buildPersonalizationContext(saved));
     if (saved.name) setName(saved.name);
   }, []);
 
@@ -44,7 +47,7 @@ export default function ChatPage() {
       // Stream the reply so it appears live. Append a placeholder assistant bubble, then
       // grow its text as tokens arrive and attach the triage payload from the meta event.
       setChat((c) => [...c, { role: "assistant", text: "" }]);
-      await sendMessageStream(text, profile, history, lang, {
+      await sendMessageStream(text, profile, history, lang, personalization, {
         onMeta: (m) => {
           streamStarted = true;
           setProfile(m.profile);
@@ -75,7 +78,7 @@ export default function ChatPage() {
         return;
       }
       try {
-        const res = await sendMessage(text, profile, history, lang);
+        const res = await sendMessage(text, profile, history, lang, personalization);
         setProfile(res.profile);
         setChat((c) => {
           const next = [...c];
@@ -97,7 +100,7 @@ export default function ChatPage() {
   async function handleGuide(topic: string) {
     setBusy(true);
     try {
-      const res = await explainGuide(topic, lang);
+      const res = await explainGuide(topic, lang, profile, personalization);
       const title = lang === "en" ? res.guide.title_en || res.guide.title_bn : res.guide.title_bn;
       setChat((c) => [
         ...c,
@@ -114,7 +117,7 @@ export default function ChatPage() {
   async function handleVoiceBridge(blob: Blob) {
     setBusy(true);
     try {
-      const res = await voiceBridge(blob, lang, profile, history);
+      const res = await voiceBridge(blob, lang, profile, history, personalization);
       setProfile(res.profile);
       setHistory((h) => [...h, res.transcript]);
       setChat((c) => [...c, { role: "user", text: res.transcript }, { role: "assistant", text: res.guidance, data: res }]);

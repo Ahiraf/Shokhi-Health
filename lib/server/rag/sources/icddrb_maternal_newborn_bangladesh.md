@@ -4,6 +4,7 @@ source: icddr,b — Maternal and neonatal health research
 url: https://www.icddrb.org/research/research-themes/maternal-and-neonatal-health/impact
 license: © icddr,b — cite the source
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## Preventing bleeding after birth

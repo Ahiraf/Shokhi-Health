@@ -4,6 +4,7 @@ source: NHS — Menopause and perimenopause
 url: https://www.nhs.uk/conditions/menopause/
 license: © Crown copyright / NHS, Open Government Licence v3.0
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## What menopause and perimenopause are

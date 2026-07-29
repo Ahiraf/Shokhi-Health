@@ -4,6 +4,7 @@ source: UNICEF Bangladesh
 url: https://www.unicef.org/bangladesh/en/water-sanitation-and-hygiene
 license: UNICEF Bangladesh public information — summarised with attribution
 lang: en
+reviewed_at: 2026-07-29
 topic: wash
 pub_year: 2025
 ---

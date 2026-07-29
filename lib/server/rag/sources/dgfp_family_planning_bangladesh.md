@@ -4,6 +4,7 @@ source: DGFP — Directorate General of Family Planning, Bangladesh
 url: https://dgfp.gov.bd
 license: Government of Bangladesh — public information
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## Free services, close to home

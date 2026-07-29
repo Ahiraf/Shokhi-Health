@@ -4,6 +4,7 @@ source: UNICEF Bangladesh
 url: https://www.unicef.org/bangladesh/en/reports/integrated-community-based-child-protection-system-bangladesh
 license: UNICEF Bangladesh public information — summarised with attribution
 lang: en
+reviewed_at: 2026-07-29
 topic: protection
 pub_year: 2025
 ---

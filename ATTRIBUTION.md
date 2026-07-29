@@ -98,6 +98,8 @@ Sources:
 - **Education** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/education
 - **Services mapping for children with disabilities in Bangladesh** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/reports/services-mapping-children-disabilities-bangladesh
 - **Improving students' mental health in Bangladesh** — UNICEF. https://www.unicef.org/documents/improving-students-mental-health-bangladesh
+- **Services, protection, participation, and inclusion** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/what-we-do
+- **Health, nutrition, WASH, menstrual dignity, and climate resilience** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/what-we-do
 
 These are public-information summaries and adaptations for a non-commercial educational
 project. They are not a substitute for professional care, and no UNICEF logo or branding is

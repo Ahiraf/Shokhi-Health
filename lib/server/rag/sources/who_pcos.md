@@ -4,6 +4,7 @@ source: WHO — Polycystic ovary syndrome (fact sheet)
 url: https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome
 license: © WHO, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## What PCOS is

@@ -17,6 +17,7 @@
 
 import corpusJson from "./rag/corpus.json";
 import { embed, type Embedder } from "./rag-embed";
+import { expandedSearchTerms, textHasSearchGroup } from "./rag-lexicon";
 
 export type Chunk = {
   id: string;
@@ -28,6 +29,10 @@ export type Chunk = {
   topic?: string;
   pub_year?: string;
   page?: string;
+  audience?: string[];
+  life_stage?: string[];
+  language?: string;
+  reviewed_at?: string;
   embedding: number[];
 };
 
@@ -42,7 +47,13 @@ export type Retrieved = {
   topic?: string;
   pub_year?: string;
   page?: string;
+  audience?: string[];
+  life_stage?: string[];
+  language?: string;
+  reviewed_at?: string;
   score: number;
+  semantic_score?: number;
+  keyword_score?: number;
 };
 
 export interface RetrieveOptions {
@@ -50,6 +61,18 @@ export interface RetrieveOptions {
   minScore?: number;
   /** Topic to gently prefer (e.g. the user's life-stage/triage topic). Ordering only. */
   boostTopic?: string;
+  /** Restrict to a topic or list of topics when the caller has a clear intent. */
+  topic?: string | string[];
+  /** Prefer/filter intended reader groups. General chunks without metadata remain eligible. */
+  audience?: string | string[];
+  /** Prefer/filter life-stage material. General chunks without metadata remain eligible. */
+  lifeStage?: string | string[];
+  /** ISO language code; chunks without language metadata remain eligible. */
+  language?: string;
+  /** Minimum lexical evidence when using a semantic corpus. */
+  minKeywordScore?: number;
+  /** Maximum number of returned chunks from one source URL. */
+  maxPerSource?: number;
 }
 
 const corpus = corpusJson as unknown as Corpus;
@@ -75,12 +98,30 @@ function dot(a: Float32Array, b: number[]): number {
 }
 
 /** Keyword-overlap fallback when a semantic corpus is served without an embedding key. */
-function keywordScore(query: string, chunk: Chunk): number {
-  const q = new Set(query.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2));
+export function keywordScore(query: string, chunk: Chunk): number {
+  const q = expandedSearchTerms(query);
   if (!q.size) return 0;
+  const text = chunk.text.toLocaleLowerCase();
   let hits = 0;
-  for (const w of chunk.text.toLowerCase().split(/[^\p{L}\p{N}]+/u)) if (q.has(w)) hits++;
-  return hits / q.size;
+  for (const w of q) {
+    if (w.length > 2 && text.split(/[^\p{L}\p{N}]+/u).includes(w)) hits++;
+    else if (textHasSearchGroup(text, w)) hits++;
+  }
+  return Math.min(1, hits / q.size);
+}
+
+const asList = (value?: string | string[]) =>
+  (Array.isArray(value) ? value : value ? [value] : []).map((item) => item.toLocaleLowerCase());
+
+function metadataMatches(chunk: Chunk, opts: RetrieveOptions): boolean {
+  const matches = (wanted: string[], actual?: string[]) =>
+    !wanted.length || !actual?.length || wanted.some((item) => actual.map((v) => v.toLocaleLowerCase()).includes(item));
+  const topics = asList(opts.topic);
+  if (topics.length && chunk.topic && !topics.includes(chunk.topic.toLocaleLowerCase())) return false;
+  if (!matches(asList(opts.audience), chunk.audience)) return false;
+  if (!matches(asList(opts.lifeStage), chunk.life_stage)) return false;
+  if (opts.language && chunk.language && chunk.language.toLocaleLowerCase() !== opts.language.toLocaleLowerCase()) return false;
+  return true;
 }
 
 export function corpusInfo() {
@@ -89,6 +130,7 @@ export function corpusInfo() {
     model: corpus.model,
     chunks: corpus.chunks?.length ?? 0,
     topics: Array.from(new Set((corpus.chunks ?? []).map((c) => c.topic).filter(Boolean))),
+    sources_missing_review: Array.from(new Set((corpus.chunks ?? []).filter((c) => !c.reviewed_at).map((c) => c.source).filter(Boolean))),
   };
 }
 
@@ -100,35 +142,52 @@ export function corpusInfo() {
  * push an irrelevant chunk over the bar, so "no false grounding" still holds.
  */
 export async function retrieve(query: string, k = 4, opts: RetrieveOptions = {}): Promise<Retrieved[]> {
-  const { minScore = 0.15, boostTopic } = opts;
-  const chunks = corpus.chunks ?? [];
+  const { minScore = 0.15, boostTopic, minKeywordScore = 0, maxPerSource = 2 } = opts;
+  const chunks = (corpus.chunks ?? []).filter((chunk) => metadataMatches(chunk, opts));
   if (!chunks.length || !query.trim()) return [];
 
-  let base: number[];
+  let semantic: number[] = chunks.map(() => 0);
+  let semanticAvailable = corpus.embedder !== "mock";
   // The offline lexical corpus is intentionally conservative: keyword overlap avoids
   // vector-hash collisions turning gibberish into apparently grounded health advice.
-  if (corpus.embedder === "mock") {
-    base = chunks.map((c) => keywordScore(query, c));
-  } else {
+  if (semanticAvailable) {
     try {
       const qv = normalize(await embed(query, corpus.embedder));
-      base = NORMS.map((cv) => dot(cv, Array.from(qv)));
+      const indexByChunk = new Map((corpus.chunks ?? []).map((chunk, index) => [chunk.id, index]));
+      semantic = chunks.map((chunk) => dot(NORMS[indexByChunk.get(chunk.id) ?? 0], Array.from(qv)));
     } catch {
-      base = chunks.map((c) => keywordScore(query, c));
+      semanticAvailable = false;
     }
   }
 
-  const TOPIC_BOOST = 0.05; // small nudge; ordering only
-  return chunks
-    .map((c, i) => ({ c, score: base[i] }))
-    .filter((s) => s.score >= minScore)
-    .map((s) => ({
-      ...s,
-      ranked: boostTopic && s.c.topic === boostTopic ? s.score + TOPIC_BOOST : s.score,
-    }))
-    .sort((a, b) => b.ranked - a.ranked)
-    .slice(0, k)
-    .map(({ c, score }) => ({
+  const candidates = chunks.map((c, i) => {
+    const lexical = keywordScore(query, c);
+    const semanticScore = Math.max(0, semantic[i] ?? 0);
+    // Hybrid retrieval gives exact Bangla wording a fair chance while preserving the
+    // semantic recall of real embeddings. Mock corpora intentionally stay lexical.
+    const score = semanticAvailable ? semanticScore * 0.72 + lexical * 0.28 : lexical;
+    const topicBoost = boostTopic && c.topic === boostTopic ? 0.04 : 0;
+    return { c, score, semanticScore, lexical, ranked: score + topicBoost };
+  })
+    .filter((item) => item.score >= minScore)
+    .filter((item) => item.lexical >= minKeywordScore || item.semanticScore >= minScore)
+    .sort((a, b) => b.ranked - a.ranked);
+
+  const selected: typeof candidates = [];
+  const seenText = new Set<string>();
+  const sourceCounts = new Map<string, number>();
+  for (const candidate of candidates) {
+    const textKey = candidate.c.text.trim().toLocaleLowerCase();
+    if (!textKey || seenText.has(textKey)) continue;
+    const sourceKey = candidate.c.url || candidate.c.source || candidate.c.id;
+    if ((sourceCounts.get(sourceKey) ?? 0) >= maxPerSource) continue;
+    selected.push(candidate);
+    seenText.add(textKey);
+    sourceCounts.set(sourceKey, (sourceCounts.get(sourceKey) ?? 0) + 1);
+    if (selected.length >= k) break;
+  }
+
+  return selected.map(({ c, score, semanticScore, lexical }) => ({
       text: c.text,
       title: c.title,
       source: c.source,
@@ -137,6 +196,12 @@ export async function retrieve(query: string, k = 4, opts: RetrieveOptions = {})
       topic: c.topic || undefined,
       pub_year: c.pub_year || undefined,
       page: c.page || undefined,
+      audience: c.audience?.length ? c.audience : undefined,
+      life_stage: c.life_stage?.length ? c.life_stage : undefined,
+      language: c.language || undefined,
+      reviewed_at: c.reviewed_at || undefined,
       score: Math.round(score * 1000) / 1000,
+      semantic_score: semanticAvailable ? Math.round(semanticScore * 1000) / 1000 : undefined,
+      keyword_score: Math.round(lexical * 1000) / 1000,
     }));
 }

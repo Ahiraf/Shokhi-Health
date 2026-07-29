@@ -4,6 +4,7 @@ source: WHO — WHO recommendations on antenatal care for a positive pregnancy e
 url: https://www.who.int/publications/i/item/9789241549912
 license: © WHO 2016, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 topic: pregnancy
 pub_year: 2016
 ---

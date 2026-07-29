@@ -99,7 +99,7 @@ flowchart TB
     SOURCES["WHO, DGHS, DGFP, NHS, icddr,b\ncurated Markdown sources"]
     CHUNK["TypeScript chunking\nmetadata + citations"]
     EMBED["Gemini Embedding 2\nnon-generative vectors"]
-    CORPUS["lib/server/rag/corpus.json\n31 grounded chunks"]
+    CORPUS["lib/server/rag/corpus.json\n72 grounded chunks"]
     SOURCES --> CHUNK --> EMBED --> CORPUS
   end
 
@@ -342,8 +342,10 @@ simple Bangla answer **and shows which source it came from**.
 **How it works here (three steps):**
 
 1. **Retrieve** — the question is turned into a list of numbers (an *embedding*) with
-   Google's **Gemini Embedding 2** model, and compared (cosine similarity) against the
-   pre-embedded passages in `lib/server/rag/corpus.json`. The closest few win.
+   Google's **Gemini Embedding 2** model, and compared against the pre-embedded passages in
+   `lib/server/rag/corpus.json`. The search also recognises common Bangla/English wording,
+   blends semantic and lexical scores, filters by safe metadata, and diversifies results
+   across sources. The closest few win.
 2. **Augment** — those passages become the *context* inside the prompt.
 3. **Generate** — **Gemma 4** writes the final answer from that context, and the app appends
    a **📚 Sources** line with links.
@@ -369,8 +371,13 @@ are supporting non-generative techniques, which the hackathon rules explicitly p
 npm run ingest     # reads lib/server/rag/sources/*.md → chunks → embeds → corpus.json
 ```
 
-With `GOOGLE_API_KEY` set it uses hosted embeddings; with no key it uses a small
-offline embedder so a fresh clone still works.
+With `GOOGLE_API_KEY` set it uses hosted embeddings; with no key it uses a conservative
+offline lexical embedder so a fresh clone still works. For a production rebuild, set
+`REQUIRE_SEMANTIC_EMBEDDINGS=1` so ingestion refuses to create a mock corpus.
+
+The corpus is intentionally expanded with reviewed, source-backed passages rather than
+repeating generic text. `tests/retrieval-eval.test.ts` keeps Bangla synonyms, topic recall,
+source diversity, and the no-false-grounding threshold under regression coverage.
 
 ### 📚 Data sources in the RAG corpus (references for judging)
 
@@ -402,6 +409,8 @@ in the file's frontmatter. Current documents:
 | Education | UNICEF Bangladesh — inclusive education and adolescent skills | https://www.unicef.org/bangladesh/en/education | UNICEF public information, summarised with attribution |
 | Disability inclusion | UNICEF Bangladesh — services mapping for children with disabilities | https://www.unicef.org/bangladesh/en/reports/services-mapping-children-disabilities-bangladesh | UNICEF public information, summarised with attribution |
 | Mental wellbeing | UNICEF — improving students' mental health in Bangladesh | https://www.unicef.org/documents/improving-students-mental-health-bangladesh | UNICEF public information, summarised with attribution |
+| Protection, participation, and services | UNICEF Bangladesh — services, child protection, education, disability, and adolescent participation | https://www.unicef.org/bangladesh/en/what-we-do | UNICEF public information, summarised with attribution |
+| Health, WASH, nutrition, and climate resilience | UNICEF Bangladesh — health, nutrition, water, hygiene, menstrual dignity, and disaster resilience | https://www.unicef.org/bangladesh/en/what-we-do | UNICEF public information, summarised with attribution |
 
 **Authoritative source hubs** used / recommended for expanding the corpus:
 

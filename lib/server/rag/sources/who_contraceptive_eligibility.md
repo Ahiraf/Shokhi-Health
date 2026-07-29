@@ -4,6 +4,7 @@ source: WHO — Medical eligibility criteria for contraceptive use, 6th edition 
 url: https://www.who.int/publications/b/81082
 license: © WHO 2025, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## What this guidance is

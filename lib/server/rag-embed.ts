@@ -116,8 +116,8 @@ export async function embed(text: string, embedder: Embedder): Promise<number[]>
   return mockEmbed(text);
 }
 
-/** Split a document into ~word-bounded chunks along blank lines / headings. */
-export function chunkText(body: string, targetWords = 130): string[] {
+/** Split a document into small, self-contained passages along blank lines / headings. */
+export function chunkText(body: string, targetWords = 85): string[] {
   return chunkWithHeadings(body, targetWords).map((c) => c.text);
 }
 
@@ -128,7 +128,7 @@ export type Section = { text: string; section: string };
  * chunk and returns it as `section` — so every citation can name the exact section it
  * came from (e.g. "PCOS › Common signs"), the way Maya cites section_title.
  */
-export function chunkWithHeadings(body: string, targetWords = 130): Section[] {
+export function chunkWithHeadings(body: string, targetWords = 85): Section[] {
   const rawBlocks = body.split(/\n\s*\n/);
   const chunks: Section[] = [];
   let cur: string[] = [];
@@ -145,14 +145,18 @@ export function chunkWithHeadings(body: string, targetWords = 130): Section[] {
   };
 
   for (const raw of rawBlocks) {
-    const headingMatch = raw.match(/^#+\s*(.+?)\s*$/m);
-    const block = raw.replace(/^#+\s*/gm, "").trim();
-    if (!block) continue;
-    // a block that is only a heading updates the current section without adding words
-    if (headingMatch && /^#+\s/.test(raw.trim()) && raw.trim().split("\n").length === 1) {
-      curHeading = headingMatch[1].trim();
+    const trimmed = raw.trim();
+    const headingOnly = trimmed.match(/^#+\s*(.+?)\s*$/);
+    if (headingOnly) {
+      curHeading = headingOnly[1].trim();
       continue;
     }
+    const headingMatch = trimmed.match(/^#+\s*(.+?)\s*\n/);
+    if (headingMatch) curHeading = headingMatch[1].trim();
+    const block = headingMatch
+      ? trimmed.slice(headingMatch[0].length).trim()
+      : trimmed;
+    if (!block) continue;
     const w = block.split(/\s+/).length;
     if (count && count + w > targetWords) flush();
     if (!cur.length) chunkHeading = curHeading; // section = heading in force when chunk started

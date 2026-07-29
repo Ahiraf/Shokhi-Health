@@ -38,12 +38,19 @@ type Meta = {
   topic: string;
   pub_year: string;
   page: string;
+  audience: string;
+  life_stage: string;
+  reviewed_at: string;
 };
+
+function listMeta(value: string): string[] {
+  return value.split(",").map((item) => item.trim()).filter(Boolean);
+}
 
 /** Parse a very small `--- key: value ---` frontmatter header. */
 function parseDoc(raw: string): { meta: Meta; body: string } {
   const m = raw.match(/^---\s*([\s\S]*?)\n---\s*\n([\s\S]*)$/);
-  const meta: Meta = { title: "", source: "", url: "", lang: "en", topic: "", pub_year: "", page: "" };
+  const meta: Meta = { title: "", source: "", url: "", lang: "en", topic: "", pub_year: "", page: "", audience: "", life_stage: "", reviewed_at: "" };
   if (!m) return { meta, body: raw };
   for (const line of m[1].split("\n")) {
     const kv = line.match(/^(\w+):\s*(.*)$/);
@@ -71,6 +78,9 @@ async function main() {
   // EMBEDDER=google|bge-m3|mock overrides auto-detection (used by the embedder benchmark).
   const override = process.env.EMBEDDER as Embedder | undefined;
   const embedder: Embedder = override ?? activeEmbedder();
+  if (process.env.REQUIRE_SEMANTIC_EMBEDDINGS === "1" && embedder === "mock") {
+    throw new Error("Semantic embeddings are required. Set GOOGLE_API_KEY or choose EMBEDDER=google/bge-m3.");
+  }
   const modelLabel =
     embedder === "google" ? EMBED_MODEL : embedder === "bge-m3" ? BGE_MODEL : "mock-lexical-256";
   console.log(`[ingest] embedder = ${embedder} (${modelLabel})`);
@@ -98,6 +108,10 @@ async function main() {
         topic,
         pub_year: meta.pub_year || "",
         page: meta.page || "",
+        audience: listMeta(meta.audience),
+        life_stage: listMeta(meta.life_stage),
+        language: meta.lang || "en",
+        reviewed_at: meta.reviewed_at || "",
         embedding,
       });
     }

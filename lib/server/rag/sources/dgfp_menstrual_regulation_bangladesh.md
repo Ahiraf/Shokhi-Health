@@ -4,6 +4,7 @@ source: DGFP (menstrual regulation) & DGHS (post-abortion care), Bangladesh
 url: https://dgfp.gov.bd
 license: Government of Bangladesh — public information
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## What menstrual regulation (MR) is

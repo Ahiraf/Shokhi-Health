@@ -4,6 +4,7 @@ source: UNICEF Bangladesh
 url: https://www.unicef.org/bangladesh/en/education
 license: UNICEF Bangladesh public information — summarised with attribution
 lang: en
+reviewed_at: 2026-07-29
 topic: education
 pub_year: 2025
 ---

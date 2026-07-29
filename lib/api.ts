@@ -8,6 +8,7 @@ import type {
   CycleAnalysis,
   Wellness,
 } from "./types";
+import type { PersonalizationContext } from "./personalization";
 
 // The backend now lives in this same Next.js app (app/api/*), so calls are same-origin
 // (relative). NEXT_PUBLIC_API_URL is only needed if you point at an external backend.
@@ -27,9 +28,10 @@ export function sendMessage(
   message: string,
   profile: Record<string, unknown>,
   history: string[],
-  lang: "bn" | "en" = "bn"
+  lang: "bn" | "en" = "bn",
+  personalization: PersonalizationContext = {},
 ): Promise<MessageResponse> {
-  return post<MessageResponse>("/api/message", { message, profile, history, lang });
+  return post<MessageResponse>("/api/message", { message, profile, history, lang, personalization });
 }
 
 /** Voice Bridge: upload audio and receive transcript + the normal safety-first reply. */
@@ -38,12 +40,14 @@ export async function voiceBridge(
   lang: "bn" | "en",
   profile: Record<string, unknown>,
   history: string[],
+  personalization: PersonalizationContext = {},
 ): Promise<MessageResponse & { transcript: string }> {
   const form = new FormData();
   form.append("audio", file, "voice.webm");
   form.append("lang", lang);
   form.append("profile", JSON.stringify(profile));
   form.append("history", JSON.stringify(history));
+  form.append("personalization", JSON.stringify(personalization));
   const res = await fetch(`${BASE}/api/voice/bridge`, { method: "POST", body: form });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data?.detail || `voice bridge failed: ${res.status}`);
@@ -60,12 +64,13 @@ export async function sendMessageStream(
   profile: Record<string, unknown>,
   history: string[],
   lang: "bn" | "en",
+  personalization: PersonalizationContext = {},
   handlers: { onMeta?: (m: Omit<MessageResponse, "guidance">) => void; onDelta?: (text: string) => void }
 ): Promise<string> {
   const res = await fetch(`${BASE}/api/message/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, profile, history, lang }),
+    body: JSON.stringify({ message, profile, history, lang, personalization }),
   });
   if (!res.ok || !res.body) throw new Error(`stream failed: ${res.status}`);
 
@@ -192,8 +197,8 @@ export async function getGuides(): Promise<GuideCard[]> {
   return data.guides;
 }
 
-export function explainGuide(topic: string, lang: "bn" | "en" = "bn"): Promise<GuideResponse> {
-  return post<GuideResponse>("/api/guide", { topic, lang });
+export function explainGuide(topic: string, lang: "bn" | "en" = "bn", profile: Record<string, unknown> = {}, personalization: PersonalizationContext = {}): Promise<GuideResponse> {
+  return post<GuideResponse>("/api/guide", { topic, lang, profile, personalization });
 }
 
 export async function getGuide(id: string): Promise<GuideFull> {

@@ -4,6 +4,7 @@ source: WHO — Endometriosis (fact sheet)
 url: https://www.who.int/news-room/fact-sheets/detail/endometriosis
 license: © WHO, CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## What endometriosis is

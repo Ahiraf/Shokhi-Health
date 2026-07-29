@@ -4,6 +4,7 @@ source: DGHS/DGFP Bangladesh national schedule & WHO antenatal care recommendati
 url: https://old.dghs.gov.bd/index.php/en/publications
 license: Govt of Bangladesh (DGHS) public info; WHO ANC recommendations CC BY-NC-SA 3.0 IGO
 lang: en
+reviewed_at: 2026-07-29
 ---
 
 ## How many check-ups, and when

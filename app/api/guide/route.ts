@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Assistant } from "@/lib/server/assistant";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
-import { errorJson, MAX_TOPIC_LENGTH, readJson, readLanguage, readText } from "@/lib/server/request";
+import { errorJson, MAX_TOPIC_LENGTH, readJson, readLanguage, readPersonalization, readProfile, readText } from "@/lib/server/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const topic = readText(body, "topic", MAX_TOPIC_LENGTH, true);
   if (!topic) return errorJson("Topic is required.", 400);
   try {
-    const a = new Assistant();
+    const a = new Assistant(readProfile(body.profile), [], readPersonalization(body.personalization));
     const result = await a.explainGuide(topic, readLanguage(body.lang));
     if (!result) {
       return NextResponse.json({ detail: "No guide matched that topic." }, { status: 404 });

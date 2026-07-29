@@ -7,6 +7,7 @@ import {
   readHistory,
   readJson,
   readLanguage,
+  readPersonalization,
   readProfile,
   readText,
 } from "@/lib/server/request";
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
           return;
         }
 
-        const a = new Assistant(readProfile(body.profile), readHistory(body.history));
+        const a = new Assistant(readProfile(body.profile), readHistory(body.history), readPersonalization(body.personalization));
 
         // Safety net runs CONCURRENTLY with extraction (both only need the raw message), so it
         // adds no latency before the first token. Deterministic triage still owns urgency.
@@ -69,7 +70,7 @@ export async function POST(req: Request) {
           backend: a.backend.name,
         });
 
-        for await (const chunk of a.backend.explainTriageStream(result, lang)) {
+        for await (const chunk of a.backend.explainTriageStream(result, lang, a.personalization)) {
           send("delta", chunk);
         }
         send("done", {});

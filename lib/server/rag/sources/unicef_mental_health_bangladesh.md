@@ -4,6 +4,7 @@ source: UNICEF
 url: https://www.unicef.org/documents/improving-students-mental-health-bangladesh
 license: UNICEF public information — summarised with attribution
 lang: en
+reviewed_at: 2026-07-29
 topic: mental-health
 pub_year: 2022
 ---

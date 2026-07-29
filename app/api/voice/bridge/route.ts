@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Assistant, applySafetyNet, safetyNetEnabled } from "@/lib/server/assistant";
 import { detectCrisis, crisisResponse } from "@/lib/server/crisis";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
-import { MAX_MESSAGE_LENGTH, errorJson, readHistory, readLanguage, readProfile } from "@/lib/server/request";
+import { MAX_MESSAGE_LENGTH, errorJson, readHistory, readLanguage, readPersonalization, readProfile } from "@/lib/server/request";
 import { MAX_AUDIO_BYTES, transcribeAudio } from "@/lib/server/stt";
 
 export const runtime = "nodejs";
@@ -26,12 +26,13 @@ export async function POST(req: Request) {
     if (!transcript) return errorJson("No speech was detected.", 422);
     const profile = readProfile(JSON.parse(String(form.get("profile") || "{}")));
     const history = readHistory(JSON.parse(String(form.get("history") || "[]")));
+    const personalization = readPersonalization(JSON.parse(String(form.get("personalization") || "{}")));
 
     if (detectCrisis(transcript)) {
       return NextResponse.json({ transcript, profile, extraction: null, triage: null, guidance: crisisResponse(lang), next_question: null, is_emergency: true, backend: "crisis" });
     }
 
-    const assistant = new Assistant(profile, history);
+    const assistant = new Assistant(profile, history, personalization);
     const safetyP = safetyNetEnabled()
       ? assistant.backend.safetyCheck(transcript).catch(() => ({ emergency: false, reason: null }))
       : Promise.resolve({ emergency: false, reason: null });
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
       profile: assistant.profile,
       extraction: assistant.extraction,
       triage: result,
-      guidance: await assistant.backend.explainTriage(result, lang),
+      guidance: await assistant.backend.explainTriage(result, lang, assistant.personalization),
       next_question: assistant.nextQuestion(),
       is_emergency: result.urgency === "emergency",
       backend: assistant.backend.name,
