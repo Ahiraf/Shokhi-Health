@@ -64,7 +64,7 @@ describe("#1/#3 retrieval metadata + topics", () => {
   it("the corpus exposes topics", () => {
     const info = corpusInfo();
     expect(info.chunks).toBeGreaterThan(0);
-    expect(info.model).toBe("gemini-embedding-2");
+    expect(["gemini-embedding-2", "mock-lexical-256"]).toContain(info.model);
     expect(Array.isArray(info.topics)).toBe(true);
     expect(info.topics.length).toBeGreaterThan(0);
   });

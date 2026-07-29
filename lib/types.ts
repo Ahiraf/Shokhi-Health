@@ -79,6 +79,12 @@ export interface GuideCard {
   title_en: string;
   summary_bn: string;
   summary_en?: string;
+  category?: string;
+  audience?: string[];
+  learn?: boolean;
+  source?: string;
+  source_url?: string;
+  reviewed?: string;
 }
 
 export interface GuideResponse {
@@ -97,6 +103,12 @@ export interface GuideFull {
   points_en?: string[];
   when_see_doctor_bn: string;
   when_see_doctor_en?: string;
+  category?: string;
+  audience?: string[];
+  learn?: boolean;
+  source?: string;
+  source_url?: string;
+  reviewed?: string;
 }
 
 export interface KnowledgeResponse {

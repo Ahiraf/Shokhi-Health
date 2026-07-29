@@ -82,6 +82,29 @@ Documents / sources:
 
 ---
 
+## UNICEF Bangladesh
+
+The additional Learn and Guides cards summarise public UNICEF Bangladesh material on
+adolescence, child protection, nutrition, WASH, climate safety, education, disability
+inclusion, and mental wellbeing. The summaries are written for Shokhi's low-literacy,
+Bangla-first educational interface; UNICEF does not endorse Shokhi.
+
+Sources:
+- **Adolescent girls and children in Bangladesh** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/press-releases/slow-progress-adolescent-girls-bangladesh-including-highest-child-marriage-rate-asia
+- **Community-based child protection in Bangladesh** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/reports/integrated-community-based-child-protection-system-bangladesh
+- **Nutrition** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/nutrition
+- **Water, sanitation and hygiene** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/water-sanitation-and-hygiene
+- **Children at high risk amid heatwave in Bangladesh** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/press-releases/children-are-high-risk-amid-countrywide-heatwave-bangladesh
+- **Education** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/education
+- **Services mapping for children with disabilities in Bangladesh** — UNICEF Bangladesh. https://www.unicef.org/bangladesh/en/reports/services-mapping-children-disabilities-bangladesh
+- **Improving students' mental health in Bangladesh** — UNICEF. https://www.unicef.org/documents/improving-students-mental-health-bangladesh
+
+These are public-information summaries and adaptations for a non-commercial educational
+project. They are not a substitute for professional care, and no UNICEF logo or branding is
+used.
+
+---
+
 ## How to reuse / extend
 
 Add a new source only if it is **reliable** (official health authority or peer-reviewed) and

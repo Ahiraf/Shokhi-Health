@@ -20,11 +20,15 @@ export default function Guides({ onPick }: { onPick: (id: string) => void }) {
       .catch(() => setGuides([]));
   }, []);
 
-  if (guides.length === 0) return null;
+  const quickGuides = guides
+    .filter((guide) => (guide.category ?? "health") === "health")
+    .slice(0, 10);
+
+  if (quickGuides.length === 0) return null;
 
   return (
     <div className="flex flex-wrap justify-center gap-2">
-      {guides.map((g) => (
+        {quickGuides.map((g) => (
         <button
           key={g.id}
           onClick={() => onPick(g.id)}

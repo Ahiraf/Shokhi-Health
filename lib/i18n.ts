@@ -175,6 +175,16 @@ export const STRINGS = {
     en: "Explore more topics grounded in WHO, DGFP, and Bangladesh health guidance.",
   },
   "guides.noResults": { bn: "মিলেছে এমন কোনো গাইড নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching guides found. Try another search." },
+  "guides.filterLabel": { bn: "বিষয় অনুযায়ী দেখুন", en: "Filter by topic" },
+  "guides.categoryAll": { bn: "সব", en: "All" },
+  "guides.categoryHealth": { bn: "স্বাস্থ্য", en: "Health" },
+  "guides.categoryAdolescence": { bn: "কিশোর-কিশোরী", en: "Adolescence" },
+  "guides.categoryNutrition": { bn: "পুষ্টি", en: "Nutrition" },
+  "guides.categorySafety": { bn: "নিরাপত্তা", en: "Safety" },
+  "guides.categoryEnvironment": { bn: "পরিবেশ", en: "Environment" },
+  "guides.categoryEducation": { bn: "শিক্ষা", en: "Education" },
+  "guides.categoryAccessibility": { bn: "অন্তর্ভুক্তি", en: "Inclusion" },
+  "guides.categoryReferrals": { bn: "সাহায্য", en: "Help" },
   "guides.startTitle": { bn: "আপনার পরিস্থিতি দিয়ে শুরু করুন", en: "Start with your situation" },
   "guides.startSub": { bn: "কঠিন রোগের নাম না জানলেও চলবে — আপনার কাছাকাছি বিষয়টি বেছে নিন।", en: "You do not need to know a medical word — choose the situation closest to yours." },
 
@@ -201,6 +211,11 @@ export const STRINGS = {
   "learn.diagnosisNote": {
  bn:"এটি সাধারণ তথ্য, নিশ্চিত রোগ নির্ণয় নয় — একজন ডাক্তারের পরামর্শ নিন।",
  en:"This is general information, not a diagnosis — please consult a doctor.",
+  },
+  "learn.topicTitle": { bn: "শরীর, মন ও নিরাপত্তা নিয়ে আরও জানুন", en: "Learn about whole-person wellbeing" },
+  "learn.topicSub": {
+    bn: "কিশোরী, পরিবার, পরিবেশ, শিক্ষা ও নিরাপত্তা নিয়ে সহজ গাইড।",
+    en: "Simple guides on adolescence, family wellbeing, environment, education, and safety.",
   },
   // urgency tags on learn cards
   "urgency.emergency.short": { bn: "জরুরি", en: "Emergency" },
@@ -400,6 +415,12 @@ export const STRINGS = {
  bn:"আপনার প্রোফাইল শুধু এই ফোনেই থাকে, সার্ভারে জমা হয় না। যেকোনো সময় মুছে ফেলতে পারেন।",
  en:"Your profile stays on this phone only; nothing is stored on a server. You can clear it anytime.",
   },
+  "profile.deleteDeviceTitle": { bn: "এই ডিভাইসের সব তথ্য মুছুন", en: "Delete everything on this device" },
+  "profile.deleteDeviceDescription": {
+    bn: "সখীর প্রোফাইল, মাসিক ও মুডের তথ্য, রিপোর্টের ইতিহাস, রিমাইন্ডার এবং পছন্দগুলো এই ব্রাউজার থেকে মুছে যাবে।",
+    en: "This removes Shokhi's profile, cycle and mood data, report history, reminders, and preferences from this browser.",
+  },
+  "profile.deleteDevice": { bn: "ডিভাইসের সব তথ্য মুছুন", en: "Delete all device data" },
   "profile.usedInChat": {
     bn: "এই তথ্য পরামর্শের সময় সখীকে দেওয়া হবে, যাতে সে বারবার একই প্রশ্ন না করে।",
     en: "This is shared with Shokhi during a consultation so it doesn't have to ask the same things again.",

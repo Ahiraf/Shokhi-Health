@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getKnowledge } from "@/lib/api";
-import type { Condition } from "@/lib/types";
+import type { Condition, GuideCard } from "@/lib/types";
 import PageIntro from "@/components/PageIntro";
 import { useLang } from "@/components/LanguageProvider";
 import type { StringKey } from "@/lib/i18n";
@@ -21,12 +21,22 @@ const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
 export default function LearnPage() {
   const { t, lang } = useLang();
   const [conditions, setConditions] = useState<Condition[]>([]);
+  const [guides, setGuides] = useState<GuideCard[]>([]);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedJourney, setSelectedJourney] = useState<JourneyKey | null>(null);
 
   useEffect(() => {
-    getKnowledge().then((k) => setConditions(k.conditions)).catch(() => setError(true));
+    getKnowledge()
+      .then((knowledge) => setConditions(knowledge.conditions))
+      .catch(() => setError(true));
+    fetch("/api/guides")
+      .then((response) => {
+        if (!response.ok) throw new Error("Guide request failed");
+        return response.json();
+      })
+      .then((guideData) => setGuides(Array.isArray(guideData.guides) ? guideData.guides : []))
+      .catch(() => setGuides([]));
   }, []);
 
   useEffect(() => {
@@ -42,6 +52,13 @@ export default function LearnPage() {
       .filter((value): value is string => Boolean(value))
       .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
   }), [conditions, normalizedSearch, selectedJourney]);
+  const topicGuides = useMemo(() => guides.filter((guide) => {
+    if (!guide.learn) return false;
+    if (!normalizedSearch) return true;
+    return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, guide.category, guide.source]
+      .filter((value): value is string => Boolean(value))
+      .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
+  }), [guides, normalizedSearch]);
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
@@ -93,6 +110,37 @@ export default function LearnPage() {
           );
         })}
       </div>
+
+      <section className="mt-12" aria-labelledby="whole-wellbeing-topics-title">
+        <div>
+          <h2 id="whole-wellbeing-topics-title" className="font-display text-xl font-bold text-plum">
+            {t("learn.topicTitle")}
+          </h2>
+          <p className="mt-1 text-sm text-plum/55">{t("learn.topicSub")}</p>
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {topicGuides.map((guide) => (
+            <Link
+              key={guide.id}
+              href={"/guides/" + guide.id}
+              className="group flex items-start gap-3 rounded-2xl bg-surface/80 p-4 ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:shadow-card"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blush text-xl" aria-hidden="true">
+                {guide.icon}
+              </span>
+              <span className="min-w-0">
+                <span className="block font-display text-base font-bold text-plum">
+                  {lang === "en" ? guide.title_en || guide.title_bn : guide.title_bn}
+                </span>
+                <span className="mt-1 block text-sm leading-relaxed text-plum/60">
+                  {lang === "en" ? guide.summary_en || guide.summary_bn : guide.summary_bn}
+                </span>
+                <span className="mt-2 block text-sm font-semibold text-rose">{t("common.read")}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {selectedJourney && filteredConditions.length === 0 && (
         <div className="mt-8 rounded-2xl bg-blush/70 px-5 py-5 text-center">

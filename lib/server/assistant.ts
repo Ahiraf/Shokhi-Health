@@ -163,6 +163,12 @@ export class Assistant {
       id: g.id, icon: g.icon ?? "🌸",
       title_bn: g.title_bn ?? "", title_en: g.title_en ?? "",
       summary_bn: g.summary_bn ?? "", summary_en: g.summary_en ?? "",
+      category: g.category ?? "health",
+      audience: Array.isArray(g.audience) ? g.audience : [],
+      learn: g.learn === true,
+      source: g.source ?? "",
+      source_url: g.source_url ?? "",
+      reviewed: g.reviewed ?? "",
     }));
   }
 

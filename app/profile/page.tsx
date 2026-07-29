@@ -8,6 +8,7 @@ import {
   loadProfile,
   saveProfile,
   clearProfile,
+  deleteEverythingOnDevice,
   cycleAverageFromTracker,
   STAGE_OPTIONS,
   CONDITION_OPTIONS,
@@ -56,6 +57,22 @@ export default function ProfilePage() {
     setAge("");
     setStage("");
     setConditions([]);
+    setSaved(false);
+  }
+
+  function deleteEverything() {
+    const confirmed = window.confirm(
+      lang === "en"
+        ? "Delete all Shokhi data saved on this device? This cannot be undone."
+        : "এই ডিভাইসে সখীর রাখা সব তথ্য মুছে ফেলবেন? এটি আর ফিরিয়ে আনা যাবে না।",
+    );
+    if (!confirmed) return;
+    deleteEverythingOnDevice();
+    setName("");
+    setAge("");
+    setStage("");
+    setConditions([]);
+    setCycleAvg(null);
     setSaved(false);
   }
 
@@ -179,6 +196,22 @@ export default function ProfilePage() {
         <p className="border-t border-rose-soft/60 pt-4 text-xs leading-relaxed text-plum/45">
           {t("profile.privacy")}
         </p>
+
+        <section className="rounded-2xl bg-red-50/80 p-4 ring-1 ring-red-200" aria-labelledby="delete-device-data-title">
+          <h2 id="delete-device-data-title" className="font-display text-base font-bold text-red-800">
+            {t("profile.deleteDeviceTitle")}
+          </h2>
+          <p className="mt-1.5 text-xs leading-relaxed text-red-900/70">
+            {t("profile.deleteDeviceDescription")}
+          </p>
+          <button
+            type="button"
+            onClick={deleteEverything}
+            className="mt-3 rounded-full border border-red-300 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+          >
+            {t("profile.deleteDevice")}
+          </button>
+        </section>
       </div>
     </main>
   );

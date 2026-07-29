@@ -18,6 +18,7 @@ export default function GuideDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [guide, setGuide] = useState<GuideFull | null>(null);
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
+  const journey = guide ? guideJourney(guide.id) : undefined;
 
   useEffect(() => {
     getGuide(id)
@@ -52,7 +53,19 @@ export default function GuideDetailPage() {
             {pickField<string>(lang, guide as unknown as Record<string, unknown>, "summary")}
           </p>
 
-          <GuideJourneyPath journey={guideJourney(guide.id) ?? "understand_symptoms"} guideId={guide.id} />
+          {guide.source && (
+            <p className="mt-3 text-xs leading-relaxed text-plum/45">
+              {lang === "en" ? "Source: " : "সূত্র: "}
+              {guide.source_url ? (
+                <a href={guide.source_url} target="_blank" rel="noreferrer" className="font-semibold text-rose hover:underline">
+                  {guide.source}
+                </a>
+              ) : guide.source}
+              {guide.reviewed ? " · " + (lang === "en" ? "reviewed " : "পর্যালোচনা ") + guide.reviewed : ""}
+            </p>
+          )}
+
+          {journey && <GuideJourneyPath journey={journey} guideId={guide.id} />}
 
           <ul className="mt-6 space-y-3">
             {(pickField<string[]>(lang, guide as unknown as Record<string, unknown>, "points") ?? []).map((p, i) => (

@@ -409,6 +409,267 @@
 
   "guides": [
     {
+      "id": "adolescent_wellbeing",
+      "icon": "🌼",
+      "category": "adolescence",
+      "audience": ["teen", "adolescent", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/press-releases/slow-progress-adolescent-girls-bangladesh-including-highest-child-marriage-rate-asia",
+      "reviewed": "2026-07-29",
+      "title_bn": "কিশোরী ও কিশোরদের সুস্থভাবে বেড়ে ওঠা",
+      "title_en": "Growing up healthy and confident",
+      "keywords": ["কিশোরী", "কিশোর", "adolescent", "teen", "life skills", "জীবনদক্ষতা", "বয়ঃসন্ধি"],
+      "summary_bn": "বয়ঃসন্ধির শরীর, মন, পড়াশোনা, জীবনদক্ষতা ও নিরাপদ সিদ্ধান্ত নিয়ে সহজ তথ্য।",
+      "summary_en": "Simple guidance on puberty, feelings, education, life skills, and safer decisions.",
+      "points_bn": [
+        "বয়ঃসন্ধিতে শরীর, মাসিক, মেজাজ ও নিজের প্রতি অনুভূতিতে পরিবর্তন আসতে পারে — প্রশ্ন করা স্বাভাবিক।",
+        "নিজের শরীর সম্পর্কে নির্ভরযোগ্য তথ্য জানা, সম্মতি বোঝা এবং ‘না’ বলতে পারা গুরুত্বপূর্ণ জীবনদক্ষতা।",
+        "পড়াশোনা, নিরাপদ বন্ধুত্ব, বিশ্রাম, পুষ্টিকর খাবার ও নিয়মিত স্বাস্থ্যসেবা ভবিষ্যতের জন্য সাহায্য করে।",
+        "বিয়ে, সম্পর্ক বা স্বাস্থ্য নিয়ে চাপ অনুভব করলে একা সিদ্ধান্ত না নিয়ে বিশ্বস্ত বড় মানুষ বা স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।"
+      ],
+      "points_en": [
+        "During puberty, changes in the body, periods, mood, and self-image are common — asking questions is normal.",
+        "Reliable information, understanding consent, and being able to say no are important life skills.",
+        "Education, safe friendships, rest, nourishing food, and regular health care support the future.",
+        "If you feel pressured about marriage, relationships, or health, speak with a trusted adult or health worker instead of handling it alone."
+      ],
+      "when_see_doctor_bn": "শরীরে তীব্র বা অস্বাভাবিক সমস্যা, জোরপূর্বক ক্ষতি, বা নিজের নিরাপত্তা নিয়ে ভয় থাকলে দ্রুত বিশ্বস্ত বড় মানুষ, স্বাস্থ্যকর্মী বা জরুরি সেবার সাহায্য নিন।",
+      "when_see_doctor_en": "Seek help quickly from a trusted adult, health worker, or emergency service for severe or unusual symptoms, forced harm, or immediate safety concerns."
+    },
+    {
+      "id": "child_protection",
+      "icon": "🛡️",
+      "category": "safety",
+      "audience": ["child", "teen", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/reports/integrated-community-based-child-protection-system-bangladesh",
+      "reviewed": "2026-07-29",
+      "title_bn": "নিরাপত্তা, সহিংসতা ও বাল্যবিবাহ",
+      "title_en": "Safety, violence, and child marriage",
+      "keywords": ["নিরাপত্তা", "সহিংসতা", "বাল্যবিবাহ", "child marriage", "violence", "abuse", "নির্যাতন", "harassment"],
+      "summary_bn": "কেউ আঘাত করলে, ভয় দেখালে, জোর করলে বা বিয়ের জন্য চাপ দিলে নিরাপদ সাহায্য পাওয়ার পথ।",
+      "summary_en": "What to do if someone hurts, threatens, pressures, or tries to force a marriage.",
+      "points_bn": [
+        "কেউ মারলে, যৌনভাবে বিরক্ত করলে, হুমকি দিলে বা জোর করলে দোষ আপনার নয়।",
+        "সম্ভব হলে নিরাপদ জায়গায় যান এবং এমন একজন বিশ্বস্ত বড় মানুষকে জানান যিনি আপনাকে বিশ্বাস করবেন।",
+        "জোর করে বিয়ে, পাচার বা তাৎক্ষণিক আঘাতের ভয় থাকলে একা মুখোমুখি না হয়ে জরুরি সাহায্য নিন।",
+        "অনলাইনে হুমকি বা ছবি ছড়ানোর ভয় থাকলে প্রমাণ নিরাপদে রাখুন, অপরাধীর সঙ্গে একা দেখা করবেন না, এবং বিশ্বস্ত সহায়তা নিন।"
+      ],
+      "points_en": [
+        "If someone hits, sexually harasses, threatens, or forces you, it is not your fault.",
+        "If possible, move to a safer place and tell a trusted adult who will believe and support you.",
+        "For forced marriage, trafficking, or immediate danger, seek emergency help rather than confronting the person alone.",
+        "If you are threatened online or someone may share private images, keep evidence safe, do not meet the person alone, and seek trusted support."
+      ],
+      "when_see_doctor_bn": "আপনি বা কোনো শিশু এখনই বিপদে থাকলে নিরাপদ জায়গায় যান এবং বাংলাদেশে ৯৯৯-এ কল করুন। আঘাত থাকলে নিকটস্থ হাসপাতালে যান।",
+      "when_see_doctor_en": "If you or a child is in immediate danger, move to safety and call 999 in Bangladesh. Go to the nearest hospital for injuries."
+    },
+    {
+      "id": "nutrition_for_families",
+      "icon": "🥚",
+      "category": "nutrition",
+      "audience": ["adolescent", "adult", "pregnant", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/nutrition",
+      "reviewed": "2026-07-29",
+      "title_bn": "পুষ্টি, আয়রন ও রক্তস্বল্পতা",
+      "title_en": "Nutrition, iron, and anaemia",
+      "keywords": ["পুষ্টি", "nutrition", "আয়রন", "iron", "রক্তস্বল্পতা", "anaemia", "খাবার", "breastfeeding"],
+      "summary_bn": "কিশোরী, নারী, গর্ভবতী মা ও ছোট শিশুর জন্য সুষম খাবার এবং রক্তস্বল্পতা সম্পর্কে সহজ তথ্য।",
+      "summary_en": "Simple nutrition and anaemia guidance for adolescents, women, pregnant mothers, and young children.",
+      "points_bn": [
+        "প্রতিদিনের খাবারে ভাত বা রুটি, ডাল, শাকসবজি, ডিম বা মাছ, এবং সম্ভব হলে ফল রাখার চেষ্টা করুন।",
+        "ডাল, শাক, ডিম, মাছ ও মাংসের মতো খাবারে আয়রন থাকে; খাবারের বৈচিত্র্য শরীরকে সাহায্য করে।",
+        "দুর্বলতা, সবসময় ক্লান্তি, মাথা ঘোরা বা শ্বাসকষ্ট থাকলে নিজে থেকে আয়রনের ওষুধ না খেয়ে স্বাস্থ্যকর্মীর পরামর্শ নিন।",
+        "গর্ভাবস্থা, বুকের দুধ খাওয়ানো বা শিশুর খাবার নিয়ে প্রশ্ন থাকলে নিয়মিত স্বাস্থ্যকেন্দ্রের পরামর্শ নিন।"
+      ],
+      "points_en": [
+        "Try to include rice or bread, pulses, vegetables, eggs or fish, and fruit when possible.",
+        "Pulses, leafy greens, eggs, fish, and meat contain iron; variety helps the body.",
+        "For weakness, constant tiredness, dizziness, or breathlessness, speak with a health worker rather than starting iron medicine yourself.",
+        "During pregnancy, breastfeeding, or early childhood feeding, use regular health-centre counselling."
+      ],
+      "when_see_doctor_bn": "অজ্ঞান হওয়া, শ্বাসকষ্ট, বুক ধড়ফড় বা খুব বেশি দুর্বলতা হলে দ্রুত চিকিৎসা নিন।",
+      "when_see_doctor_en": "Seek prompt medical care for fainting, breathlessness, a racing heart, or severe weakness."
+    },
+    {
+      "id": "water_hygiene",
+      "icon": "💧",
+      "category": "environment",
+      "audience": ["child", "teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/water-sanitation-and-hygiene",
+      "reviewed": "2026-07-29",
+      "title_bn": "নিরাপদ পানি, টয়লেট ও পরিচ্ছন্নতা",
+      "title_en": "Safe water, toilets, and hygiene",
+      "keywords": ["পানি", "water", "WASH", "হাত ধোয়া", "handwashing", "টয়লেট", "sanitation", "salinity", "arsenic"],
+      "summary_bn": "নিরাপদ পানি, হাত ধোয়া, টয়লেট এবং মাসিকের সময় মর্যাদা ও নিরাপত্তা বজায় রাখার সহজ অভ্যাস।",
+      "summary_en": "Practical habits for safe water, handwashing, toilets, and dignity during menstruation.",
+      "points_bn": [
+        "পানি নিরাপদ কি না নিশ্চিত না হলে স্থানীয় স্বাস্থ্যকর্মী বা পানি কর্তৃপক্ষের পরামর্শ অনুযায়ী পানি ব্যবহার করুন।",
+        "খাবার আগে, টয়লেট ব্যবহারের পরে এবং শিশুর যত্নের আগে-পরে সাবান ও পানি দিয়ে হাত ধোয়া গুরুত্বপূর্ণ।",
+        "মাসিকের সময় পরিষ্কার উপকরণ, ব্যক্তিগত জায়গা এবং ব্যবহৃত উপকরণ নিরাপদে ফেলার ব্যবস্থা থাকা দরকার।",
+        "বন্যা, লবণাক্ততা বা পানির উৎস নষ্ট হলে পরিবারকে আগে থেকেই নিরাপদ পানি ও পরিচ্ছন্নতার পরিকল্পনা করতে বলুন।"
+      ],
+      "points_en": [
+        "If you are unsure whether water is safe, follow advice from local health or water authorities.",
+        "Wash hands with soap and water before eating, after using the toilet, and before and after caring for a child.",
+        "During menstruation, people need clean materials, privacy, and a safe way to dispose of used materials.",
+        "Before floods, salinity, or damaged water points, plan how your household will access safe water and hygiene supplies."
+      ],
+      "when_see_doctor_bn": "দূষিত পানি খাওয়ার পর তীব্র ডায়রিয়া, বারবার বমি, খুব কম প্রস্রাব বা অজ্ঞানভাব হলে দ্রুত স্বাস্থ্যকেন্দ্রে যান।",
+      "when_see_doctor_en": "Seek medical care for severe diarrhoea, repeated vomiting, very little urine, or faintness after unsafe water exposure."
+    },
+    {
+      "id": "climate_disaster_safety",
+      "icon": "🌦️",
+      "category": "environment",
+      "audience": ["child", "teen", "pregnant", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/press-releases/children-are-high-risk-amid-countrywide-heatwave-bangladesh",
+      "reviewed": "2026-07-29",
+      "title_bn": "গরম, বন্যা ও দুর্যোগে নিরাপদ থাকা",
+      "title_en": "Staying safe in heat, floods, and disasters",
+      "keywords": ["গরম", "heatwave", "বন্যা", "flood", "ঘূর্ণিঝড়", "cyclone", "দুর্যোগ", "disaster", "climate"],
+      "summary_bn": "তাপপ্রবাহ, বন্যা ও ঘূর্ণিঝড়ের সময় শিশু, কিশোরী, গর্ভবতী নারী ও পরিবারের নিরাপত্তা পরিকল্পনা।",
+      "summary_en": "Safety planning for children, adolescents, pregnant women, and families during heat, floods, and cyclones.",
+      "points_bn": [
+        "তীব্র গরমে ছায়া বা ঠান্ডা জায়গায় থাকুন, পানি পান করুন এবং দিনের সবচেয়ে গরম সময়ে বাইরে থাকা কমান।",
+        "দুর্যোগের আগে পানি, শুকনো খাবার, প্রয়োজনীয় ওষুধ, মাসিকের উপকরণ, টর্চ ও গুরুত্বপূর্ণ কাগজ নিরাপদে রাখুন।",
+        "শিশু, গর্ভবতী নারী, বয়স্ক ও অসুস্থ মানুষকে আগে নিরাপদ আশ্রয়ে নেওয়ার পরিকল্পনা করুন।",
+        "বন্যার পানিতে বিদ্যুৎ, সাপ, ভাঙা রাস্তা ও দূষিত পানির ঝুঁকি থাকে — সরকারি নির্দেশনা মেনে চলুন।"
+      ],
+      "points_en": [
+        "During extreme heat, stay in shade or a cooler place, drink water, and limit outdoor activity during the hottest hours.",
+        "Before a disaster, keep water, dry food, essential medicines, menstrual supplies, a torch, and important papers safe.",
+        "Plan to move children, pregnant women, older people, and anyone ill to safety first.",
+        "Floodwater can hide electricity, snakes, damaged roads, and contamination — follow official instructions."
+      ],
+      "when_see_doctor_bn": "তীব্র মাথা ঘোরা, বিভ্রান্তি, অজ্ঞানভাব, খিঁচুনি, শ্বাসকষ্ট বা শরীর খুব গরম হলে জরুরি চিকিৎসা নিন।",
+      "when_see_doctor_en": "Get emergency care for severe dizziness, confusion, fainting, seizures, breathing difficulty, or very high body temperature."
+    },
+    {
+      "id": "education_and_digital_skills",
+      "icon": "📖",
+      "category": "education",
+      "audience": ["teen", "adolescent", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/education",
+      "reviewed": "2026-07-29",
+      "title_bn": "পড়াশোনা, জীবনদক্ষতা ও ডিজিটাল নিরাপত্তা",
+      "title_en": "Education, life skills, and digital safety",
+      "keywords": ["পড়াশোনা", "education", "স্কুল", "school", "digital", "ডিজিটাল", "অনলাইন নিরাপত্তা", "skills"],
+      "summary_bn": "পড়াশোনা চালিয়ে যাওয়া, জীবনদক্ষতা শেখা এবং অনলাইনে নিরাপদ থাকার সহজ পরামর্শ।",
+      "summary_en": "Practical ideas for staying in education, building life skills, and being safer online.",
+      "points_bn": [
+        "স্কুলে যেতে সমস্যা হলে শিক্ষক, অভিভাবক, স্থানীয় কমিউনিটি বা সহায়তা কর্মীর সঙ্গে কথা বলে বিকল্প পথ খুঁজুন।",
+        "স্বাস্থ্য, টাকা-পয়সা, যোগাযোগ, সমস্যা সমাধান ও সিদ্ধান্ত নেওয়া — এগুলোও গুরুত্বপূর্ণ জীবনদক্ষতা।",
+        "অনলাইনে পাসওয়ার্ড, ঠিকানা, ব্যক্তিগত ছবি বা গোপন তথ্য অপরিচিত মানুষের সঙ্গে শেয়ার করবেন না।",
+        "কেউ অনলাইনে চাপ দিলে, হুমকি দিলে বা ছবি চাইলে উত্তর না দিয়ে বিশ্বস্ত বড় মানুষকে জানান এবং প্রমাণ নিরাপদে রাখুন।"
+      ],
+      "points_en": [
+        "If attending school is difficult, talk with teachers, caregivers, community groups, or support workers about alternative pathways.",
+        "Health, money, communication, problem-solving, and decision-making are important life skills too.",
+        "Do not share passwords, addresses, private photos, or sensitive details with strangers online.",
+        "If someone pressures or threatens you online or asks for private images, stop replying, tell a trusted adult, and keep evidence safe."
+      ],
+      "when_see_doctor_bn": "অনলাইন বা অফলাইনে তাৎক্ষণিক হুমকি, যৌন হয়রানি বা জোরজবরদস্তি থাকলে নিরাপদ বড় মানুষ বা জরুরি সহায়তার কাছে যান।",
+      "when_see_doctor_en": "For immediate threats, sexual harassment, or coercion online or offline, seek help from a trusted adult or emergency service."
+    },
+    {
+      "id": "disability_inclusion",
+      "icon": "🤝",
+      "category": "accessibility",
+      "audience": ["child", "teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/reports/services-mapping-children-disabilities-bangladesh",
+      "reviewed": "2026-07-29",
+      "title_bn": "প্রতিবন্ধিতা ও সবার অংশগ্রহণ",
+      "title_en": "Disability inclusion and participation",
+      "keywords": ["প্রতিবন্ধিতা", "disability", "সহায়তা", "accessibility", "অন্তর্ভুক্তি", "inclusive", "শিশু"],
+      "summary_bn": "প্রতিবন্ধী শিশু ও নারীর স্বাস্থ্য, শিক্ষা, নিরাপত্তা এবং সেবায় সমান অংশগ্রহণের অধিকার।",
+      "summary_en": "Every child and woman with a disability deserves access, safety, education, health care, and participation.",
+      "points_bn": [
+        "দেখা, শোনা, চলাফেরা, শেখা বা কথা বলায় সহায়তা দরকার হলেও স্বাস্থ্য ও শিক্ষার অধিকার সবার সমান।",
+        "সেবা নিতে গেলে র‍্যাম্প, সহজ ভাষা, ইশারা, সহায়ক ব্যক্তি বা বেশি সময়ের মতো প্রয়োজনীয় সহায়তা চাইতে পারেন।",
+        "প্রতিবন্ধী মানুষকে নিয়ে সিদ্ধান্ত নেওয়ার সময় তাঁর নিজের কথা ও পছন্দকে গুরুত্ব দিন।",
+        "অবহেলা, উপহাস, আটকে রাখা বা নির্যাতন নিরাপদ নয় — বিশ্বস্ত সহায়তা নিন।"
+      ],
+      "points_en": [
+        "People who need support with seeing, hearing, movement, learning, or communication still have equal rights to health and education.",
+        "When accessing services, ask for ramps, plain language, sign support, an assistant, or extra time when needed.",
+        "Include the person's own voice and preferences when making decisions about their care or education.",
+        "Neglect, humiliation, confinement, or abuse is not safe — seek trusted support."
+      ],
+      "when_see_doctor_bn": "আঘাত, শ্বাসকষ্ট, তীব্র ব্যথা বা নির্যাতনের ঝুঁকি থাকলে দ্রুত চিকিৎসা ও নিরাপত্তার সাহায্য নিন।",
+      "when_see_doctor_en": "Seek prompt medical and safety support for injuries, breathing difficulty, severe pain, or risk of abuse."
+    },
+    {
+      "id": "mental_wellbeing",
+      "icon": "🫂",
+      "category": "safety",
+      "audience": ["teen", "adolescent", "adult", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/documents/improving-students-mental-health-bangladesh",
+      "reviewed": "2026-07-29",
+      "title_bn": "মন ভালো রাখা ও সাহায্য চাওয়া",
+      "title_en": "Mental wellbeing and asking for help",
+      "keywords": ["মন", "mental health", "দুশ্চিন্তা", "anxiety", "মন খারাপ", "sad", "stress", "চাপ"],
+      "summary_bn": "চাপ, দুশ্চিন্তা, মন খারাপ ও একাকিত্ব সামলাতে ছোট পদক্ষেপ এবং সাহায্য চাওয়ার উপায়।",
+      "summary_en": "Small steps for stress, worry, low mood, loneliness, and reaching out for help.",
+      "points_bn": [
+        "ঘুম, নিয়মিত খাবার, নিরাপদ মানুষের সঙ্গে কথা বলা, হালকা হাঁটা ও ধীরে শ্বাস নেওয়া মনকে সাহায্য করতে পারে।",
+        "দীর্ঘদিন মন খারাপ, ভয়, ঘুমের সমস্যা বা পড়াশোনা/কাজে বাধা থাকলে স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।",
+        "কাউকে সাহায্য করতে চাইলে আগে শুনুন, দোষ দেবেন না এবং তার অনুমতি নিয়ে বিশ্বস্ত সাহায্য খুঁজুন।",
+        "নিজের ক্ষতি করার চিন্তা হলে একা থাকবেন না — এখনই কাছের বিশ্বস্ত মানুষ ও জরুরি সাহায্যের সঙ্গে যোগাযোগ করুন।"
+      ],
+      "points_en": [
+        "Sleep, regular meals, talking with safe people, gentle movement, and slow breathing can support wellbeing.",
+        "Speak with a health worker if low mood, fear, sleep problems, or disruption to school/work continues.",
+        "When supporting someone, listen first, avoid blame, and seek trusted help with their consent when possible.",
+        "If you may hurt yourself, do not stay alone — contact a trusted person and emergency help now."
+      ],
+      "when_see_doctor_bn": "নিজের ক্ষতির চিন্তা, আত্মহত্যার চিন্তা, বাস্তবতা বুঝতে সমস্যা বা তাৎক্ষণিক বিপদ হলে ৯৯৯-এ কল করুন এবং একা থাকবেন না।",
+      "when_see_doctor_en": "For thoughts of self-harm or suicide, loss of touch with reality, or immediate danger, call 999 and do not stay alone."
+    },
+    {
+      "id": "safe_help",
+      "icon": "☎️",
+      "category": "referrals",
+      "audience": ["child", "teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/what-we-do",
+      "reviewed": "2026-07-29",
+      "title_bn": "সঠিক সাহায্য কোথায় পাবেন",
+      "title_en": "Finding safe help",
+      "keywords": ["সাহায্য", "help", "health worker", "স্বাস্থ্যকর্মী", "হাসপাতাল", "hospital", "জরুরি", "emergency", "16263", "999"],
+      "summary_bn": "কখন স্বাস্থ্যকেন্দ্র, স্বাস্থ্যকর্মী, বিশ্বস্ত মানুষ বা জরুরি সেবার সাহায্য নিতে হবে।",
+      "summary_en": "How to decide between a trusted person, health worker, health centre, and emergency service.",
+      "points_bn": [
+        "সাধারণ তথ্য বা প্রশ্নের জন্য সখী সাহায্য করতে পারে, কিন্তু নিশ্চিত রোগ নির্ণয় বা চিকিৎসার জন্য স্বাস্থ্যকর্মীর প্রয়োজন।",
+        "জরুরি না হলেও সমস্যা চলতে থাকলে নিকটস্থ সরকারি স্বাস্থ্যকেন্দ্র, কমিউনিটি ক্লিনিক বা স্বাস্থ্যকর্মীর সঙ্গে কথা বলুন।",
+        "বাংলাদেশে স্বাস্থ্য পরামর্শের জন্য ১৬২৬৩ এবং জাতীয় জরুরি সেবার জন্য ৯৯৯ ব্যবহার করা যায়।",
+        "কোনো সেবা নেওয়ার আগে নাম, ঠিকানা, খরচ, গোপনীয়তা ও জরুরি যোগাযোগের তথ্য জেনে নিন।"
+      ],
+      "points_en": [
+        "Shokhi can help with general information, but diagnosis and treatment require a qualified health worker.",
+        "For a persistent but non-emergency concern, contact a nearby government health centre, community clinic, or health worker.",
+        "In Bangladesh, call 16263 for health advice and 999 for the national emergency service.",
+        "Before using a service, ask about identity, location, cost, privacy, and emergency contact details."
+      ],
+      "when_see_doctor_bn": "অতিরিক্ত রক্তক্ষরণ, অজ্ঞানভাব, খিঁচুনি, তীব্র শ্বাসকষ্ট, গর্ভাবস্থার জরুরি লক্ষণ বা তাৎক্ষণিক বিপদ হলে অপেক্ষা করবেন না — ৯৯৯ বা নিকটস্থ হাসপাতাল।",
+      "when_see_doctor_en": "For heavy bleeding, fainting, seizures, severe breathing difficulty, pregnancy warning signs, or immediate danger, do not wait — call 999 or go to the nearest hospital."
+    },
+    {
       "id": "period_emotions",
       "icon": "🫂",
       "title_bn": "মাসিকের সময় মন ও অনুভূতি",

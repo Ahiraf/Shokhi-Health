@@ -8,6 +8,31 @@
 
 export const PROFILE_KEY = "shokhi_profile";
 
+export function deleteShokhiStorageKeys(store: Pick<Storage, "removeItem">): number {
+  const keys = Object.keys(store).filter((key) => key.startsWith("shokhi_"));
+  keys.forEach((key) => store.removeItem(key));
+  return keys.length;
+}
+
+/** Delete Shokhi's browser-only data without touching other sites' storage. */
+export function deleteEverythingOnDevice(): number {
+  const browser = typeof globalThis.window === "undefined" ? null : globalThis.window;
+  if (!browser) return 0;
+  let deleted = 0;
+  const stores: Storage[] = [];
+  try { stores.push(browser.localStorage); } catch { /* unavailable */ }
+  try { stores.push(browser.sessionStorage); } catch { /* unavailable */ }
+  for (const store of stores) {
+    try {
+      deleted += deleteShokhiStorageKeys(store);
+    } catch {
+      // Storage may be unavailable in a private/restricted browser context.
+    }
+  }
+  browser.dispatchEvent(new Event("shokhi:data-changed"));
+  return deleted;
+}
+
 export type LifeStage =
   | ""
   | "teen"

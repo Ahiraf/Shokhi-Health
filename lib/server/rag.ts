@@ -105,11 +105,17 @@ export async function retrieve(query: string, k = 4, opts: RetrieveOptions = {})
   if (!chunks.length || !query.trim()) return [];
 
   let base: number[];
-  try {
-    const qv = normalize(await embed(query, corpus.embedder));
-    base = NORMS.map((cv) => dot(cv, Array.from(qv)));
-  } catch {
+  // The offline lexical corpus is intentionally conservative: keyword overlap avoids
+  // vector-hash collisions turning gibberish into apparently grounded health advice.
+  if (corpus.embedder === "mock") {
     base = chunks.map((c) => keywordScore(query, c));
+  } else {
+    try {
+      const qv = normalize(await embed(query, corpus.embedder));
+      base = NORMS.map((cv) => dot(cv, Array.from(qv)));
+    } catch {
+      base = chunks.map((c) => keywordScore(query, c));
+    }
   }
 
   const TOPIC_BOOST = 0.05; // small nudge; ordering only

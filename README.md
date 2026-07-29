@@ -4,12 +4,12 @@
 
 <div align="center">
   <h1>🌸 সখী · Shokhi</h1>
-  <p><strong>A Bangla-first AI health companion for every woman in Bangladesh.</strong></p>
+  <p><strong>A Bangla-first AI health and wellbeing companion for girls, women, and families in Bangladesh.</strong></p>
   <p>Private, simple guidance for periods, PCOS, pregnancy, postpartum health, and menopause — powered by Gemma 4.</p>
   <p>🌐 <a href="#demo">Demo</a> · 📖 <a href="docs/KAGGLE_WRITEUP.md">Kaggle writeup</a> · 🛡️ <a href="#safety-first-design">Safety-first design</a></p>
 </div>
 
-Shokhi (সখী — *"a woman's trusted confidante"*) lets women **type or speak in Bangla**,
+Shokhi (সখী — *"a trusted confidante"*) lets girls and women **type or speak in Bangla**,
 then combines Gemma 4's language understanding with a deterministic safety layer to explain
 what may be happening, what to do next, and when to contact a real health professional.
 
@@ -27,6 +27,10 @@ Gemma 4 is Shokhi's only generative health model. Shokhi does not currently use 
 database for user profiles, tracker logs, or chat history; hosting and AI providers may
 still process request data according to their own retention and logging policies.
 
+The Profile page includes **Delete everything on this device**, which removes Shokhi's
+browser-only data (profile, tracker, mood, report history, reminders, theme, and language
+preferences) from the current browser. It does not touch data belonging to other sites.
+
 ## 🎬 Demo
 
 The app runs as a single Next.js project with no login required. Add the hosted URL and
@@ -38,9 +42,19 @@ short demo-video URL here before the Kaggle submission:
 
 ## 🧭 Shokhi's focus
 
-Shokhi is designed as a warm, Bangla-first health companion for menstrual health, PCOS,
-PMS, and endometriosis, with voice input, low-literacy guidance, and a deterministic safety
-layer beneath the AI responses.
+Shokhi is designed as a warm, Bangla-first health and wellbeing companion for menstrual
+health, PCOS, pregnancy, postpartum care, menopause, adolescent wellbeing, nutrition,
+protection, WASH, climate preparedness, education, and disability inclusion. It combines
+voice input, low-literacy guidance, trusted-source cards, and a deterministic safety layer
+beneath the AI responses.
+
+### UNICEF Bangladesh-aligned learning
+
+The Learn and Guides areas now include cards covering adolescent wellbeing, child protection,
+nutrition and anaemia, safe water and hygiene, climate and disaster safety, education and
+digital skills, disability inclusion, mental wellbeing, and safe referrals. These cards remain
+inside the existing Learn/Guides experience so the navigation stays small and situation-first.
+They are educational summaries, not UNICEF-endorsed medical advice.
 
 ---
 
@@ -257,6 +271,9 @@ to menopause — as **one warm companion**:
 | **Voice input** | Browser-native Bangla voice input for hands-free symptom sharing | `/chat` |
 | **Guides, myths, and FAQ** | Trusted explainers with sources | `/guides` · `/myths` · `/faq` |
 | **Situation-first learning** | Start from first period, cramps, pregnancy planning, pregnancy, postpartum, or symptoms | `/learn` · `/guides` |
+| **Whole-person learning cards** | Adolescent wellbeing, protection, nutrition, WASH, climate, education, disability inclusion, mental wellbeing, and safe referrals | `/learn` · `/guides` |
+| **Guide categories** | Filter cards by health, adolescence, nutrition, safety, environment, education, inclusion, or help | `/guides` |
+| **Device data deletion** | Remove Shokhi's browser-only profile, tracker, mood, report, reminder, theme, and language data | `/profile` |
 | **Missed-pill helper** | Conservative product-aware questions for missed, late, or emergency contraception | `/guides/contraception` |
 | **Illustration direction** | Reusable, age-appropriate prompts for consistent Shokhi learning scenes | `docs/ILLUSTRATION_PROMPTS.md` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
@@ -377,6 +394,14 @@ in the file's frontmatter. Current documents:
 | Family planning (Bangladesh) | DGFP — Directorate General of Family Planning | https://dgfp.gov.bd | Govt of Bangladesh (public) |
 | Menstrual regulation & post-abortion care (Bangladesh) | DGFP / DGHS | https://dgfp.gov.bd | Govt of Bangladesh (public) |
 | Maternal & newborn health (Bangladesh) | icddr,b — Maternal & neonatal health research | https://www.icddrb.org/research/research-themes/maternal-and-neonatal-health/impact | © icddr,b (cited) |
+| Adolescent girls and children | UNICEF Bangladesh — adolescent girls, child marriage, life skills, digital literacy, and participation | https://www.unicef.org/bangladesh/en/press-releases/slow-progress-adolescent-girls-bangladesh-including-highest-child-marriage-rate-asia | UNICEF public information, summarised with attribution |
+| Child protection | UNICEF Bangladesh — community-based child protection system | https://www.unicef.org/bangladesh/en/reports/integrated-community-based-child-protection-system-bangladesh | UNICEF public information, summarised with attribution |
+| Nutrition | UNICEF Bangladesh — nutrition for children, adolescents, and mothers | https://www.unicef.org/bangladesh/en/nutrition | UNICEF public information, summarised with attribution |
+| Water, sanitation and hygiene | UNICEF Bangladesh — WASH, menstrual dignity, and climate resilience | https://www.unicef.org/bangladesh/en/water-sanitation-and-hygiene | UNICEF public information, summarised with attribution |
+| Climate safety | UNICEF Bangladesh — heatwave and child safety | https://www.unicef.org/bangladesh/en/press-releases/children-are-high-risk-amid-countrywide-heatwave-bangladesh | UNICEF public information, summarised with attribution |
+| Education | UNICEF Bangladesh — inclusive education and adolescent skills | https://www.unicef.org/bangladesh/en/education | UNICEF public information, summarised with attribution |
+| Disability inclusion | UNICEF Bangladesh — services mapping for children with disabilities | https://www.unicef.org/bangladesh/en/reports/services-mapping-children-disabilities-bangladesh | UNICEF public information, summarised with attribution |
+| Mental wellbeing | UNICEF — improving students' mental health in Bangladesh | https://www.unicef.org/documents/improving-students-mental-health-bangladesh | UNICEF public information, summarised with attribution |
 
 **Authoritative source hubs** used / recommended for expanding the corpus:
 
