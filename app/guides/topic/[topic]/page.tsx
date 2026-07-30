@@ -25,7 +25,7 @@ export default function SourceTopicPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-10">
-      <Link href="/guides" className="text-sm font-semibold text-rose hover:underline">{t("guides.backAll")}</Link>
+      <Link href="/learn" className="text-sm font-semibold text-rose hover:underline">{t("guides.backAll")}</Link>
       {!topic || status === "error" ? (
         <p className="mt-8 text-plum/60">{t("guides.notFound")}</p>
       ) : (

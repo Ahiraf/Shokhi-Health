@@ -8,6 +8,7 @@ import { retrieve, type Retrieved } from "./rag";
 import type { Lang } from "./prompts";
 import type { JourneyIntent } from "../journeys";
 import type { PersonalizationContext } from "../personalization";
+import { GUIDE_MASCOT_IMAGES } from "../mascot-images";
 
 type Citation = { source: string; url: string; section?: string; pub_year?: string };
 
@@ -172,6 +173,7 @@ export class Assistant {
       source: g.source ?? "",
       source_url: g.source_url ?? "",
       reviewed: g.reviewed ?? "",
+      image: GUIDE_MASCOT_IMAGES[g.id],
     }));
   }
 
@@ -217,7 +219,7 @@ export class Assistant {
     if (!g && !hits.length) return null;
 
     const guideMeta = g
-      ? { id: g.id, icon: g.icon ?? "🌸", title_bn: g.title_bn ?? "", title_en: g.title_en ?? "" }
+      ? { id: g.id, icon: g.icon ?? "🌸", title_bn: g.title_bn ?? "", title_en: g.title_en ?? "", image: GUIDE_MASCOT_IMAGES[g.id] }
       : { id: "topic", icon: "🌸", title_bn: topic, title_en: topic };
 
     if (hits.length) {

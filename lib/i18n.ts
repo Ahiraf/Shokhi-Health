@@ -24,7 +24,7 @@ export const STRINGS = {
   "nav.wellness.overview": { bn: "সুস্থতার সব টিপস", en: "Wellness overview" },
   "nav.faq": { bn: "প্রশ্নোত্তর", en: "FAQ" },
   "nav.report": { bn: "রিপোর্ট", en: "Report" },
-  "nav.learn.conditions": { bn: "রোগ সম্পর্কে জানুন", en: "Learn about conditions" },
+  "nav.learn.conditions": { bn: "জানা ও যত্ন", en: "Learn & care" },
   "nav.tracker.period": { bn: "মাসিক ট্র্যাকার", en: "Period tracker" },
   "nav.tracker.today": { bn: "আজকের জন্য", en: "For you today" },
   "nav.tracker.mood": { bn: "মন ও অনুভূতি", en: "Mood & feelings" },
@@ -75,7 +75,7 @@ export const STRINGS = {
     en: "From periods, PCOS and pregnancy to menopause — for everyone, from urban teens to rural women. Speak in Bangla; Shokhi understands and gives safe guidance.",
   },
   "home.ctaStart": { bn: "পরামর্শ শুরু করুন", en: "Start a consultation" },
-  "home.ctaGuides": { bn: "গাইড দেখুন", en: "Browse guides" },
+  "home.ctaGuides": { bn: "জানা ও যত্ন দেখুন", en: "Explore learn & care" },
   "home.featuresTitle": { bn: "সখী যেভাবে পাশে থাকে", en: "How Shokhi helps you" },
   "home.featuresSub": {
     bn: "প্রতিটি সেবার আলাদা পাতা — যেটি দরকার সেটিতে যান",
@@ -152,16 +152,16 @@ export const STRINGS = {
   },
 
   // --- guides list ---------------------------------------------------------
-  "guides.title": { bn: "স্বাস্থ্য গাইড", en: "Health guides" },
+  "guides.title": { bn: "জানা ও যত্ন", en: "Learn & care" },
   "guides.sub": {
-    bn: "নারীস্বাস্থ্যের নানা বিষয়ে সহজ, নির্ভরযোগ্য বাংলা পরামর্শ — যেকোনোটিতে চাপ দিন।",
-    en: "Simple, reliable guidance on many women's-health topics — tap any one.",
+    bn: "রোগ, উপসর্গ, দৈনন্দিন যত্ন ও বিশ্বস্ত স্বাস্থ্য তথ্য — সব এক জায়গায়।",
+    en: "Conditions, symptoms, everyday care, and trusted health information in one place.",
   },
   "guides.error": {
     bn: "গাইড আনা গেল না। ব্যাকএন্ড চালু আছে কিনা দেখুন।",
     en: "Couldn't load guides. Check that the backend is running.",
   },
-"guides.backAll": { bn:"সব গাইড", en:"All guides"},
+"guides.backAll": { bn:"সব বিষয়", en:"All topics"},
   "guides.notFound": { bn: "এই গাইডটি পাওয়া গেল না।", en: "This guide wasn't found." },
   "guides.moreQuestion": {
     bn: "এই বিষয়ে আরও কিছু জানতে চান?",
@@ -177,6 +177,7 @@ export const STRINGS = {
   "guides.noResults": { bn: "মিলেছে এমন কোনো গাইড নেই। অন্য শব্দ দিয়ে চেষ্টা করুন।", en: "No matching guides found. Try another search." },
   "guides.filterLabel": { bn: "বিষয় অনুযায়ী দেখুন", en: "Filter by topic" },
   "guides.categoryAll": { bn: "সব", en: "All" },
+  "guides.categoryConditions": { bn: "রোগ ও উপসর্গ", en: "Conditions" },
   "guides.categoryHealth": { bn: "স্বাস্থ্য", en: "Health" },
   "guides.categoryAdolescence": { bn: "কিশোর-কিশোরী", en: "Adolescence" },
   "guides.categoryNutrition": { bn: "পুষ্টি", en: "Nutrition" },
@@ -189,10 +190,10 @@ export const STRINGS = {
   "guides.startSub": { bn: "কঠিন রোগের নাম না জানলেও চলবে — আপনার কাছাকাছি বিষয়টি বেছে নিন।", en: "You do not need to know a medical word — choose the situation closest to yours." },
 
   // --- learn ---------------------------------------------------------------
-  "learn.title": { bn: "রোগ সম্পর্কে জানুন", en: "Learn about conditions" },
+  "learn.title": { bn: "জানা ও যত্ন", en: "Learn & care" },
   "learn.sub": {
-    bn: "নারীস্বাস্থ্যের সাধারণ অবস্থাগুলো সহজ বাংলায় — লক্ষণ, ঘরোয়া যত্ন ও কখন ডাক্তার দেখাবেন।",
-    en: "Common women's-health conditions in plain language — signs, home care, and when to see a doctor.",
+    bn: "রোগ, উপসর্গ, পুষ্টি, নিরাপত্তা ও দৈনন্দিন যত্ন — সহজ বাংলায় এক জায়গায়।",
+    en: "Conditions, symptoms, nutrition, safety, and everyday care — in one simple place.",
   },
   "learn.error": { bn: "তথ্য আনা গেল না।", en: "Couldn't load the information." },
   "learn.searchLabel": { bn: "বিষয় খুঁজুন", en: "Search topics" },

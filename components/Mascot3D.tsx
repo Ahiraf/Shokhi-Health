@@ -22,6 +22,7 @@ export default function Mascot3D({
   priority = false,
   fit = "contain",
   position = "center",
+  source,
 }: {
   size?: number;
   variant?: string;
@@ -31,6 +32,8 @@ export default function Mascot3D({
   fit?: "contain" | "cover";
   /** object-position when fit="cover" — e.g. "top" to frame her face. */
   position?: string;
+  /** Optional direct illustration path, with the normal mascot fallback chain. */
+  source?: string;
 }) {
   // page-specific pose first, then the shared default
   const variantSource = variant === "today"
@@ -45,7 +48,7 @@ export default function Mascot3D({
     : variant === "report"
     ? "/mascot-3d-report.png"
     : "/mascot-3d.png";
-  const sources = Array.from(new Set([variantSource, fallbackSource, "/mascot-3d.png"]));
+  const sources = Array.from(new Set([source, variantSource, fallbackSource, "/mascot-3d.png"].filter((value): value is string => Boolean(value))));
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
 

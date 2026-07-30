@@ -105,6 +105,13 @@ These are public-information summaries and adaptations for a non-commercial educ
 project. They are not a substitute for professional care, and no UNICEF logo or branding is
 used.
 
+## Shokhi topic illustrations
+
+The 15 topic-specific girl illustrations in `public/` were supplied by the project owner for
+use in Shokhi's Learn, Guides, and situation cards. Their redistribution rights and any
+underlying generation-tool terms should be confirmed by the project owner before publishing
+outside this repository.
+
 ---
 
 ## How to reuse / extend

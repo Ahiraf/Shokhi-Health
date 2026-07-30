@@ -116,7 +116,7 @@ export default function MoodLog() {
               ? "You've often felt this way in the days around your period — that's PMS, and it's real. It's not your fault, and it passes."
               : "আপনি প্রায়ই মাসিকের আশপাশের দিনগুলোতে এমন অনুভব করেন — এটি পিএমএস, আর এটি সত্যি। এটি আপনার দোষ নয়, আর এটি কেটে যায়।"}
           </p>
-          <Link href="/guides/period_emotions" className="mt-1 inline-block text-xs font-semibold text-rose underline">
+            <Link href="/guides/period_emotions" className="mt-1 inline-block text-xs font-semibold text-rose underline">
             {en ? "Learn what helps" : "কী করলে ভালো লাগে জানুন"}
           </Link>
         </div>

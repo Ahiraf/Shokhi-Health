@@ -66,7 +66,7 @@ export default function Home() {
                 {t("home.ctaStart")}
               </Link>
               <Link
-                href="/guides"
+                href="/learn"
                 className="rounded-full bg-surface px-6 py-3 font-semibold text-plum ring-1 ring-rose-soft transition hover:bg-blush"
               >
                 {t("home.ctaGuides")}

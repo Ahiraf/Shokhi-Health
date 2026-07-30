@@ -85,10 +85,11 @@ export interface GuideCard {
   source?: string;
   source_url?: string;
   reviewed?: string;
+  image?: string;
 }
 
 export interface GuideResponse {
-  guide: { id: string; icon: string; title_bn: string; title_en: string };
+  guide: { id: string; icon: string; title_bn: string; title_en: string; image?: string };
   guidance: string;
 }
 
@@ -109,6 +110,7 @@ export interface GuideFull {
   source?: string;
   source_url?: string;
   reviewed?: string;
+  image?: string;
 }
 
 export interface KnowledgeResponse {

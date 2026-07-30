@@ -5,6 +5,7 @@ import { type FormEvent, useState } from "react";
 import { useLang } from "./LanguageProvider";
 import Mascot3D from "./Mascot3D";
 import { JOURNEYS, type JourneyKey } from "@/lib/journeys";
+import { JOURNEY_MASCOT_IMAGES } from "@/lib/mascot-images";
 
 export default function JourneyPicker({
   page,
@@ -105,6 +106,7 @@ export default function JourneyPicker({
               }`}
             >
               <Mascot3D
+                source={JOURNEY_MASCOT_IMAGES[journey.key]}
                 variant={journey.imageVariant}
                 size={44}
                 fit="cover"

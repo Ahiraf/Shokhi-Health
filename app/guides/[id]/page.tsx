@@ -12,6 +12,7 @@ import { pickField } from "@/lib/i18n";
 import GuideJourneyPath from "@/components/GuideJourneyPath";
 import PillHelper from "@/components/PillHelper";
 import { guideJourney } from "@/lib/journeys";
+import Image from "next/image";
 
 export default function GuideDetailPage() {
   const { t, lang } = useLang();
@@ -31,7 +32,7 @@ export default function GuideDetailPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-10">
-      <Link href="/guides" className="text-sm font-semibold text-rose hover:underline">
+      <Link href="/learn" className="text-sm font-semibold text-rose hover:underline">
         {t("guides.backAll")}
       </Link>
 
@@ -40,6 +41,11 @@ export default function GuideDetailPage() {
 
       {guide && (
         <article className="mt-4">
+          {guide.image && (
+            <div className="relative mb-5 h-56 overflow-hidden rounded-3xl bg-blush sm:h-64">
+              <Image src={guide.image} alt="" fill sizes="(max-width: 640px) 100vw, 672px" className="object-cover" priority />
+            </div>
+          )}
           <div className="flex items-center gap-3">
             <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blush text-rose-deep">
               <EmojiIcon glyph={guide.icon} size={28} />

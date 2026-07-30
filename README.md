@@ -235,6 +235,19 @@ For emergencies, the app clearly displays **16263 / 999**.
 
 ## 🧰 Tech Stack
 
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
+  <img alt="React" src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+</p>
+<p align="center">
+  <img alt="Google Gemma" src="https://img.shields.io/badge/Google_Gemma_4-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" />
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img alt="Vitest" src="https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img alt="Vercel" src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
+</p>
+
 | Layer | Technology |
 | ----- | ---------- |
 | Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
@@ -269,13 +282,12 @@ to menopause — as **one warm companion**:
 | **Family modes** | Tailor the family explanation for family, partner, or mother/elders | `/tracker/mood` |
 | **Weekly companion** | Gemma-written weekly guidance from local cycle and mood context | `/tracker/today` |
 | **Voice input** | Browser-native Bangla voice input for hands-free symptom sharing | `/chat` |
-| **Guides, myths, and FAQ** | Trusted explainers with sources | `/guides` · `/myths` · `/faq` |
-| **Situation-first learning** | Start from first period, cramps, pregnancy planning, pregnancy, postpartum, or symptoms | `/learn` · `/guides` |
-| **Whole-person learning cards** | Adolescent wellbeing, protection, nutrition, WASH, climate, education, disability inclusion, mental wellbeing, and safe referrals | `/learn` · `/guides` |
-| **Guide categories** | Filter cards by health, adolescence, nutrition, safety, environment, education, inclusion, or help | `/guides` |
+| **Learn & care library, myths, and FAQ** | One searchable library for conditions, trusted explainers, and whole-person guidance | `/learn` · `/myths` · `/faq` |
+| **Situation-first learning** | Start from first period, cramps, pregnancy planning, pregnancy, postpartum, or symptoms | `/learn` |
+| **Whole-person learning cards** | Adolescent wellbeing, protection, nutrition, WASH, climate, education, disability inclusion, mental wellbeing, and safe referrals | `/learn` |
+| **Learning categories** | Filter cards by conditions, health, adolescence, nutrition, safety, environment, education, inclusion, or help | `/learn` |
 | **Device data deletion** | Remove Shokhi's browser-only profile, tracker, mood, report, reminder, theme, and language data | `/profile` |
 | **Missed-pill helper** | Conservative product-aware questions for missed, late, or emergency contraception | `/guides/contraception` |
-| **Illustration direction** | Reusable, age-appropriate prompts for consistent Shokhi learning scenes | `docs/ILLUSTRATION_PROMPTS.md` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
 | **Voice help** | Speak through a supported browser and receive Shokhi’s written guidance | `/chat` |
 
