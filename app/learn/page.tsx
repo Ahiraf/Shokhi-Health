@@ -97,6 +97,9 @@ export default function LearnPage() {
 
     const guideItems: LibraryItem[] = guides
       .filter((guide) => {
+        // Illustrated guides are surfaced in the topic shelf above. Keeping them out
+        // of this second grid prevents the same 15 cards from appearing twice.
+        if (guide.image) return false;
         const category = guide.category ?? "health";
         if (selectedCategory !== "all" && selectedCategory !== category) return false;
         if (selectedJourney && guideJourney(guide.id) !== selectedJourney) return false;
@@ -118,11 +121,68 @@ export default function LearnPage() {
     return [...conditionItems, ...guideItems, ...sourceItems];
   }, [conditions, guides, normalizedSearch, search, selectedCategory, selectedJourney]);
 
+  const mascotGuides = useMemo(() => guides.filter((guide) => {
+    if (!guide.image) return false;
+    const category = guide.category ?? "health";
+    if (selectedCategory !== "all" && selectedCategory !== category) return false;
+    if (selectedJourney) {
+      const journey = guideJourney(guide.id);
+      if (journey && journey !== selectedJourney) return false;
+      if (!journey && selectedJourney !== "understand_symptoms") return false;
+    }
+    if (!normalizedSearch) return true;
+    return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source]
+      .filter((value): value is string => Boolean(value))
+      .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
+  }), [guides, normalizedSearch, selectedCategory, selectedJourney]);
+
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
 
       <JourneyPicker page="learn" selected={selectedJourney} onSelect={setSelectedJourney} />
+
+      {mascotGuides.length > 0 && (
+        <section className="mt-6 rounded-3xl bg-panel/95 p-4 text-white shadow-card sm:p-5" aria-labelledby="illustrated-topics-heading">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/55">
+                {lang === "en" ? "Learn by topic" : "বিষয় ধরে শিখুন"}
+              </p>
+              <h2 id="illustrated-topics-heading" className="mt-1 font-display text-xl font-bold">
+                {lang === "en" ? "More topics, in one place" : "আরও বিষয় — এক জায়গায়"}
+              </h2>
+              <p className="mt-1 text-sm text-white/70">
+                {lang === "en" ? "Choose any topic to open a simple, trusted guide." : "যে কোনো বিষয় বেছে সহজ ও নির্ভরযোগ্য গাইড পড়ুন।"}
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/75">
+              {mascotGuides.length} {lang === "en" ? "topics" : "টি বিষয়"}
+            </span>
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {mascotGuides.map((guide) => (
+              <Link
+                key={`mascot-${guide.id}`}
+                href={`/guides/${guide.id}`}
+                className="group flex min-h-[4.8rem] items-center gap-3 rounded-2xl bg-white/10 p-2.5 transition hover:-translate-y-0.5 hover:bg-white/16"
+              >
+                <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-rose-mist">
+                  <Image src={guide.image!} alt="" fill sizes="64px" className="object-cover" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-bold leading-snug text-white">
+                    {lang === "en" ? guide.title_en || guide.title_bn : guide.title_bn}
+                  </span>
+                  <span className="mt-1 block text-xs leading-snug text-white/60 line-clamp-2">
+                    {lang === "en" ? guide.summary_en || guide.summary_bn : guide.summary_bn}
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <label className="relative mt-8 block">
         <span className="sr-only">{t("learn.searchLabel")}</span>

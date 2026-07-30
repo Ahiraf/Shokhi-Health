@@ -117,7 +117,7 @@ export async function embed(text: string, embedder: Embedder): Promise<number[]>
 }
 
 /** Split a document into small, self-contained passages along blank lines / headings. */
-export function chunkText(body: string, targetWords = 85): string[] {
+export function chunkText(body: string, targetWords = 70): string[] {
   return chunkWithHeadings(body, targetWords).map((c) => c.text);
 }
 
@@ -128,7 +128,7 @@ export type Section = { text: string; section: string };
  * chunk and returns it as `section` — so every citation can name the exact section it
  * came from (e.g. "PCOS › Common signs"), the way Maya cites section_title.
  */
-export function chunkWithHeadings(body: string, targetWords = 85): Section[] {
+export function chunkWithHeadings(body: string, targetWords = 70): Section[] {
   const rawBlocks = body.split(/\n\s*\n/);
   const chunks: Section[] = [];
   let cur: string[] = [];

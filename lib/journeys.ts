@@ -120,6 +120,15 @@ const GUIDE_JOURNEYS: Record<string, JourneyKey> = {
   family_planning: "plan_pregnancy",
   first_pregnancy: "pregnant_now",
   after_birth: "after_birth",
+  body_changes_and_puberty: "understand_symptoms",
+  breast_health: "understand_symptoms",
+  cervical_health: "understand_symptoms",
+  sti_and_hiv_safety: "understand_symptoms",
+  fertility_and_infertility: "plan_pregnancy",
+  healthy_relationships_and_consent: "understand_symptoms",
+  sleep_stress_and_self_care: "understand_symptoms",
+  pregnancy_test_and_first_visit: "pregnant_now",
+  postpartum_recovery_and_breastfeeding: "after_birth",
 };
 
 const CONDITION_JOURNEYS: Record<string, JourneyKey[]> = {

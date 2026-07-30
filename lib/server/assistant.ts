@@ -40,6 +40,24 @@ function sourcesFooter(hits: Retrieved[], lang: Lang): string {
   return `\n\n**${label}:** ${links}`;
 }
 
+/** Keep the prompt small while preserving the section and citation trail Gemma needs. */
+function compactGroundingContext(hits: Retrieved[]): string {
+  const maxPerPassage = 1200;
+  const maxTotal = 5200;
+  let used = 0;
+  return hits
+    .map((h, i) => {
+      if (used >= maxTotal) return "";
+      const label = [h.source, h.section].filter(Boolean).join(" — ");
+      const remaining = maxTotal - used;
+      const text = h.text.slice(0, Math.min(maxPerPassage, remaining));
+      used += text.length;
+      return `[${i + 1}] ${label}\n${text}`;
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 // The LLM safety net is an EXTRA Gemma call (quota + a concurrent request). Deterministic
 // triage already guards every emergency, so the net is OPT-IN: set SHOKHI_SAFETY_NET=1 to
 // enable it. When on, it runs concurrently with extraction so it adds no wall-clock latency.
@@ -108,6 +126,30 @@ function topicForStage(stage: string): string | undefined {
     default:
       return undefined;
   }
+}
+
+/** Prefer a directly matching corpus topic when the guide has one. */
+function topicForGuide(g: any): string | undefined {
+  const id = String(g?.id ?? "");
+  const topics: Record<string, string> = {
+    adolescent_wellbeing: "adolescence",
+    body_changes_and_puberty: "adolescence",
+    breast_health: "breast-health",
+    cervical_health: "cervical-health",
+    sti_and_hiv_safety: "sexual-health",
+    fertility_and_infertility: "fertility",
+    healthy_relationships_and_consent: "protection",
+    sleep_stress_and_self_care: "wellbeing",
+    pregnancy_test_and_first_visit: "pregnancy",
+    postpartum_recovery_and_breastfeeding: "postnatal-care",
+    after_birth: "pregnancy",
+    first_pregnancy: "pregnancy",
+    contraception: "contraception",
+    family_planning: "contraception",
+    period_cramps: "menstruation",
+    first_period: "menstruation",
+  };
+  return topics[id];
 }
 
 export class Assistant {
@@ -208,13 +250,21 @@ export class Assistant {
     // RAG: retrieve trusted passages for this topic (uses the guide's title/summary to
     // improve recall). If anything is found, Gemma answers grounded ONLY in that context
     // and we cite the sources. Otherwise we fall back to the static knowledge-base guide.
-    const query = [topic, g?.title_en, g?.title_bn, g?.summary_en].filter(Boolean).join(" ");
+    const query = [
+      topic,
+      g?.title_en,
+      g?.title_bn,
+      g?.summary_en,
+      g?.summary_bn,
+      ...(Array.isArray(g?.keywords) ? g.keywords : []),
+    ].filter(Boolean).join(" ");
     const stage = lifeStageOf(this.profile) || this.personalization.profile?.lifeStage || "";
     const hits = await retrieve(query, 4, {
-      boostTopic: topicForStage(stage),
+      boostTopic: topicForGuide(g) ?? topicForStage(stage),
       lifeStage: stage || undefined,
       audience: stage || undefined,
       language: lang,
+      maxPerSource: 1,
     });
     if (!g && !hits.length) return null;
 
@@ -223,7 +273,7 @@ export class Assistant {
       : { id: "topic", icon: "🌸", title_bn: topic, title_en: topic };
 
     if (hits.length) {
-      const context = hits.map((h, i) => `[${i + 1}] (${h.source})\n${h.text}`).join("\n\n");
+      const context = compactGroundingContext(hits);
       // give Gemma the life-stage as context so the same topic is answered stage-appropriately
       const cycle = this.personalization.cycle;
       const tracker = cycle ? `\n(Private tracker context: regular=${cycle.regular ?? "unknown"}, recent pain=${cycle.recentPain ?? "unknown"}.)` : "";

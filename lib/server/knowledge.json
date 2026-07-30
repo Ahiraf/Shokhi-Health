@@ -670,6 +670,267 @@
       "when_see_doctor_en": "For heavy bleeding, fainting, seizures, severe breathing difficulty, pregnancy warning signs, or immediate danger, do not wait — call 999 or go to the nearest hospital."
     },
     {
+      "id": "body_changes_and_puberty",
+      "icon": "🌱",
+      "category": "adolescence",
+      "audience": ["child", "teen", "adolescent", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/press-releases/slow-progress-adolescent-girls-bangladesh-including-highest-child-marriage-rate-asia",
+      "reviewed": "2026-07-31",
+      "title_bn": "বয়ঃসন্ধির শরীর ও মন",
+      "title_en": "Body and feelings during puberty",
+      "keywords": ["বয়ঃসন্ধি", "বয়ঃসন্ধি", "puberty", "body changes", "কিশোরী", "কিশোর"],
+      "summary_bn": "বয়ঃসন্ধিতে শরীর, মাসিক, ত্বক, মেজাজ ও নিজের প্রতি অনুভূতিতে কী পরিবর্তন আসতে পারে।",
+      "summary_en": "What can change in the body, periods, skin, mood, and self-image during puberty.",
+      "points_bn": [
+        "বয়ঃসন্ধিতে উচ্চতা, শরীরের গঠন, ত্বক, লোম, ঘাম ও মেজাজে পরিবর্তন স্বাভাবিক।",
+        "মাসিকের শুরুতে চক্র কিছুদিন অনিয়মিত হতে পারে; প্রশ্ন থাকলে বিশ্বস্ত বড় মানুষ বা স্বাস্থ্যকর্মীকে বলুন।",
+        "শরীর পরিষ্কার রাখা, পুষ্টিকর খাবার, ঘুম ও নিরাপদ বন্ধুত্ব ভালোভাবে বেড়ে উঠতে সাহায্য করে।",
+        "কেউ আপনার শরীর ছুঁতে বা কোনো সম্পর্কে জোর করতে পারে না — অস্বস্তি হলে না বলুন এবং নিরাপদ সাহায্য নিন।"
+      ],
+      "points_en": [
+        "During puberty, changes in height, body shape, skin, hair, sweat, and mood are normal.",
+        "Periods can be irregular at first; tell a trusted adult or health worker if you have questions.",
+        "Hygiene, nourishing food, sleep, and safe friendships support healthy growing up.",
+        "No one may touch your body or pressure you into a relationship — say no and seek safe help if you feel uncomfortable."
+      ],
+      "when_see_doctor_bn": "তীব্র ব্যথা, অস্বাভাবিক রক্তপাত, বা নিজের নিরাপত্তা নিয়ে ভয় থাকলে বিশ্বস্ত বড় মানুষ ও স্বাস্থ্যকর্মীর সাহায্য নিন।",
+      "when_see_doctor_en": "Seek help from a trusted adult and health worker for severe pain, unusual bleeding, or any safety concern."
+    },
+    {
+      "id": "breast_health",
+      "icon": "🎀",
+      "category": "health",
+      "audience": ["teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "WHO — Breast cancer",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/breast-cancer",
+      "reviewed": "2026-07-31",
+      "title_bn": "স্তনের স্বাস্থ্য ও পরিবর্তন",
+      "title_en": "Breast health and changes",
+      "keywords": ["স্তন", "breast", "গাঁট", "lump", "বোঁটা", "nipple", "breast pain"],
+      "summary_bn": "স্তনে ব্যথা, গাঁট বা অন্য পরিবর্তন দেখলে কীভাবে শান্তভাবে খেয়াল করবেন এবং কখন পরীক্ষা দরকার।",
+      "summary_en": "How to notice breast pain, a lump, or another change and know when to get checked.",
+      "points_bn": [
+        "মাসিকের আগে স্তনে টান বা ব্যথা হতে পারে; নিজের স্বাভাবিক পরিবর্তন সম্পর্কে ধারণা রাখুন।",
+        "নতুন গাঁট, বোঁটা থেকে অস্বাভাবিক তরল, ত্বকে টান পড়া বা একপাশের স্থায়ী পরিবর্তন হলে স্বাস্থ্যকর্মীকে জানান।",
+        "নিজে দেখে বা ছুঁয়ে নিশ্চিত রোগ বলা যায় না — পরীক্ষা দরকার হলে স্বাস্থ্যকর্মী ঠিক করবেন।",
+        "লজ্জা বা ভয়ে দেরি করবেন না; দ্রুত পরামর্শ নিলে কারণ বোঝা সহজ হয়।"
+      ],
+      "points_en": [
+        "Breast tenderness can happen before a period; learn what is normal for your body.",
+        "Tell a health worker about a new lump, unusual nipple fluid, skin pulling, or a lasting one-sided change.",
+        "Looking or feeling cannot confirm a diagnosis — a health worker decides whether tests are needed.",
+        "Do not delay because of shame or fear; early advice makes it easier to understand the cause."
+      ],
+      "when_see_doctor_bn": "নতুন গাঁট, রক্তমিশ্রিত তরল, ত্বকে পরিবর্তন বা দীর্ঘদিনের ব্যথা হলে স্বাস্থ্যকেন্দ্রে দেখান।",
+      "when_see_doctor_en": "Visit a health centre for a new lump, bloody fluid, skin changes, or pain that does not settle."
+    },
+    {
+      "id": "cervical_health",
+      "icon": "🩺",
+      "category": "health",
+      "audience": ["teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "WHO — Cervical cancer prevention and control",
+      "source_url": "https://www.who.int/news-room/detail/03-12-2014-new-who-guide-to-prevent-and-control-cervical-cancer",
+      "reviewed": "2026-07-31",
+      "title_bn": "জরায়ুমুখের স্বাস্থ্য ও এইচপিভি",
+      "title_en": "Cervical health and HPV",
+      "keywords": ["জরায়ুমুখ", "জরায়ুমুখ", "cervical", "cervix", "এইচপিভি", "hpv"],
+      "summary_bn": "এইচপিভি, জরায়ুমুখের স্বাস্থ্য এবং অস্বাভাবিক লক্ষণ হলে কেন স্বাস্থ্যকর্মীর পরামর্শ জরুরি।",
+      "summary_en": "HPV, cervical health, and why unusual symptoms deserve advice from a health worker.",
+      "points_bn": [
+        "জরায়ুমুখ হলো জরায়ুর নিচের অংশ; কিছু ধরনের এইচপিভি সংক্রমণ সেখানে দীর্ঘদিন থাকলে সমস্যা করতে পারে।",
+        "এইচপিভি খুব সাধারণ এবং অনেক সময় শরীর নিজেই তা সামলে নেয়; তাই আতঙ্কিত না হয়ে নির্ভরযোগ্য তথ্য নিন।",
+        "স্থানীয় নিয়ম অনুযায়ী টিকা বা স্ক্রিনিং পাওয়া যায় কি না স্বাস্থ্যকেন্দ্রে জেনে নিন।",
+        "সহবাসের পর রক্তপাত বা অস্বাভাবিক স্রাব হলে পরীক্ষা না করে নিজে কারণ ধরে নেবেন না।"
+      ],
+      "points_en": [
+        "The cervix is the lower part of the womb; some HPV infections can cause problems if they persist.",
+        "HPV is common and often clears on its own, so seek reliable information rather than panic.",
+        "Ask a health centre whether HPV vaccination or screening is available under local guidance.",
+        "Bleeding after sex or unusual discharge needs a check rather than self-diagnosis."
+      ],
+      "when_see_doctor_bn": "সহবাসের পর রক্তপাত, মাসিকের মাঝখানে রক্তপাত বা অস্বাভাবিক স্রাব হলে স্বাস্থ্যকর্মীর পরামর্শ নিন।",
+      "when_see_doctor_en": "Ask a health worker about bleeding after sex, bleeding between periods, or unusual discharge."
+    },
+    {
+      "id": "sti_and_hiv_safety",
+      "icon": "🧡",
+      "category": "safety",
+      "audience": ["teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "WHO — Sexually transmitted infections",
+      "source_url": "https://www.who.int/en/news-room/fact-sheets/detail/sexually-transmitted-infections-%28stis%29",
+      "reviewed": "2026-07-31",
+      "title_bn": "যৌন সংক্রমণ ও নিরাপদ যত্ন",
+      "title_en": "STIs, HIV, and safer care",
+      "keywords": ["এসটিআই", "STI", "যৌন সংক্রমণ", "HIV", "এইচআইভি", "স্রাব", "condom"],
+      "summary_bn": "যৌন সংক্রমণের সাধারণ লক্ষণ, পরীক্ষা, গোপনীয়তা ও নিরাপদ সাহায্য নেওয়ার কথা।",
+      "summary_en": "Common STI concerns, testing, privacy, and how to seek safer care.",
+      "points_bn": [
+        "কিছু যৌন সংক্রমণে কোনো লক্ষণ নাও থাকতে পারে; লক্ষণ না থাকলেই সংক্রমণ নেই বলা যায় না।",
+        "অস্বাভাবিক স্রাব, ঘা, চুলকানি, প্রস্রাবে জ্বালা বা সহবাসে ব্যথা হলে স্বাস্থ্যকর্মীর পরামর্শ নিন।",
+        "কনডম সঠিকভাবে ব্যবহার করলে অনেক সংক্রমণ ও অনিচ্ছাকৃত গর্ভধারণের ঝুঁকি কমে; স্বাস্থ্যকর্মী ব্যবহার বুঝিয়ে দিতে পারেন।",
+        "পরীক্ষা ও চিকিৎসা গোপনীয়ভাবে কোথায় পাওয়া যায় তা স্বাস্থ্যকেন্দ্রে জেনে নিন; দোষারোপ নয়, যত্নই গুরুত্বপূর্ণ।"
+      ],
+      "points_en": [
+        "Some STIs have no symptoms, so feeling well does not always rule out infection.",
+        "Seek advice for unusual discharge, sores, itching, burning when urinating, or pain during sex.",
+        "Correct condom use reduces the risk of many infections and unintended pregnancy; a health worker can explain it.",
+        "Ask where confidential testing and treatment are available; care matters more than blame."
+      ],
+      "when_see_doctor_bn": "জ্বর, তীব্র তলপেট ব্যথা, ঘা বা গর্ভাবস্থায় সংক্রমণের আশঙ্কা হলে দ্রুত স্বাস্থ্যকেন্দ্রে যান।",
+      "when_see_doctor_en": "Seek prompt care for fever, severe lower-abdominal pain, sores, or a possible infection during pregnancy."
+    },
+    {
+      "id": "fertility_and_infertility",
+      "icon": "🌾",
+      "category": "health",
+      "audience": ["adult", "caregiver"],
+      "learn": true,
+      "source": "WHO — Infertility",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/infertility",
+      "reviewed": "2026-07-31",
+      "title_bn": "প্রজননক্ষমতা ও বন্ধ্যাত্ব",
+      "title_en": "Fertility and infertility",
+      "keywords": ["বন্ধ্যাত্ব", "infertility", "fertility", "সন্তানধারণ", "গর্ভধারণ", "conceive"],
+      "summary_bn": "সন্তানধারণে দেরি হলে কেন দুজনেরই স্বাস্থ্যপরামর্শ দরকার এবং সাহায্য পাওয়ার পথ।",
+      "summary_en": "Why both partners may need health advice when pregnancy takes longer and where to seek help.",
+      "points_bn": [
+        "সন্তানধারণে সমস্যা শুধু নারীর কারণে হয় না; নারী, পুরুষ বা দুজনের কারণ থাকতে পারে।",
+        "মাসিকের ইতিহাস, আগের অসুস্থতা ও দুজনের স্বাস্থ্য সম্পর্কে স্বাস্থ্যকর্মী জানতে চাইতে পারেন।",
+        "পরীক্ষা বা চিকিৎসার সিদ্ধান্ত নিজে না নিয়ে প্রশিক্ষিত স্বাস্থ্যকর্মীর সঙ্গে পরিকল্পনা করুন।",
+        "সামাজিক চাপ বা দোষারোপ মানসিক কষ্ট বাড়ায় — সহানুভূতি ও গোপনীয়তা জরুরি।"
+      ],
+      "points_en": [
+        "Difficulty becoming pregnant is not only a woman's issue; causes can involve either or both partners.",
+        "A health worker may ask about periods, past illness, and both partners' health.",
+        "Plan tests or treatment with a trained health worker instead of self-treating.",
+        "Blame and social pressure add distress; compassion and privacy matter."
+      ],
+      "when_see_doctor_bn": "অনেকদিন চেষ্টা করেও গর্ভধারণ না হলে বা মাসিক খুব অনিয়মিত হলে স্ত্রীরোগ/প্রজনন স্বাস্থ্যকর্মীর পরামর্শ নিন।",
+      "when_see_doctor_en": "Ask a reproductive health worker for advice if pregnancy does not happen after trying or periods are very irregular."
+    },
+    {
+      "id": "healthy_relationships_and_consent",
+      "icon": "🤝",
+      "category": "safety",
+      "audience": ["child", "teen", "adolescent", "adult", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/bangladesh/en/reports/integrated-community-based-child-protection-system-bangladesh",
+      "reviewed": "2026-07-31",
+      "title_bn": "নিরাপদ সম্পর্ক ও সম্মতি",
+      "title_en": "Healthy relationships and consent",
+      "keywords": ["সম্মতি", "consent", "সম্পর্ক", "relationship", "না বলতে", "জোর", "সীমানা"],
+      "summary_bn": "সম্মতি, ব্যক্তিগত সীমানা, নিরাপদ সম্পর্ক ও চাপ বা জোরের সময় সাহায্য চাওয়া।",
+      "summary_en": "Consent, personal boundaries, safe relationships, and getting help when there is pressure or force.",
+      "points_bn": [
+        "সম্মতি মানে স্বাধীনভাবে, স্পষ্টভাবে ও চাপ ছাড়া রাজি হওয়া; যে কোনো সময় মত বদলানো যায়।",
+        "চুপ থাকা, ভয় পাওয়া বা আগে রাজি হওয়া বর্তমান সম্মতি নয়।",
+        "জোর, হুমকি, অপমান বা ব্যক্তিগত ছবি ছড়ানোর ভয় নিরাপদ সম্পর্কের লক্ষণ নয়।",
+        "বিশ্বস্ত মানুষ, স্বাস্থ্যকর্মী বা জরুরি সেবার সাহায্য নিন; বিপদে একা মুখোমুখি হবেন না।"
+      ],
+      "points_en": [
+        "Consent means a free, clear yes without pressure; anyone can change their mind at any time.",
+        "Silence, fear, or agreeing before is not consent now.",
+        "Force, threats, humiliation, or fear that private images will be shared are not signs of a safe relationship.",
+        "Contact a trusted person, health worker, or emergency service; do not confront danger alone."
+      ],
+      "when_see_doctor_bn": "আঘাত, যৌন সহিংসতা বা তাৎক্ষণিক বিপদ হলে নিরাপদ জায়গায় যান, বিশ্বস্ত মানুষকে জানান এবং ৯৯৯-এ কল করুন।",
+      "when_see_doctor_en": "For injury, sexual violence, or immediate danger, move to safety, tell someone trusted, and call 999."
+    },
+    {
+      "id": "sleep_stress_and_self_care",
+      "icon": "🌙",
+      "category": "health",
+      "audience": ["teen", "adult", "caregiver"],
+      "learn": true,
+      "source": "UNICEF Bangladesh",
+      "source_url": "https://www.unicef.org/documents/improving-students-mental-health-bangladesh",
+      "reviewed": "2026-07-31",
+      "title_bn": "ঘুম, চাপ ও নিজের যত্ন",
+      "title_en": "Sleep, stress, and self-care",
+      "keywords": ["ঘুম", "sleep", "চাপ", "stress", "বিশ্রাম", "rest", "self care", "নিজের যত্ন"],
+      "summary_bn": "ঘুম, খাবার, বিশ্রাম, কথা বলা ও ছোট ছোট অভ্যাসে মন-শরীরের যত্ন নেওয়া।",
+      "summary_en": "Caring for body and mind through sleep, food, rest, connection, and small daily habits.",
+      "points_bn": [
+        "নিয়মিত ঘুম, খাবার, পানি, হালকা চলাফেরা ও বিশ্রাম শরীর-মনকে সামলাতে সাহায্য করে।",
+        "চাপ বেশি হলে কাজকে ছোট ভাগে নিন, ধীরে শ্বাস নিন এবং বিশ্বস্ত কারও সঙ্গে কথা বলুন।",
+        "মন খারাপ বা দুশ্চিন্তা দীর্ঘদিন থাকলে স্বাস্থ্যকর্মীর সঙ্গে কথা বলা দুর্বলতা নয়।",
+        "নিজের ক্ষতির চিন্তা হলে একা থাকবেন না এবং এখনই জরুরি সাহায্য নিন।"
+      ],
+      "points_en": [
+        "Regular sleep, food, water, gentle movement, and rest help the body and mind cope.",
+        "When stress is high, break tasks into small steps, breathe slowly, and talk to someone trusted.",
+        "Speaking with a health worker about ongoing low mood or worry is a strength, not a weakness.",
+        "If you may hurt yourself, do not stay alone and seek emergency help now."
+      ],
+      "when_see_doctor_bn": "দীর্ঘদিন ঘুম না হওয়া, মন খারাপ, আতঙ্ক বা নিজের ক্ষতির চিন্তা হলে দ্রুত স্বাস্থ্যকর্মীর সাহায্য নিন; জরুরি হলে ৯৯৯।",
+      "when_see_doctor_en": "Seek help for ongoing sleep problems, low mood, panic, or self-harm thoughts; call 999 in an emergency."
+    },
+    {
+      "id": "pregnancy_test_and_first_visit",
+      "icon": "🧪",
+      "category": "health",
+      "audience": ["adult", "pregnant", "caregiver"],
+      "learn": true,
+      "source": "WHO — Antenatal care",
+      "source_url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/maternal-health/antenatal-care",
+      "reviewed": "2026-07-31",
+      "title_bn": "গর্ভধারণের পরীক্ষা ও প্রথম চেকআপ",
+      "title_en": "Pregnancy testing and the first check-up",
+      "keywords": ["গর্ভধারণ পরীক্ষা", "pregnancy test", "first visit", "প্রথম চেকআপ", "গর্ভবতী"],
+      "summary_bn": "গর্ভধারণের সন্দেহ হলে পরীক্ষা, স্বাস্থ্যকেন্দ্রে যাওয়া এবং জরুরি লক্ষণ চিনে রাখা।",
+      "summary_en": "Testing when pregnancy is possible, arranging care, and recognising warning signs.",
+      "points_bn": [
+        "মাসিক দেরি হলে গর্ভধারণের পরীক্ষা সম্পর্কে স্বাস্থ্যকর্মী বা ফার্মাসিস্টের কাছ থেকে সঠিক নির্দেশনা নিন।",
+        "পরীক্ষার ফল যা-ই হোক, গর্ভধারণের সম্ভাবনা থাকলে স্বাস্থ্যকেন্দ্রে যোগাযোগ করে পরের পদক্ষেপ জেনে নিন।",
+        "প্রথম চেকআপে আগের অসুস্থতা, ওষুধ, মাসিকের তারিখ ও প্রশ্নগুলো লিখে নিয়ে যেতে পারেন।",
+        "গর্ভাবস্থায় রক্তপাত, তীব্র ব্যথা, খিঁচুনি, অজ্ঞানভাব বা শ্বাসকষ্ট হলে অপেক্ষা করবেন না।"
+      ],
+      "points_en": [
+        "If a period is late, ask a health worker or pharmacist for correct instructions about pregnancy testing.",
+        "Whatever the result, contact a health centre if pregnancy is possible and ask about next steps.",
+        "For the first visit, bring the date of the last period, past illness, medicines, and questions.",
+        "During pregnancy, do not wait with bleeding, severe pain, seizures, fainting, or breathing difficulty."
+      ],
+      "when_see_doctor_bn": "গর্ভাবস্থায় রক্তপাত, তীব্র পেটব্যথা, অজ্ঞানভাব, খিঁচুনি বা শ্বাসকষ্ট হলে এখনই হাসপাতালে যান বা ৯৯৯-এ কল করুন।",
+      "when_see_doctor_en": "During pregnancy, go to a hospital now or call 999 for bleeding, severe pain, fainting, seizures, or breathing difficulty."
+    },
+    {
+      "id": "postpartum_recovery_and_breastfeeding",
+      "icon": "🫶",
+      "category": "health",
+      "audience": ["adult", "pregnant", "caregiver"],
+      "learn": true,
+      "source": "WHO — Postnatal care",
+      "source_url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/maternal-health/postnatal-care",
+      "reviewed": "2026-07-31",
+      "title_bn": "প্রসবের পর সুস্থ হওয়া ও বুকের দুধ",
+      "title_en": "Recovery after birth and breastfeeding",
+      "keywords": ["প্রসবের পর", "postpartum", "বুকের দুধ", "breastfeeding", "সন্তান হওয়ার পর"],
+      "summary_bn": "সন্তান হওয়ার পর শরীর, মন, বিশ্রাম, বুকের দুধ ও সহায়তা পাওয়ার সহজ নির্দেশনা।",
+      "summary_en": "Simple guidance on recovery, mood, rest, breastfeeding, and support after birth.",
+      "points_bn": [
+        "প্রসবের পর শরীরের সুস্থ হতে সময় লাগে; বিশ্রাম, পুষ্টিকর খাবার, পানি ও সাহায্য দরকার।",
+        "বুকের দুধ খাওয়ানো নিয়ে ব্যথা বা দুশ্চিন্তা হলে মা ও শিশুর স্বাস্থ্যকর্মীর সাহায্য নিন।",
+        "মন খারাপ, কান্না, ভয় বা একা লাগা চলতে থাকলে তা লুকাবেন না — বিশ্বস্ত মানুষ ও স্বাস্থ্যকর্মীকে বলুন।",
+        "প্রসবের পর অতিরিক্ত রক্তপাত, জ্বর, দুর্গন্ধযুক্ত স্রাব বা তীব্র অসুস্থতা জরুরি লক্ষণ হতে পারে।"
+      ],
+      "points_en": [
+        "The body needs time after birth; rest, nourishing food, water, and practical help matter.",
+        "Ask a maternal or child health worker for help with breastfeeding pain or worries.",
+        "If sadness, crying, fear, or loneliness continues, tell someone trusted and a health worker.",
+        "Heavy bleeding, fever, foul-smelling discharge, or severe illness after birth can be urgent."
+      ],
+      "when_see_doctor_bn": "প্রসবের পর অতিরিক্ত রক্তপাত, অজ্ঞানভাব, তীব্র ব্যথা বা জ্বর হলে এখনই হাসপাতালে যান বা ৯৯৯-এ কল করুন।",
+      "when_see_doctor_en": "After birth, go to a hospital now or call 999 for heavy bleeding, fainting, severe pain, or fever."
+    },
+    {
       "id": "period_emotions",
       "icon": "🫂",
       "title_bn": "মাসিকের সময় মন ও অনুভূতি",

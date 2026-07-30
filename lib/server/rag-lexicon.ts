@@ -19,6 +19,13 @@ export const SEARCH_TERM_GROUPS: SearchTermGroup[] = [
   { key: "adolescent", terms: ["adolescent", "adolescence", "teen", "teenager", "কিশোর", "কিশোরী", "কৈশোর"] },
   { key: "water", terms: ["water", "drinking water", "পানি", "জল", "খাবার পানি", "পানীয় জল", "পানীয় জল"] },
   { key: "education", terms: ["education", "school", "learning", "শিক্ষা", "স্কুল", "শেখা"] },
+  { key: "breast_health", terms: ["breast", "lump", "nipple", "স্তন", "গাঁট", "বোঁটা"] },
+  { key: "cervical_health", terms: ["cervical", "cervix", "hpv", "জরায়ুমুখ", "জরায়ুমুখ", "এইচপিভি"] },
+  { key: "sexual_health", terms: ["sti", "sexually transmitted", "infection", "যৌন সংক্রমণ", "যৌনস্বাস্থ্য", "এসটিআই", "এইচআইভি"] },
+  { key: "fertility", terms: ["fertility", "infertility", "conceive", "বন্ধ্যাত্ব", "সন্তানধারণ", "প্রজনন ক্ষমতা"] },
+  { key: "consent", terms: ["consent", "relationship", "সম্মতি", "সম্পর্ক", "না বলতে", "জোর"] },
+  { key: "breastfeeding", terms: ["breastfeeding", "breastfeed", "বুকের দুধ", "স্তন্যপান"] },
+  { key: "sleep", terms: ["sleep", "rest", "ঘুম", "বিশ্রাম"] },
 ];
 
 function normalise(value: string): string {
