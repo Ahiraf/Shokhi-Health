@@ -18,7 +18,7 @@ process.env.SHOKHI_BACKEND = "mock";
 
 import { describe, it, expect } from "vitest";
 import { triage } from "../lib/server/triage";
-import { Assistant } from "../lib/server/assistant";
+import { Assistant, guardContextualExtraction } from "../lib/server/assistant";
 
 /** Run one Bangla/English message through the offline symptom extractor. */
 async function extract(message: string) {
@@ -65,6 +65,40 @@ describe("A. Bangla negation — deny vs. affirm a symptom", () => {
     const p = await extract("জ্বর নেই, কিন্তু প্রচুর রক্ত যাচ্ছে আর মাথা ঘুরছে");
     const r = triage(p);
     expect(r.urgency).toBe("emergency");
+  });
+});
+
+describe("A2. Pregnancy-context grounding — no invented obstetric emergency", () => {
+  it("does not turn menstrual pain and heavy bleeding into eclampsia", () => {
+    const menstrualMessage = "মাসিকের সময় এত ব্যথা হয় যে স্কুলে যেতে পারি না, আমার মাসিক ঠিক সময়ে বন্ধ হয় না, অনেক ব্লিডিং হয়";
+    const guarded = guardContextualExtraction({
+      profile: {
+        severe_pelvic_pain: true,
+        heavy_bleeding: true,
+        is_pregnant: true,
+        pregnancy_convulsions: true,
+      },
+      evidence: [],
+      uncertain_fields: [],
+      method: "gemma",
+    }, menstrualMessage);
+
+    expect(guarded.profile.is_pregnant).not.toBe(true);
+    expect(guarded.profile.pregnancy_convulsions).not.toBe(true);
+    expect(triage(guarded.profile).red_flags.map((flag: any) => flag.id)).not.toContain("eclampsia");
+  });
+
+  it("keeps an explicit pregnancy convulsion emergency", () => {
+    const guarded = guardContextualExtraction({
+      profile: { is_pregnant: true, pregnancy_convulsions: true },
+      evidence: [],
+      uncertain_fields: [],
+      method: "gemma",
+    }, "আমি গর্ভবতী এবং আমার খিঁচুনি হচ্ছে");
+
+    expect(guarded.profile.is_pregnant).toBe(true);
+    expect(guarded.profile.pregnancy_convulsions).toBe(true);
+    expect(triage(guarded.profile).urgency).toBe("emergency");
   });
 });
 

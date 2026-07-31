@@ -118,6 +118,84 @@ export function lifeStageOf(profile: Profile): string {
   return "";
 }
 
+// Gemma is asked not to infer symptoms, but model output is still untrusted input. In
+// particular, a menstrual complaint must never become an obstetric emergency because the
+// extractor guessed a pregnancy-only field. Keep those fields only when the conversation
+// contains matching, explicit evidence. The rules engine remains the sole triage authority.
+const PREGNANCY_CONTEXT = [
+  /গর্ভবতী/u, /গর্ভধারণ/u, /গর্ভাবস্থা/u, /গর্ভের\s*শিশু/u,
+  /\bpregnan(?:t|cy)\b/i, /\bexpecting\b/i,
+];
+const POSTPARTUM_CONTEXT = [
+  /প্রসব/u, /সন্তান\s*হয়েছে/u, /বাচ্চা\s*হয়েছে/u, /সদ্য\s*মা/u,
+  /\bpostpartum\b/i, /\bafter\s+(?:giving\s+)?birth\b/i, /\brecently\s+delivered\b/i,
+];
+const ASSERTED_PREGNANCY = [
+  /আমি\s+(?:এখন\s+)?গর্ভবতী/u, /আমার\s+গর্ভধারণ\s+হয়েছে/u,
+  /\bI\s+am\s+pregnant\b/i, /\bcurrently\s+pregnant\b/i,
+];
+const POSSIBLE_PREGNANCY = [
+  /গর্ভবতী\s+হতে\s+পারি/u, /গর্ভধারণের\s+সম্ভাবনা/u,
+  /\b(?:might|could|possibly)\s+be\s+pregnant\b/i,
+];
+const PREGNANCY_SYMPTOMS: Record<string, RegExp[]> = {
+  pregnancy_bleeding: [/রক্তপাত/u, /রক্ত\s+যাচ্ছে/u, /প্রচুর\s+রক্ত/u, /অতিরিক্ত\s+রক্ত/u, /\bbleed(?:ing)?\b/i],
+  pregnancy_severe_headache: [/তীব্র\s+মাথা/u, /মাথা\s+ফেটে/u, /\bsevere\s+headache\b/i],
+  pregnancy_vision_changes: [/ঝাপসা/u, /চোখে\s+ঝাপসা/u, /\bblurred\s+vision\b/i, /\bflashing\s+spots?\b/i],
+  pregnancy_face_hand_swelling: [/মুখ\s+ফুলে/u, /হাত\s+ফুলে/u, /\b(?:face|hand)s?\s+swelling\b/i, /\bswollen\s+(?:face|hands?)\b/i],
+  pregnancy_convulsions: [/খিঁচুনি/u, /convulsion/i, /seizure/i, /\bfits?\b/i],
+  reduced_fetal_movement: [/বাচ্চা\s+(?:নড়ছে|নড়ছে)\s+না/u, /নড়াচড়া\s+কম/u, /\bbaby\s+(?:is\s+)?not\s+moving\b/i, /\breduced\s+fetal\s+movement\b/i],
+};
+const POSTPARTUM_SYMPTOMS: Record<string, RegExp[]> = {
+  postpartum_heavy_bleeding: [/প্রচুর\s+রক্ত/u, /অতিরিক্ত\s+রক্ত/u, /\bheavy\s+bleed(?:ing)?\b/i],
+  postpartum_fever: [/জ্বর/u, /\bfever\b/i],
+  postpartum_foul_lochia: [/দুর্গন্ধযুক্ত\s+স্রাব/u, /দুর্গন্ধ\s+যুক্ত\s+স্রাব/u, /\bfoul\s+lochia\b/i],
+  breast_pain_fever: [/স্তনে\s+ব্যথা/u, /বুকের\s+ব্যথা/u, /\bbreast\s+pain\b/i],
+  postpartum_sadness: [/মন\s+খারাপ/u, /দুঃখ/u, /\bpostpartum\s+(?:sadness|depression)\b/i],
+};
+
+function matchesAny(text: string, patterns: RegExp[]): boolean {
+  return patterns.some((pattern) => pattern.test(text));
+}
+
+/**
+ * Remove pregnancy/postpartum fields that are not grounded in the user's conversation.
+ * This protects triage from both a fresh Gemma hallucination and a stale hallucinated field
+ * sent back by the client in its next request.
+ */
+export function guardContextualExtraction(
+  extraction: ExtractionResult,
+  conversation: string,
+  trustedLifeStage = "",
+): ExtractionResult {
+  const text = conversation.trim();
+  const profile = { ...extraction.profile };
+  const deniedPregnancy = /গর্ভবতী\s+(?:নই|না)/u.test(text) || /\bnot\s+pregnant\b/i.test(text);
+  const pregnancyContext = matchesAny(text, PREGNANCY_CONTEXT) && !deniedPregnancy;
+  const postpartumContext = matchesAny(text, POSTPARTUM_CONTEXT);
+  const assertedPregnancy = matchesAny(text, ASSERTED_PREGNANCY) && !deniedPregnancy;
+  const possiblePregnancy = matchesAny(text, POSSIBLE_PREGNANCY);
+
+  if (profile.is_pregnant === true && !(assertedPregnancy || trustedLifeStage === "pregnant")) {
+    delete profile.is_pregnant;
+  }
+  if (profile.is_pregnant_possible === true && !(assertedPregnancy || possiblePregnancy || trustedLifeStage === "pregnant")) {
+    delete profile.is_pregnant_possible;
+  }
+  if (profile.recently_gave_birth === true && !(postpartumContext || trustedLifeStage === "postpartum")) {
+    delete profile.recently_gave_birth;
+  }
+
+  for (const [field, patterns] of Object.entries(PREGNANCY_SYMPTOMS)) {
+    if (!pregnancyContext || !matchesAny(text, patterns)) delete profile[field];
+  }
+  for (const [field, patterns] of Object.entries(POSTPARTUM_SYMPTOMS)) {
+    if (!postpartumContext || !matchesAny(text, patterns)) delete profile[field];
+  }
+
+  return { ...extraction, profile };
+}
+
 /** Map a life stage to the corpus topic to gently prefer during retrieval. */
 function topicForStage(stage: string): string | undefined {
   switch (stage) {
@@ -180,7 +258,7 @@ export class Assistant {
     // when a deployment deliberately prefers the faster deterministic intake path.
     const convo = this.history.join("\n");
     const useGemma = this.backend.name !== "mock" && llmExtractEnabled();
-    this.extraction = useGemma
+    const rawExtraction: ExtractionResult = useGemma
       ? await this.backend.extractSymptoms(convo, this.profile)
       : {
           profile: deterministicExtract(convo, this.profile),
@@ -188,6 +266,15 @@ export class Assistant {
           uncertain_fields: [],
           method: "deterministic",
         };
+    const trustedLifeStage = this.personalization.profile?.lifeStage || "";
+    // Guard both newly extracted fields and profile values returned by the client. This
+    // matters because a bad field from one model response can otherwise persist in the next.
+    this.profile = guardContextualExtraction(
+      { profile: this.profile, evidence: [], uncertain_fields: [], method: "deterministic" },
+      convo,
+      trustedLifeStage,
+    ).profile;
+    this.extraction = guardContextualExtraction(rawExtraction, convo, trustedLifeStage);
     this.profile = { ...this.profile, ...this.extraction.profile };
   }
 

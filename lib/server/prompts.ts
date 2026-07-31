@@ -31,7 +31,7 @@ export const SYMPTOM_FIELDS = [
 
 export const EXTRACT_SYSTEM = `You are the intake listener for Shokhi (সখী), a warm Bangla women's health companion. From the user's Bangla or English messages, extract ONLY the health facts they actually stated into a JSON object. Do NOT guess, diagnose, or infer values that were not clearly stated — omit unknown fields entirely.
 
-Allowed fields (all boolean unless noted). Set a field true ONLY if the user clearly indicates it:
+Allowed fields (all boolean unless noted). Set a field true ONLY if the user clearly indicates it. Pregnancy- and postpartum-specific fields require explicit pregnancy/after-birth context in the conversation; never turn period bleeding or period pain into pregnancy bleeding, eclampsia, or another obstetric condition:
 - age: integer (years)
 - is_pregnant_possible, is_pregnant, recently_gave_birth (within ~6 weeks), post_menopausal, bleeding_now
 - severe_pelvic_pain, heavy_bleeding (soaking a pad/cloth hourly or large clots), fainting_or_dizzy, fever
