@@ -16,6 +16,29 @@ what may be happening, what to do next, and when to contact a real health profes
 > Shokhi is a **health companion, not a doctor**. It gives an initial sense and safe
 > guidance; a qualified doctor confirms any diagnosis. Emergencies → **999**.
 
+## 🧰 Tech Stack
+
+[![Next.js](https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Gemma 4](https://img.shields.io/badge/Gemma_4-8E75B2?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/gemma)
+[![RAG](https://img.shields.io/badge/RAG-6F42C1?style=for-the-badge&logo=bookstack&logoColor=white)](#-rag--grounded-cited-answers-in-simple-words)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+
+| Layer | Technology |
+| ----- | ---------- |
+| Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
+| Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
+| AI | Gemma 4 for language, structured tools, and report-image understanding |
+| Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
+| Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
+| Retrieval | TypeScript RAG · trusted Markdown corpus · precomputed embeddings · grounded responses |
+| Testing | Vitest |
+| Deployment | Vercel |
+
 ## 🔒 Privacy
 
 > No account required. Your profile and tracker data stay on your device. Chat messages are
@@ -233,33 +256,6 @@ to a cloud model.
 Because the triage engine and Gemma backend are fully decoupled from the UI, the same core
 powers the web app, guides, tracker, reports, and wellness features. For emergencies, the app
 clearly displays **16263 / 999**.
-
-## 🧰 Tech Stack
-
-<p align="center">
-  <img alt="Next.js" src="https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
-  <img alt="React" src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
-  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
-</p>
-<p align="center">
-  <img alt="Gemma 4" src="https://img.shields.io/badge/Gemma_4-8E75B2?style=for-the-badge&logo=google&logoColor=white" />
-  <img alt="RAG" src="https://img.shields.io/badge/RAG-6F42C1?style=for-the-badge&logo=bookstack&logoColor=white" />
-  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
-  <img alt="Vitest" src="https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white" />
-  <img alt="Vercel" src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
-</p>
-
-| Layer | Technology |
-| ----- | ---------- |
-| Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
-| Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
-| AI | Gemma 4 for language, structured tools, and report-image understanding |
-| Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
-| Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
-| Retrieval | TypeScript RAG · trusted Markdown corpus · precomputed embeddings · grounded responses |
-| Testing | Vitest |
-| Deployment | Vercel |
 
 ---
 
