@@ -23,19 +23,6 @@ const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
   info: { key: "urgency.info.short", cls: "bg-blush text-rose-deep" },
 };
 
-const CATEGORY_FILTERS = [
-  { id: "all", key: "guides.categoryAll" as const },
-  { id: "conditions", key: "guides.categoryConditions" as const },
-  { id: "health", key: "guides.categoryHealth" as const },
-  { id: "adolescence", key: "guides.categoryAdolescence" as const },
-  { id: "nutrition", key: "guides.categoryNutrition" as const },
-  { id: "safety", key: "guides.categorySafety" as const },
-  { id: "environment", key: "guides.categoryEnvironment" as const },
-  { id: "education", key: "guides.categoryEducation" as const },
-  { id: "accessibility", key: "guides.categoryAccessibility" as const },
-  { id: "referrals", key: "guides.categoryReferrals" as const },
-] as const;
-
 const CATEGORY_LABELS: Record<string, { bn: string; en: string }> = {
   conditions: { bn: "রোগ ও উপসর্গ", en: "Conditions" },
   health: { bn: "স্বাস্থ্য", en: "Health" },
@@ -71,7 +58,6 @@ export default function LearnPage() {
   const [suggestions, setSuggestions] = useState<LearnSuggestion[]>([]);
   const [suggesting, setSuggesting] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedJourney, setSelectedJourney] = useState<JourneyKey | null>(null);
 
   useEffect(() => {
@@ -146,7 +132,6 @@ export default function LearnPage() {
       .filter((condition) => {
         // Period cramps has a richer illustrated guide and self-check below.
         if (condition.id === "primary_dysmenorrhea") return false;
-        if (selectedCategory !== "all" && selectedCategory !== "conditions") return false;
         if (selectedJourney && !conditionsForJourney(condition.id, selectedJourney)) return false;
         if (!normalizedSearch) return true;
         return matchesLearnSearch(normalizedSearch, [condition.name_bn, condition.name_en ?? "", condition.about_bn, condition.about_en ?? "", ...conditionJourneys(condition.id)]);
@@ -159,7 +144,6 @@ export default function LearnPage() {
         // of this second grid prevents the same 15 cards from appearing twice.
         if (guide.image) return false;
         const category = guide.category ?? "health";
-        if (selectedCategory !== "all" && selectedCategory !== category) return false;
         if (selectedJourney && guideJourney(guide.id) !== selectedJourney) return false;
         if (!normalizedSearch) return true;
         return matchesLearnSearch(normalizedSearch, [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en ?? "", category, guide.source ?? "", ...(guide.keywords ?? [])]);
@@ -168,19 +152,17 @@ export default function LearnPage() {
 
     const sourceItems: LibraryItem[] = UNIQUE_SOURCE_TOPICS
       .filter((topic) => {
-        if (selectedCategory !== "all" && selectedCategory !== "health") return false;
         if (selectedJourney && !sourceTopicMatchesJourney(topic, selectedJourney)) return false;
         return matchesLearnSearch(normalizedSearch, [topic.title_bn, topic.title_en, topic.desc_bn, topic.desc_en, topic.source, ...topic.terms]);
       })
       .map((topic) => ({ kind: "source" as const, topic }));
 
     return [...conditionItems, ...guideItems, ...sourceItems];
-  }, [conditions, guides, normalizedSearch, search, selectedCategory, selectedJourney]);
+  }, [conditions, guides, normalizedSearch, search, selectedJourney]);
 
   const mascotGuides = useMemo(() => guides.filter((guide) => {
     if (!guide.image) return false;
     const category = guide.category ?? "health";
-    if (selectedCategory !== "all" && selectedCategory !== category) return false;
     if (selectedJourney) {
       const journey = guideJourney(guide.id);
       if (journey && journey !== selectedJourney) return false;
@@ -188,7 +170,7 @@ export default function LearnPage() {
     }
     if (!normalizedSearch) return true;
     return matchesLearnSearch(normalizedSearch, [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en ?? "", category, guide.source ?? "", ...(guide.keywords ?? [])]);
-  }), [guides, normalizedSearch, selectedCategory, selectedJourney]);
+  }), [guides, normalizedSearch, selectedJourney]);
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
@@ -266,24 +248,6 @@ export default function LearnPage() {
         </section>
       )}
 
-      <div className="mt-4" aria-label={t("guides.filterLabel")}>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-plum/45">{t("guides.filterLabel")}</p>
-        <div className="flex flex-wrap gap-2">
-          {CATEGORY_FILTERS.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => setSelectedCategory(category.id)}
-              className={selectedCategory === category.id
-                ? "rounded-full bg-rose px-3 py-1.5 text-xs font-semibold text-accentink"
-                : "rounded-full bg-surface px-3 py-1.5 text-xs font-semibold text-plum/65 ring-1 ring-rose-soft hover:bg-blush"}
-            >
-              {t(category.key)}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {error && <p className="mt-8 text-center text-sm text-plum/50">{t("learn.error")}</p>}
 
       {selectedJourney && (
@@ -293,7 +257,9 @@ export default function LearnPage() {
         </div>
       )}
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8">
+        <h2 className="font-display text-2xl font-bold text-plum">{lang === "en" ? "More topics" : "আরও বিষয়"}</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           if (item.kind === "condition") {
             const { condition } = item;
@@ -376,6 +342,7 @@ export default function LearnPage() {
             </Link>
           );
         })}
+        </div>
       </div>
 
       {normalizedSearch && items.length === 0 && mascotGuides.length === 0 && (

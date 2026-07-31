@@ -15,6 +15,7 @@ export default function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState<string | null>(null); // open dropdown group (desktop)
+  const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const { t, lang, toggle } = useLang();
   const { theme, toggle: toggleTheme } = useTheme();
 
@@ -33,6 +34,11 @@ export default function Nav() {
   };
 
   const themeLabel = t(theme === "dark" ? "nav.lightMode" : "nav.darkMode");
+  const closeMobileMenu = () => {
+    setOpen(false);
+    setMobileGroup(null);
+  };
+
   const themeButton = (
     <button
       onClick={toggleTheme}
@@ -69,7 +75,7 @@ export default function Nav() {
   const profileButton = (
     <Link
       href="/profile"
-      onClick={() => setOpen(false)}
+      onClick={closeMobileMenu}
       className={`flex h-10 min-w-[5.5rem] items-center justify-center rounded-xl px-3 text-sm font-bold ring-1 ring-rose-soft transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose ${
         isActive("/profile") ? "bg-rose text-accentink" : "bg-surface/85 text-plum hover:bg-blush"
       }`}
@@ -83,7 +89,7 @@ export default function Nav() {
   return (
     <header className="nav-shell sticky top-0 z-40 border-b border-rose-soft/60 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-        <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+        <Link href="/" className="flex items-center gap-2.5" onClick={closeMobileMenu}>
           <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ring-1 ring-rose-soft">
             <Image
               src="/shokhi-mark.png"
@@ -197,26 +203,99 @@ export default function Nav() {
         </span>
       </div>
 
-      {/* mobile menu — all pages flattened (dropdowns expanded) */}
+      {/* mobile menu — a right-side drawer keeps grouped navigation easy to scan */}
       {open && (
-        <ul className="grid grid-cols-2 gap-1.5 px-5 pb-4 lg:hidden">
-          <li className="col-span-2">{profileButton}</li>
-          {NAV_LINKS.map((n) => (
-            <li key={n.href}>
-              <Link
-                href={n.href}
-                onClick={() => setOpen(false)}
-                className={`block rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
-                  isActive(n.href)
-                    ? "bg-rose text-accentink"
-                    : "bg-surface/70 text-plum/70 ring-1 ring-rose-soft"
-                }`}
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={t("nav.menu")}>
+          <button
+            type="button"
+            aria-label={t("notif.close")}
+            onClick={closeMobileMenu}
+            className="absolute inset-0 bg-plum/35 backdrop-blur-[1px]"
+          />
+          <aside className="absolute inset-y-0 right-0 flex w-[88vw] max-w-sm flex-col bg-surface shadow-lift ring-1 ring-rose-soft">
+            <div className="flex items-center justify-between border-b border-rose-soft px-5 py-4">
+              <div>
+                <p className="font-display text-xl font-bold text-plum">{lang === "en" ? "Pages" : "সব পাতা"}</p>
+                <p className="mt-0.5 text-xs text-plum/50">{lang === "en" ? "Choose where to go" : "যেখানে যেতে চান বেছে নিন"}</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeMobileMenu}
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-blush text-plum ring-1 ring-rose-soft"
+                aria-label={t("notif.close")}
               >
-                {t(n.key)}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <span aria-hidden="true" className="text-2xl leading-none">×</span>
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+              <div className="mb-3">{profileButton}</div>
+              <ul className="space-y-2">
+                {NAV.map((n) => {
+                  if ("children" in n) {
+                    const groupOpen = mobileGroup === n.key;
+                    const groupActive = n.children.some((child) => isActive(child.href));
+                    return (
+                      <li key={n.key}>
+                        <button
+                          type="button"
+                          onClick={() => setMobileGroup(groupOpen ? null : n.key)}
+                          aria-expanded={groupOpen}
+                          className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                            groupActive ? "bg-rose text-accentink" : "bg-surface/70 text-plum/75 ring-1 ring-rose-soft"
+                          }`}
+                        >
+                          <span>{t(n.key)}</span>
+                          <Icon name="chevron" size={15} className={`rotate-90 transition ${groupOpen ? "-scale-y-100" : ""}`} />
+                        </button>
+                        {groupOpen && (
+                          <ul className="mt-1.5 space-y-1.5 border-l-2 border-rose-soft pl-3">
+                            {n.children.map((child) => (
+                              <li key={child.href}>
+                                <Link
+                                  href={child.href}
+                                  onClick={closeMobileMenu}
+                                  className={`block rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
+                                    isActive(child.href) ? "bg-rose text-accentink" : "bg-blush/55 text-plum/70 hover:bg-blush"
+                                  }`}
+                                >
+                                  {t(child.key)}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li key={n.href}>
+                      <Link
+                        href={n.href}
+                        onClick={closeMobileMenu}
+                        className={`block rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                          isActive(n.href) ? "bg-rose text-accentink" : "bg-surface/70 text-plum/75 ring-1 ring-rose-soft"
+                        }`}
+                      >
+                        {t(n.key)}
+                      </Link>
+                    </li>
+                  );
+                })}
+                <li>
+                  <Link
+                    href="/about"
+                    onClick={closeMobileMenu}
+                    className="block rounded-xl bg-surface/70 px-4 py-3 text-sm font-semibold text-plum/75 ring-1 ring-rose-soft transition hover:bg-blush"
+                  >
+                    {t("nav.about")}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
       )}
     </header>
   );
