@@ -63,5 +63,7 @@ export const RELATED_MASCOT_IMAGES: Record<string, string> = {
 };
 
 export function mascotImageFor(id: string): string {
-  return RELATED_MASCOT_IMAGES[id] ?? GUIDE_MASCOT_IMAGES.safe_help;
+  // Guide cards use GUIDE_MASCOT_IMAGES directly. Prefer that same mapping on detail
+  // pages, then fall back to the shared condition/source mapping for related topics.
+  return GUIDE_MASCOT_IMAGES[id] ?? RELATED_MASCOT_IMAGES[id] ?? GUIDE_MASCOT_IMAGES.safe_help;
 }

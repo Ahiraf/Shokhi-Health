@@ -11,6 +11,7 @@ import { detectCrisis, crisisResponse } from "../lib/server/crisis";
 import { guideJourney } from "../lib/journeys";
 import { matchesLearnSearch } from "../lib/learn-search";
 import { orderLearnSuggestions } from "../lib/learn-suggestions";
+import { GUIDE_MASCOT_IMAGES, mascotImageFor } from "../lib/mascot-images";
 
 describe("#5 escalate-only LLM safety net", () => {
   it("ESCALATES an 'info' result to emergency when the classifier flags one", () => {
@@ -123,6 +124,13 @@ describe("bilingual Learn search and suggestions", () => {
       { id: "period_emotions", kind: "guide", label_bn: "মাসিকের সময় মন ও অনুভূতি", label_en: "Mood during your period" },
     ]);
     expect(ordered.map((item) => item.id)).toEqual(["period_cramps", "endometriosis", "period_emotions", "anemia"]);
+  });
+
+  it("uses the same mascot mapping for guide cards and detail pages", () => {
+    for (const [id, image] of Object.entries(GUIDE_MASCOT_IMAGES)) {
+      expect(mascotImageFor(id)).toBe(image);
+    }
+    expect(mascotImageFor("period_cramps")).toBe(GUIDE_MASCOT_IMAGES.period_cramps);
   });
 
   it("normalizes model greetings to the inclusive bilingual form", () => {
