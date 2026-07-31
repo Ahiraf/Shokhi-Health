@@ -9,14 +9,6 @@
   <p>🌐 <a href="#demo">Demo</a> · 📖 <a href="docs/KAGGLE_WRITEUP.md">Kaggle writeup</a> · 🛡️ <a href="#safety-first-design">Safety-first design</a></p>
 </div>
 
-Shokhi (সখী — *"a trusted confidante"*) lets girls and women **type in Bangla or English**,
-then combines Gemma 4's language understanding with a deterministic safety layer to explain
-what may be happening, what to do next, and when to contact a real health professional.
-
-> Shokhi is a **health companion, not a doctor**. It gives an initial sense and safe
-> guidance; a qualified doctor confirms any diagnosis. Emergencies → **999**.
-
-## 🧰 Tech Stack
 
 [![Next.js](https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
@@ -27,6 +19,16 @@ what may be happening, what to do next, and when to contact a real health profes
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+
+
+Shokhi (সখী — *"a trusted confidante"*) lets girls and women **type in Bangla or English**,
+then combines Gemma 4's language understanding with a deterministic safety layer to explain
+what may be happening, what to do next, and when to contact a real health professional.
+
+> Shokhi is a **health companion, not a doctor**. It gives an initial sense and safe
+> guidance; a qualified doctor confirms any diagnosis. Emergencies → **999**.
+
+## 🧰 Tech Stack
 
 | Layer | Technology |
 | ----- | ---------- |
