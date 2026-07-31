@@ -32,6 +32,8 @@ export default function Composer({
   const [transcribing, setTranscribing] = useState(false);
   const [voiceError, setVoiceError] = useState("");
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const browserTranscriptRef = useRef("");
+  const browserRecognitionFailedRef = useRef(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -83,6 +85,8 @@ export default function Composer({
       return;
     }
     const recognition = new Recognition();
+    browserTranscriptRef.current = "";
+    browserRecognitionFailedRef.current = false;
     recognition.lang = lang === "bn" ? "bn-BD" : "en-US";
     recognition.interimResults = true;
     recognition.continuous = false;
@@ -91,9 +95,13 @@ export default function Composer({
     recognition.onresult = (event: any) => {
       let transcript = "";
       for (let i = event.resultIndex; i < event.results.length; i++) transcript += event.results[i][0]?.transcript || "";
-      if (transcript.trim()) setText(transcript.trim());
+      if (transcript.trim()) {
+        browserTranscriptRef.current = transcript.trim();
+        setText(transcript.trim());
+      }
     };
     recognition.onerror = (event: any) => {
+      browserRecognitionFailedRef.current = true;
       setVoiceError(event.error === "not-allowed" ? t("composer.micDenied") : t("composer.transcribeFailed"));
       recognitionRef.current = null;
       setRecording(false);
@@ -101,6 +109,14 @@ export default function Composer({
     recognition.onend = () => {
       recognitionRef.current = null;
       setRecording(false);
+      const transcript = browserTranscriptRef.current.trim();
+      if (!browserRecognitionFailedRef.current && transcript) {
+        browserTranscriptRef.current = "";
+        setText("");
+        // Keep the native-recognition path consistent with the recorded-audio path:
+        // one completed voice turn is sent directly to Shokhi.
+        onSend(transcript);
+      }
     };
     recognitionRef.current = recognition;
     try {
@@ -114,8 +130,21 @@ export default function Composer({
 
   async function startRecording() {
     setVoiceError("");
-    // Recorded audio is sent only to an explicitly configured local ASR service. If recording
-    // is unavailable, use the browser SpeechRecognition path below.
+    const speechWindow = window as Window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+
+    // Prefer native browser recognition when available. It supports Bangla on
+    // Chrome/Android and avoids uploading audio or requiring a separate ASR server.
+    if (Recognition) {
+      await startBrowserFallback();
+      return;
+    }
+
+    // If native recognition is unavailable, record audio for the configured server-side
+    // transcription service (local ASR or hosted Google speech recognition).
     if (typeof navigator.mediaDevices?.getUserMedia === "function" && typeof MediaRecorder !== "undefined") {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
