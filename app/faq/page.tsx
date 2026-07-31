@@ -41,8 +41,8 @@ const FAQS: { q_bn: string; q_en: string; a_bn: string; a_en: string }[] = [
   {
     q_bn: "আমি পড়তে পারি না — তবু কি ব্যবহার করতে পারব?",
     q_en: "I can't read — can I still use it?",
-    a_bn: "সমর্থিত ব্রাউজারে লেখার বদলে কণ্ঠে বাংলায় বলতে পারেন এবং সখীর লিখিত উত্তর পেতে পারেন।",
-    a_en: "In a supported browser, you can speak in Bangla instead of typing and receive Shokhi’s reply in text.",
+    a_bn: "লিখতে কষ্ট হলে কোনো বিশ্বস্ত মানুষের সাহায্যে checklist ব্যবহার করে সখীর কাছ থেকে নিরাপদ তথ্য পেতে পারেন।",
+    a_en: "If typing is difficult, a trusted person can help use the checklist and access Shokhi’s safe information.",
   },
   {
     q_bn: "সখী কোন কোন বিষয়ে সাহায্য করে?",

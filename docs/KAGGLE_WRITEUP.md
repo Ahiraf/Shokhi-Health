@@ -20,16 +20,15 @@ misinformation. The cost is measured in real health outcomes:
 
 The women who suffer most are the hardest to reach. Research is blunt: rural and
 less-educated women often own only **basic button phones**, are frequently **unable to
-read SMS or app text**, and face stigma that stops them asking anyone. They need
-**Bangla voice input on supported devices**, with guidance returned in simple text.
+read SMS or app text**, and face stigma that stops them asking anyone. They need simple,
+private Bangla guidance that is easy to read and share with a trusted health worker.
 
 ## Why existing tools don't close the gap
 
 Two well-known tools exist — and both leave this population behind:
 
 - **Ananya (WaterAid Bangladesh)** is a period *tracker* with static articles. It has
-  **no AI**, **no clinical triage**, **no PCOS/endometriosis support**, **no voice**, and
-  requires a **smartphone and literacy** to install and read it.
+  **no AI**, **no clinical triage**, and **no PCOS/endometriosis support**.
 - **Probahini (WaterAid + Acme AI)** is a **scripted FAQ chatbot** on messaging apps — it
   does not *reason* over a woman's real, messy symptom description, and still needs a
   smartphone plus the ability to read and type.
@@ -59,8 +58,7 @@ by **typing or speaking in Bangla** — and returns warm, safe, personalized gui
    which real service to go to (Gemma 4) — never a firm diagnosis.
 
 Shokhi covers **menstrual health, PCOS, PMS, endometriosis, and common cramps**, and busts
-harmful myths. An urban teenager gets private education; a rural woman gets **voice-first
-guidance**.
+harmful myths. An urban teenager or rural woman gets private, plain-language guidance.
 
 ### Situation-first learning paths
 
@@ -105,7 +103,7 @@ and critical haemoglobin flags remain deterministic and are never delegated to t
 Shokhi runs on a **"one Gemma brain, a safety rail underneath"** architecture:
 
 ```
-Bangla text / voice
+Bangla text
       │  extractSymptoms()  ── Gemma 4 turns messy free-form Bangla into structured facts
       ▼
 Symptom profile (JSON)
@@ -134,10 +132,7 @@ side-effect-free and bounded. Report images use a separate structured review sch
 quality, visible values, printed ranges, uncertainty, and safe next steps. In every path,
 deterministic triage remains the final urgency authority.
 
-**Voice input is supported** for women who cannot type: the Voice Bridge transcribes a short
-recording, extracts structured symptoms with Gemma, and sends the result through the same
-safety-first pipeline. Guidance is returned as readable text.
- Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
+Report photos go directly to multimodal Gemma 4, which reads the visible report and explains it.
  The report route also supports structured section prompts, local history comparison, doctor
  handoff export, and a stricter specialist image-review prompt.
 Other supporting,
@@ -150,8 +145,8 @@ LLM in the system.**
 Hosted Gemma 4 calls rotate through up to three Google AI Studio keys when quota, access,
 rate-limit, or transient service errors occur. A local Gemma adapter can be selected for
 privacy-first operation, with deterministic fallback when its endpoint is unavailable. This
-is a provider layer, not a second LLM: guidance still comes from Gemma 4; browser speech,
-image understanding, embeddings, rules, and traditional ML are supporting components.
+is a provider layer, not a second LLM: guidance still comes from Gemma 4; image understanding,
+embeddings, rules, and traditional ML are supporting components.
 
 ## System architecture: one brain, many front doors
 
@@ -160,9 +155,9 @@ serve multiple channels:
 
 | User | Front door | Status |
 |---|---|---|
-| Urban teen / literate woman | Web app (text + voice) | Built — the demo |
+| Urban teen / literate woman | Web app (text) | Built — the demo |
 | Health worker / NGO field staff | Same web app, checklist mode | Built |
-| **Rural, low-literacy woman** | **Browser voice input** — speak Bangla and receive written guidance | Available in the demo |
+| **Rural, low-literacy woman** | **Plain-language Bangla text guidance** | Available in the demo |
 
 ## Technical implementation
 
@@ -181,9 +176,6 @@ with server logic in `lib/server/`:
   RAG-grounded), instructed to extract only stated facts, never diagnose, never override urgency.
 - **`lib/server/assistant.ts`** — the orchestrator tying conversation → symptoms → triage →
   guidance (and RAG), holding state across turns.
-- **Voice Bridge** — the microphone path combines transcription, structured Gemma extraction,
-  deterministic triage, and written guidance in one turn, removing the typing step for
-  low-literacy users.
 - **`lib/server/knowledge.json`** — the clinical knowledge base (red flags, conditions with
   bilingual self-care, myths, 22-field symptom schema).
 - **Supporting ML risk models** — two lightweight, *non-generative* classifiers that add a
@@ -194,8 +186,8 @@ with server logic in `lib/server/`:
   "traditional ML that supports, not replaces" Gemma 4: the signal **never overrides**
   urgency, and degrades gracefully if absent.
 - **Web UI** (Next.js) — chat, a symptom **checklist** (so a helper can assist a woman who
-  can't type), browser voice input, colored urgency cards, report history, doctor handoff,
-  family audience modes, and weekly companion cards.
+  can't type), colored urgency cards, report history, doctor handoff, family audience modes,
+  and weekly companion cards.
 - **Pure-TypeScript runtime + tests** — ML risk classifiers are trained offline and
 **exported to plain JSON**, so inference runs in TypeScript with **no Python/ML runtime on
 the server**; everything deploys as **one unit on Vercel**. A **Vitest** suite (47 tests)
@@ -221,16 +213,16 @@ retrieval never affects safety — it only enriches and *cites* answers.
   deterministic engine owns that, so a hallucination can never miss an emergency.
 - **Messy, code-mixed Bangla:** Gemma handles free-form input; a defensive JSON parser
   tolerates prose or code fences that models sometimes add.
-- **Reaching non-readers:** voice input and a checklist mode; a decoupled
-  backend a phone IVR hotline can reuse.
+- **Reaching non-readers:** a checklist mode lets a trusted helper assist a woman who cannot
+  type confidently.
 - **Avoiding harm:** conditions are surfaced only as "worth discussing with a doctor,"
   always alongside the free hotline (16263) and 999.
 
 ## Real-world impact & future work
 
 Shokhi targets a large, underserved population that existing tools ignore. Next steps:
-measure the live Gemma 4 experience, add a verified IVR speech adapter, and pilot the
-**voice hotline** with an NGO. By pairing Gemma 4's language with a strict safety layer, Shokhi
+measure the live Gemma 4 experience and pilot the service with an NGO. By pairing Gemma 4's
+language with a strict safety layer, Shokhi
 turns a private, stigmatized struggle into a free, judgment-free companion in every woman's
 own language.
 

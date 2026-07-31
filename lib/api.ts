@@ -35,26 +35,6 @@ export function sendMessage(
   return post<MessageResponse>("/api/message", { message, profile, history, lang, personalization });
 }
 
-/** Voice Bridge: upload audio and receive transcript + the normal safety-first reply. */
-export async function voiceBridge(
-  file: Blob,
-  lang: "bn" | "en",
-  profile: Record<string, unknown>,
-  history: string[],
-  personalization: PersonalizationContext = {},
-): Promise<MessageResponse & { transcript: string }> {
-  const form = new FormData();
-  form.append("audio", file, "voice.webm");
-  form.append("lang", lang);
-  form.append("profile", JSON.stringify(profile));
-  form.append("history", JSON.stringify(history));
-  form.append("personalization", JSON.stringify(personalization));
-  const res = await fetch(`${BASE}/api/voice/bridge`, { method: "POST", body: form });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.detail || `voice bridge failed: ${res.status}`);
-  return data;
-}
-
 /**
  * Streaming chat over Server-Sent Events. Calls `onMeta` once with the triage/profile
  * payload, then `onDelta` for each guidance chunk. Resolves with the assembled full text.

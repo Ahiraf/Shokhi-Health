@@ -94,8 +94,8 @@ export const STRINGS = {
   // --- chat ----------------------------------------------------------------
   "chat.introTitle": { bn: "আপনার শরীরের কথা বলুন", en: "Tell me about your body" },
   "chat.introDesc": {
-    bn: "বাংলায় লিখুন বা সমর্থিত ব্রাউজারে কণ্ঠে বলুন — আমি বুঝব ও নিরাপদ পরামর্শ দেব। নাম, ঠিকানা বা ফোন নম্বর লিখবেন না।",
-    en: "Type or speak in Bangla in a supported browser — I'll understand and give safe guidance. Don't include your name, address, or phone number.",
+    bn: "বাংলায় লিখে আপনার কথা জানান — আমি বুঝে নিরাপদ পরামর্শ দেব। নাম, ঠিকানা বা ফোন নম্বর লিখবেন না।",
+    en: "Write in Bangla or English — I'll understand and give safe guidance. Don't include your name, address, or phone number.",
   },
   "chat.startWith": { bn: "এভাবে শুরু করতে পারেন", en: "You could start like this" },
   "chat.orLearn": { bn: "অথবা একটি বিষয়ে জানুন", en: "Or learn about a topic" },
@@ -121,28 +121,10 @@ export const STRINGS = {
 
   // --- composer ------------------------------------------------------------
   "composer.placeholder": {
-    bn: "এখানে বাংলায় লিখুন বা কণ্ঠে বলুন...",
-    en: "Type here in Bangla or English, or speak...",
+    bn: "এখানে বাংলায় লিখুন...",
+    en: "Type here in Bangla or English...",
   },
   "composer.send": { bn: "পাঠান", en: "Send" },
-  "composer.voiceTitle": { bn: "কণ্ঠে বলুন", en: "Speak" },
-  "composer.listening": { bn: "শুনছি… বলুন", en: "Listening… speak now" },
-  "composer.transcribing": { bn: "লেখায় রূপান্তর হচ্ছে…", en: "Transcribing…" },
-  "composer.transcribeFailed": {
-    bn: "কণ্ঠ লেখায় রূপান্তর করা গেল না। আবার চেষ্টা করুন বা লিখে জানান।",
-    en: "Couldn't transcribe your voice. Please try again or type your message.",
-  },
-  "composer.voiceNoSupport": {
-    bn: "এই ব্রাউজারে কণ্ঠ শনাক্ত করা যাচ্ছে না — অনুগ্রহ করে Chrome ব্যবহার করুন বা লিখে জানান।",
-    en: "Voice input isn't supported in this browser — please use Chrome, or type your message.",
-  },
-  "composer.micFailed": { bn: "মাইক্রোফোন চালু করা গেল না।", en: "Couldn't start the microphone." },
-  "composer.micNotFound": { bn: "কোনো মাইক্রোফোন পাওয়া যায়নি।", en: "No microphone was found. Check your device settings or type instead." },
-  "composer.voiceNoSpeech": { bn: "কোনো কথা শোনা যায়নি। আবার চেষ্টা করুন।", en: "I didn't hear anything. Please try again." },
-  "composer.micDenied": {
- bn:"মাইক্রোফোনের অনুমতি বন্ধ আছে। ব্রাউজারের ঠিকানার পাশে / আইকনে গিয়ে মাইক্রোফোন 'Allow' করুন, নইলে লিখে জানান।",
- en:"Microphone permission is blocked. Click the / icon by the address bar and Allow the microphone — or just type your message.",
-  },
 
   // --- message / triage ----------------------------------------------------
 "message.riskHint": { bn:"সহায়ক ইঙ্গিত", en:"Supporting signal"},
@@ -371,8 +353,8 @@ export const STRINGS = {
   "about.safeTitle": { bn: "সখী কীভাবে নিরাপদ থাকে", en: "How Shokhi stays safe" },
   "about.missionTitle": { bn: "সখী কার জন্য", en: "Who Shokhi is for" },
   "about.missionBody": {
-    bn: "শহরের কিশোরী থেকে গ্রামের নারী — যাঁরা হয়তো পড়তে পারেন না, তাঁদের জন্যও। লিখে, কণ্ঠে বা ফোনে — যেভাবে সহজ, সেভাবেই সখীর সাথে কথা বলা যায়।",
-    en: "From urban teenagers to rural women — including those who may not read. By text, by voice, or by phone — talk to Shokhi whichever way is easiest.",
+    bn: "শহরের কিশোরী থেকে গ্রামের নারী — সবার জন্য সহজ ভাষায় স্বাস্থ্য-সহায়তা।",
+    en: "From urban teenagers to rural women — simple, private health guidance for everyone.",
   },
   "about.talkToShokhi": { bn: "সখীর সাথে কথা বলুন", en: "Talk to Shokhi" },
 
@@ -457,8 +439,8 @@ export const STRINGS = {
   },
   "faq.stillTitle": { bn: "উত্তর খুঁজে পাননি?", en: "Didn't find your answer?" },
   "faq.stillBody": {
-    bn: "আপনার প্রশ্নটি সরাসরি সখীকে বাংলায় জিজ্ঞাসা করুন — লিখে বা কণ্ঠে।",
-    en: "Ask Shokhi your question directly in Bangla — by text or by voice.",
+    bn: "আপনার প্রশ্নটি সরাসরি সখীকে বাংলায় লিখে জিজ্ঞাসা করুন।",
+    en: "Ask Shokhi your question directly in Bangla or English.",
   },
 } as const;
 

@@ -22,10 +22,10 @@ const CONDITIONS: { bn: string; en: string }[] = [
 
 const STEPS: { n_bn: string; n_en: string; icon: IconName; title_bn: string; title_en: string; desc_bn: string; desc_en: string }[] = [
   {
-    n_bn: "১", n_en: "1", icon: "mic",
-    title_bn: "আপনি বলুন", title_en: "You speak",
-    desc_bn: "বাংলায় লিখুন বা কণ্ঠে বলুন কেমন লাগছে।",
-    desc_en: "Type or speak, in Bangla, how you feel.",
+    n_bn: "১", n_en: "1", icon: "chat",
+    title_bn: "আপনি লিখুন", title_en: "You describe",
+    desc_bn: "বাংলায় লিখে জানান কেমন লাগছে।",
+    desc_en: "Write in Bangla or English how you feel.",
   },
   {
     n_bn: "২", n_en: "2", icon: "shield",

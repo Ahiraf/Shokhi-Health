@@ -5,7 +5,7 @@ import type { SVGProps } from "react";
 
 export type IconName =
   | "chat" | "drop" | "clock" | "book" | "learn" | "bulb" | "leaf" | "phone" | "shield"
-  | "sparkle" | "calendar" | "edit" | "note" | "activity" | "heart" | "mic" | "trash"
+  | "sparkle" | "calendar" | "edit" | "note" | "activity" | "heart" | "trash"
   | "download" | "upload" | "save" | "moon" | "user" | "flower"
   | "help" | "ear" | "tool" | "lock" | "health" | "alert" | "apple" | "basket"
   | "refresh" | "check" | "search" | "bell" | "close" | "volume" | "stop" | "chevron";
@@ -27,7 +27,6 @@ const PATHS: Record<IconName, React.ReactNode> = {
   note: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6M8 13h8M8 17h5" /></>,
   activity: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />,
   heart: <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1.1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />,
-  mic: <><rect x="9" y="2" width="6" height="12" rx="3" /><path d="M5 10a7 7 0 0 0 14 0M12 19v3" /></>,
   trash: <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />,
   download: <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />,
   upload: <path d="M12 21V9M7 14l5-5 5 5M5 3h14" />,
@@ -63,7 +62,7 @@ const EMOJI_ICON: Record<string, IconName> = {
   "🌸": "flower", "🌼": "flower", "🌺": "flower", "🌷": "flower",
   "📅": "calendar", "🗓️": "calendar", "📝": "note", "📒": "note",
   "📈": "activity", "📊": "activity", "❤️": "heart", "💗": "heart", "💞": "heart",
-  "🎙️": "mic", "🎙": "mic", "🗣️": "mic", "🗑️": "trash", "💾": "save",
+  "🗑️": "trash", "💾": "save",
   "🌙": "moon", "👤": "user", "❓": "help", "❔": "help", "❗": "alert",
   "🆘": "alert", "⚠️": "alert", "👂": "ear", "🛠️": "tool", "🔒": "lock",
   "🩺": "health", "🥗": "apple", "🍎": "apple", "🧼": "sparkle", "🧺": "basket",

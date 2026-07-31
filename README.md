@@ -9,7 +9,7 @@
   <p>🌐 <a href="#demo">Demo</a> · 📖 <a href="docs/KAGGLE_WRITEUP.md">Kaggle writeup</a> · 🛡️ <a href="#safety-first-design">Safety-first design</a></p>
 </div>
 
-Shokhi (সখী — *"a trusted confidante"*) lets girls and women **type or speak in Bangla**,
+Shokhi (সখী — *"a trusted confidante"*) lets girls and women **type in Bangla or English**,
 then combines Gemma 4's language understanding with a deterministic safety layer to explain
 what may be happening, what to do next, and when to contact a real health professional.
 
@@ -19,8 +19,8 @@ what may be happening, what to do next, and when to contact a real health profes
 ## 🔒 Privacy
 
 > No account required. Your profile and tracker data stay on your device. Chat messages are
-> processed by Shokhi and Gemma 4 when hosted mode is enabled; browser voice input is handled
-> by the device, and optional RAG embeddings are non-generative. Please do not share your name,
+> processed by Shokhi and Gemma 4 when hosted mode is enabled; optional RAG embeddings are
+> non-generative. Please do not share your name,
 > phone number, address, or identifying details.
 
 Gemma 4 is Shokhi's only generative health model. Shokhi does not currently use an account system or a
@@ -55,8 +55,8 @@ unchanged at the desktop breakpoint.
 Shokhi is designed as a warm, Bangla-first health and wellbeing companion for menstrual
 health, PCOS, pregnancy, postpartum care, menopause, adolescent wellbeing, nutrition,
 protection, WASH, climate preparedness, education, and disability inclusion. It combines
-voice input, low-literacy guidance, trusted-source cards, and a deterministic safety layer
-beneath the AI responses.
+plain-language guidance, trusted-source cards, and a deterministic safety layer beneath the AI
+responses.
 
 ### UNICEF Bangladesh-aligned learning
 
@@ -73,7 +73,7 @@ They are educational summaries, not UNICEF-endorsed medical advice.
 Shokhi is built on a **"one Gemma brain, a safety rail underneath"** architecture:
 
 ```
-  Bangla text / voice
+  Bangla text
           │
           ▼
   ┌───────────────────┐   free-form language → structured symptoms
@@ -114,9 +114,9 @@ flowchart TB
   end
 
   subgraph APP["Shokhi Next.js application"]
-    USER["User\nBangla text or voice input"]
+    USER["User\nBangla or English text"]
     FRONTEND["Web UI\nChat · Learn · Guides · Tracker"]
-    INPUT["Input adapters\ntext · browser speech · local ASR\nreport image upload"]
+    INPUT["Input adapters\ntext · report image upload"]
     RETRIEVE["RAG retrieval\nquery embedding + cosine search"]
     SAFETY["Deterministic safety rail\ncrisis checks · red flags · triage"]
     GEMMA["Gemma 4\nonly generative LLM\nextraction · tools · explanation"]
@@ -166,14 +166,6 @@ rules, not the model**, so Gemma can **never under-triage an emergency** because
 hallucination. This is the standard safe pattern for health AI: *LLM for language,
 deterministic logic for safety-critical decisions.*
 
-### 🎙️ Voice input — fast, private, and device-aware
-
-A woman can **speak** her symptoms instead of typing. In the chat, the microphone now uses a
-Voice Bridge: audio is transcribed, passed through structured Gemma extraction, and sent through
-the same deterministic triage pipeline as typed input. The recognized words and guidance appear
-together, so the user does not need to type after speaking. Browsers without recording support
-can fall back to device-native speech recognition.
-
 Report photos are sent directly to multimodal Gemma 4, which reads the visible test names,
 values, units and reference ranges and explains them in simple language. Unclear values are
 marked as uncertain rather than guessed; the result is general information, not a diagnosis.
@@ -219,7 +211,7 @@ Deterministic mock backend (no-key / offline mode)
 ```
 
 This is deliberately **Gemma 4 only** for generated health guidance — there is no alternate
-LLM hidden behind the fallback. Browser speech, image understanding, non-generative embeddings, deterministic
+LLM hidden behind the fallback. Image understanding, non-generative embeddings, deterministic
 triage, and the mock backend remain supporting paths permitted by the hackathon rules.
 
 For privacy mode, set `SHOKHI_BACKEND=local` and point `SHOKHI_LOCAL_GEMMA_URL` at an
@@ -234,14 +226,13 @@ to a cloud model.
 
 | User | Front door | Status |
 |---|---|---|
-| Urban teen / literate woman | **Web app** (text + voice input) | ✅ this repo |
+| Urban teen / literate woman | **Web app** (text input) | ✅ this repo |
 | Health worker / NGO field staff | Same web app | ✅ this repo |
-| **Rural, low-literacy woman** | **Browser voice input** — speak Bangla and receive simple written guidance | ✅ available |
+| **Rural, low-literacy woman** | **Plain-language text guidance** in Bangla | ✅ available |
 
-Because the triage engine and Gemma backend are fully decoupled from the UI, the *same
-core* powers the web app and its voice-input experience. The app accepts **spoken Bangla**
-through supported browsers, then the identical triage runs and returns simple written guidance.
-For emergencies, the app clearly displays **16263 / 999**.
+Because the triage engine and Gemma backend are fully decoupled from the UI, the same core
+powers the web app, guides, tracker, reports, and wellness features. For emergencies, the app
+clearly displays **16263 / 999**.
 
 ## 🧰 Tech Stack
 
@@ -252,7 +243,8 @@ For emergencies, the app clearly displays **16263 / 999**.
   <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
 </p>
 <p align="center">
-  <img alt="Google Gemma" src="https://img.shields.io/badge/Google_Gemma_4-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" />
+  <img alt="Gemma 4" src="https://img.shields.io/badge/Gemma_4-8E75B2?style=for-the-badge&logo=google&logoColor=white" />
+  <img alt="RAG" src="https://img.shields.io/badge/RAG-6F42C1?style=for-the-badge&logo=bookstack&logoColor=white" />
   <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
   <img alt="Vitest" src="https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white" />
   <img alt="Vercel" src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
@@ -262,10 +254,10 @@ For emergencies, the app clearly displays **16263 / 999**.
 | ----- | ---------- |
 | Frontend | Next.js 14 App Router · React 18 · TypeScript · Tailwind CSS |
 | Backend | Next.js API route handlers · serverless-compatible Node.js runtime |
-| AI | Google Gemma 4 for language, structured tools, and report-image understanding · browser speech input · non-generative embeddings |
+| AI | Gemma 4 for language, structured tools, and report-image understanding |
 | Safety | Deterministic triage engine · red-flag knowledge base · emergency safety checks |
 | Supporting ML | Offline logistic-regression classifiers for PCOS and endometriosis risk signals |
-| Retrieval | Local Markdown corpus · precomputed embeddings · grounded RAG responses |
+| Retrieval | TypeScript RAG · trusted Markdown corpus · precomputed embeddings · grounded responses |
 | Testing | Vitest |
 | Deployment | Vercel |
 
@@ -291,7 +283,6 @@ to menopause — as **one warm companion**:
 | **Specialist image review** | Stricter image-quality and visible-value review mode | `/report` |
 | **Family modes** | Tailor the family explanation for family, partner, or mother/elders | `/tracker/mood` |
 | **Weekly companion** | Gemma-written weekly guidance from local cycle and mood context | `/tracker/today` |
-| **Voice input** | Browser-native Bangla voice input for hands-free symptom sharing | `/chat` |
 | **Learn & care library, myths, and FAQ** | One searchable library for conditions, trusted explainers, and whole-person guidance | `/learn` · `/myths` · `/faq` |
 | **Situation-first learning** | Start from first period, cramps, pregnancy planning, pregnancy, postpartum, or symptoms | `/learn` |
 | **Whole-person learning cards** | Adolescent wellbeing, protection, nutrition, WASH, climate, education, disability inclusion, mental wellbeing, and safe referrals | `/learn` |
@@ -299,7 +290,6 @@ to menopause — as **one warm companion**:
 | **Device data deletion** | Remove Shokhi's browser-only profile, tracker, mood, report, reminder, theme, and language data | `/profile` |
 | **Missed-pill helper** | Conservative product-aware questions for missed, late, or emergency contraception | `/guides/contraception` |
 | **Wellness** | Gentle movement and everyday Bangladeshi food suggestions | `/wellness` |
-| **Voice help** | Speak through a supported browser and receive Shokhi’s written guidance | `/chat` |
 
 The **safety model is identical everywhere**: every urgency decision is made by
 deterministic rules in `triage.ts`/`cycle.ts`, never by the LLM; Gemma only understands
@@ -480,8 +470,7 @@ npm run dev                          # open http://localhost:3001
 - **For live hosted Gemma 4**, put a Google AI Studio key in `.env.local` as `GOOGLE_API_KEY`
   (optionally `GOOGLE_API_KEY_2`/`_3` for three-key quota fallback). The server auto-selects Gemma.
 - **For local/private Gemma 4**, set `SHOKHI_BACKEND=local`, `SHOKHI_LOCAL_GEMMA_URL`, and
-  `SHOKHI_LOCAL_GEMMA_MODEL`; no Google key is required. Add `SHOKHI_LOCAL_ASR_URL` if local
-  speech-to-text is also available.
+  `SHOKHI_LOCAL_GEMMA_MODEL`; no Google key is required.
 
 Run the **safety tests** (Vitest — verifies emergencies are never downgraded, the ML signal
 never overrides urgency, and RAG degrades gracefully):
@@ -545,7 +534,6 @@ All server-side (set in `.env.local` locally, or Vercel env vars in prod):
 | `SHOKHI_BACKEND` | auto | `gemini`, `local`, or `mock`. Default: hosted Gemma when a key is present, otherwise mock. |
 | `SHOKHI_LOCAL_GEMMA_URL` | `http://127.0.0.1:11434/v1/chat/completions` | OpenAI-compatible local Gemma endpoint. |
 | `SHOKHI_LOCAL_GEMMA_MODEL` | `gemma-4-e4b-it` | Local model name. |
-| `SHOKHI_LOCAL_ASR_URL` | — | Optional local speech-to-text endpoint used in local mode. |
 | `SHOKHI_THINKING` | adaptive | `minimal` or `high`; by default routine turns use minimal and ambiguous turns use high. |
 | `SHOKHI_LLM_EXTRACT` | on for Gemma/local | Set to `0` to use the deterministic intake extractor. |
 | `SHOKHI_SAFETY_NET` | off | Optional second Gemma emergency check; deterministic safety triage always remains enabled. |
@@ -566,8 +554,6 @@ can serve the same app with no UI changes:
   cloud. Same codebase, just a different backend behind the interface.
 
 ### Other planned work
-- **Bangla voice hotline (IVR):** a future priority for reaching phone-only, low-literacy
-  women — dial a number and speak Bangla. The same backend can support a verified phone adapter.
 - **Grounded knowledge expansion** validated against public research/clinical datasets.
 - **NGO pilot** to measure real referral and awareness outcomes.
 
