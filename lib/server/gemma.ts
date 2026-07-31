@@ -843,8 +843,20 @@ class GeminiBackend implements Backend {
       : ensureDualGreeting(generated, lang);
     for (const line of full.split("\n")) yield line + "\n";
   }
-  composeStream(system: string, user: string, lang: Lang, _fallback: string) {
-    return withDualGreetingStream(this.generateStream(P.withLanguage(system, lang), user, 0.5), lang);
+  async *composeStream(system: string, user: string, lang: Lang, fallback: string) {
+    let generated = "";
+    try {
+      for await (const chunk of this.generateStream(P.withLanguage(system, lang), user, 0.5)) {
+        generated += chunk;
+      }
+    } catch {
+      generated = "";
+    }
+    // A transient empty/tool-only stream must not make the Explain button appear broken.
+    const full = stripLeadingGreeting(generated).length < 24
+      ? ensureDualGreeting(fallback, lang)
+      : ensureDualGreeting(generated, lang);
+    for (const line of full.split("\n")) yield line + "\n";
   }
   async analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang, mode: "standard" | "specialist" = "standard"): Promise<string> {
     const response: any = await this.withFallback((c) => c.models.generateContent({
