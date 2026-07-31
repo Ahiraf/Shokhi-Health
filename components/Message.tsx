@@ -7,7 +7,15 @@ import LogoMark from "./LogoMark";
 import { useLang } from "./LanguageProvider";
 import { pickField } from "@/lib/i18n";
 
-export default function Message({ item }: { item: ChatItem }) {
+export default function Message({
+  item,
+  onQuestion,
+  busy = false,
+}: {
+  item: ChatItem;
+  onQuestion?: (question: string) => void;
+  busy?: boolean;
+}) {
   const { lang } = useLang();
   const isUser = item.role === "user";
 
@@ -59,9 +67,14 @@ export default function Message({ item }: { item: ChatItem }) {
         ))}
 
         {item.data?.next_question && !item.data.is_emergency && (
-          <div className="mt-3 rounded-xl bg-rose-mist px-3 py-2 text-sm text-rose-deep">
+          <button
+            type="button"
+            disabled={busy || !onQuestion}
+            onClick={() => onQuestion?.(item.data!.next_question!)}
+            className="mt-3 w-full rounded-xl bg-rose-mist px-3 py-2 text-left text-sm text-rose-deep transition hover:brightness-95 disabled:cursor-default disabled:opacity-80"
+          >
             ❓ {item.data.next_question}
-          </div>
+          </button>
         )}
 
       </div>

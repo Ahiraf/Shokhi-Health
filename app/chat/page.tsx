@@ -188,7 +188,9 @@ export default function ChatPage() {
             {chat.map((item, i) =>
               // hide the empty assistant placeholder while streaming — the "thinking"
               // indicator below covers that wait; the bubble appears once the first token lands
-              item.role === "assistant" && item.text === "" ? null : <Message key={i} item={item} />
+              item.role === "assistant" && item.text === "" ? null : (
+                <Message key={i} item={item} onQuestion={handleSend} busy={busy} />
+              )
             )}
             {busy && (
               <div className="flex items-center gap-2.5 pl-1 text-plum/50">

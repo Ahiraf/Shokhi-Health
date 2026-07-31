@@ -650,6 +650,7 @@ class GeminiBackend implements Backend {
   private keys = geminiKeys();
   private clients: any[] = [];
   private model = process.env.SHOKHI_GEMMA_MODEL || "gemma-4-26b-a4b-it";
+  private fallback = new MockBackend();
 
   constructor() {
     if (!this.keys.length) throw new Error("No API key. Set GOOGLE_API_KEY (+ optional _2/_3).");
@@ -815,14 +816,32 @@ class GeminiBackend implements Backend {
     const system = P.withLanguage(P.EXPLAIN_SYSTEM, lang);
     const user = P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization));
     const kind = tr.urgency === "emergency" || tr.urgency === "see_doctor_soon" ? "ambiguous" : "routine";
-    return ensureDualGreeting(await this.generateWithSafeTools(system, user, 0.4, kind), lang);
+    try {
+      const generated = await this.generateWithSafeTools(system, user, 0.4, kind);
+      // A tool-only or empty model response must never reach the user as greeting-only text.
+      if (stripLeadingGreeting(generated).length < 24) return this.fallback.explainTriage(tr, lang, personalization);
+      return ensureDualGreeting(generated, lang);
+    } catch {
+      return this.fallback.explainTriage(tr, lang, personalization);
+    }
   }
-  explainTriageStream(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
+  async *explainTriageStream(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
     const ambiguous = tr.urgency === "emergency" || (tr.outstanding_questions && Object.keys(tr.outstanding_questions).length > 0);
-    return withDualGreetingStream(
-      this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization)), 0.4, ambiguous ? "ambiguous" : "routine"),
-      lang,
-    );
+    let generated = "";
+    try {
+      for await (const chunk of this.generateStream(
+        P.withLanguage(P.EXPLAIN_SYSTEM, lang),
+        P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization)),
+        0.4,
+        ambiguous ? "ambiguous" : "routine",
+      )) generated += chunk;
+    } catch {
+      generated = "";
+    }
+    const full = stripLeadingGreeting(generated).length < 24
+      ? await this.explainTriage(tr, lang, personalization)
+      : ensureDualGreeting(generated, lang);
+    for (const line of full.split("\n")) yield line + "\n";
   }
   composeStream(system: string, user: string, lang: Lang, _fallback: string) {
     return withDualGreetingStream(this.generateStream(P.withLanguage(system, lang), user, 0.5), lang);
