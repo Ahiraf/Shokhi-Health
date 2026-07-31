@@ -11,10 +11,12 @@ export default function JourneyPicker({
   page,
   selected,
   onSelect,
+  showJourneys = true,
 }: {
   page: "learn" | "guides";
   selected?: JourneyKey | null;
   onSelect?: (journey: JourneyKey) => void;
+  showJourneys?: boolean;
 }) {
   const { lang } = useLang();
   const [message, setMessage] = useState("");
@@ -92,7 +94,7 @@ export default function JourneyPicker({
         </form>
       </div>
 
-      <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      {showJourneys && <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {JOURNEYS.map((journey) => {
           const active = selected === journey.key;
           return (
@@ -122,7 +124,7 @@ export default function JourneyPicker({
             </Link>
           );
         })}
-      </div>
+      </div>}
     </section>
   );
 }

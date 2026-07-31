@@ -15,7 +15,6 @@ export const NAV: NavNode[] = [
       { href: "/tracker/reminder", key: "nav.tracker.pad" },
     ],
   },
-  { href: "/learn", key: "nav.learn.conditions" },
   {
     key: "nav.wellness",
     children: [
@@ -24,6 +23,7 @@ export const NAV: NavNode[] = [
       { href: "/wellness", key: "nav.wellness.overview" },
     ],
   },
+  { href: "/learn", key: "nav.learn.conditions" },
   { href: "/report", key: "nav.report" },
   { href: "/myths", key: "nav.myths" },
   { href: "/faq", key: "nav.faq" },
