@@ -7,6 +7,8 @@ const ALIASES: Record<string, string> = {
   cramp: "cramp", cramps: "cramp", cramping: "cramp", cramped: "cramp",
   pain: "pain", painful: "pain", pains: "pain",
   period: "period", periods: "period", periodic: "period", menstrual: "period", menstruation: "period",
+  মাসিক: "period", মাসিকের: "period", মাসিকে: "period", পিরিয়ড: "period", পিরিয়ড: "period", পিরিয়ডের: "period", পিরিয়ডের: "period",
+  ব্যথা: "pain", তীব্র: "severe", ক্র্যাম্প: "cramp", যন্ত্রণা: "pain", তলপেট: "pelvic",
   pregnant: "pregnancy", pregnancy: "pregnancy", pregnancies: "pregnancy", conceive: "pregnancy", conception: "pregnancy",
   symptom: "symptom", symptoms: "symptom", signs: "symptom", sign: "symptom",
   infection: "infection", infections: "infection", sti: "infection", stis: "infection",

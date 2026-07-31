@@ -10,7 +10,7 @@ import type { JourneyIntent } from "../journeys";
 import type { PersonalizationContext } from "../personalization";
 import { GUIDE_MASCOT_IMAGES, mascotImageFor } from "../mascot-images";
 import { UNIQUE_SOURCE_TOPICS } from "../source-topics";
-import { rankLearnSuggestions, type LearnSuggestion } from "../learn-suggestions";
+import { orderLearnSuggestions, rankLearnSuggestions, type LearnSuggestion } from "../learn-suggestions";
 import type { TopicSuggestionCandidate } from "./gemma";
 
 type Citation = { source: string; url: string; section?: string; pub_year?: string };
@@ -261,7 +261,7 @@ export class Assistant {
       const model = ids.map((id) => byId.get(id)).filter((candidate): candidate is TopicSuggestionCandidate => Boolean(candidate));
       const merged = new Map<string, TopicSuggestionCandidate>();
       for (const candidate of [...model, ...local]) merged.set(candidate.id, candidate);
-      return Array.from(merged.values()).slice(0, 6) as LearnSuggestion[];
+      return orderLearnSuggestions(query, Array.from(merged.values()) as LearnSuggestion[], 6);
     } catch {
       return local;
     }

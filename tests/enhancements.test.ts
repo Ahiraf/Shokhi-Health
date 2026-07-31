@@ -10,6 +10,7 @@ import { getBackend, ensureDualGreeting } from "../lib/server/gemma";
 import { detectCrisis, crisisResponse } from "../lib/server/crisis";
 import { guideJourney } from "../lib/journeys";
 import { matchesLearnSearch } from "../lib/learn-search";
+import { orderLearnSuggestions } from "../lib/learn-suggestions";
 
 describe("#5 escalate-only LLM safety net", () => {
   it("ESCALATES an 'info' result to emergency when the classifier flags one", () => {
@@ -112,6 +113,16 @@ describe("bilingual Learn search and suggestions", () => {
   it("returns a relevant offline suggestion when Gemma is unavailable", async () => {
     const suggestions = await new Assistant().suggestLearnTopics("severe periodic cramp", "en");
     expect(suggestions.some((item) => item.id === "period_cramps")).toBe(true);
+  });
+
+  it("keeps direct period-pain topics ahead of broader model suggestions", () => {
+    const ordered = orderLearnSuggestions("মাসিকের সময় এত ব্যথা হয় যে স্কুলে যেতে পারি না", [
+      { id: "anemia", kind: "condition", label_bn: "রক্তস্বল্পতা", label_en: "Anaemia" },
+      { id: "endometriosis", kind: "condition", label_bn: "এন্ডোমেট্রিওসিস", label_en: "Endometriosis" },
+      { id: "period_cramps", kind: "guide", label_bn: "মাসিকের ব্যথা", label_en: "Period cramps" },
+      { id: "period_emotions", kind: "guide", label_bn: "মাসিকের সময় মন ও অনুভূতি", label_en: "Mood during your period" },
+    ]);
+    expect(ordered.map((item) => item.id)).toEqual(["period_cramps", "endometriosis", "period_emotions", "anemia"]);
   });
 
   it("normalizes model greetings to the inclusive bilingual form", () => {

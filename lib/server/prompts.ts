@@ -76,6 +76,7 @@ export const explainUserWithContext = (triageJson: string, personalization: stri
 export const SUGGEST_SYSTEM = `You generate search suggestions for Shokhi (সখী), a Bangla women's-health learning app. The user is typing a topic or symptom in Bangla or English.
 - Choose only IDs from the supplied candidate list; never invent an ID.
 - Return ONLY a JSON array of up to 6 candidate IDs, with the most useful suggestions first.
+- Rank a direct topic match before broader related topics. For a query about period cramps or severe menstrual pain, put period_cramps first, endometriosis second, then other menstrual-pain topics. Do not put general anaemia, menopause, pad-use, or mood topics ahead of those unless the query explicitly asks about bleeding, menopause, pads, or mood.
 - Suggestions should be closely related to the user's words and may include a plain-language condition, symptom, pregnancy, period, or family-planning topic.
 - This is navigation, not diagnosis.`;
 
