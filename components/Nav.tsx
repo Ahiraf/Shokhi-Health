@@ -87,7 +87,8 @@ export default function Nav() {
   );
 
   return (
-    <header className="nav-shell sticky top-0 z-40 border-b border-rose-soft/60 backdrop-blur-xl">
+    <>
+      <header className="nav-shell sticky top-0 z-40 border-b border-rose-soft/60 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
         <Link href="/" className="flex items-center gap-2.5" onClick={closeMobileMenu}>
           <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ring-1 ring-rose-soft">
@@ -203,7 +204,9 @@ export default function Nav() {
         </span>
       </div>
 
-      {/* mobile menu — a right-side drawer keeps grouped navigation easy to scan */}
+      </header>
+
+      {/* Render outside the sticky/backdrop header so the drawer can cover the full viewport. */}
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={t("nav.menu")}>
           <button
@@ -297,6 +300,6 @@ export default function Nav() {
           </aside>
         </div>
       )}
-    </header>
+    </>
   );
 }
