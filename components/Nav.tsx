@@ -162,9 +162,8 @@ export default function Nav() {
           </li>
         </ul>
 
-        {/* mobile: notifications + profile + theme + language toggle + menu button */}
-        <div className="flex items-center gap-2 lg:hidden">
-          {profileButton}
+        {/* mobile: keep the primary controls compact; profile is available in the menu */}
+        <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
           <div className="flex items-center gap-1.5 rounded-2xl bg-surface/45 p-1.5 ring-1 ring-rose-soft/70">
             <NotificationBell />
             {themeButton}
@@ -201,6 +200,7 @@ export default function Nav() {
       {/* mobile menu — all pages flattened (dropdowns expanded) */}
       {open && (
         <ul className="grid grid-cols-2 gap-1.5 px-5 pb-4 lg:hidden">
+          <li className="col-span-2">{profileButton}</li>
           {NAV_LINKS.map((n) => (
             <li key={n.href}>
               <Link

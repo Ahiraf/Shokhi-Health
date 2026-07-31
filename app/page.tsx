@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <main>
       {/* hero */}
-      <section className="mx-auto max-w-5xl px-5 pt-10 pb-4 sm:pt-16">
+      <section className="mx-auto max-w-5xl px-5 pt-6 pb-4 sm:pt-16">
         <div className="grid items-center gap-8 sm:grid-cols-2">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/70 px-3 py-1 text-xs font-semibold text-plum/60 ring-1 ring-rose-soft">
@@ -74,8 +74,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hero-rings relative order-first flex justify-center sm:order-none">
-            <div className="animate-float relative z-10">
+          <div className="hero-rings relative order-none flex justify-center sm:order-none">
+            <div className="animate-float relative z-10 sm:hidden">
+              <Mascot3D variant="hero" size={170} priority />
+            </div>
+            <div className="animate-float relative z-10 hidden sm:block">
               <Mascot3D variant="hero" size={260} priority />
             </div>
 

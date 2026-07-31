@@ -38,6 +38,16 @@ short demo-video URL here before the Kaggle submission:
 
 **🌐 Live demo:** _add public URL_ · **▶️ Demo video:** _add public video URL_
 
+### 📱 Mobile-first experience
+
+Shokhi is designed for Bangladesh's mobile-first users. On small screens, the home page puts
+the welcome message, plain-language value proposition, and primary actions before the mascot so
+the app is useful immediately instead of opening on a mascot-only view. The mascot remains a
+smaller visual welcome below the message. The mobile header keeps the essential language, theme,
+notifications, and menu controls within the viewport; profile and the full navigation are one
+tap away in the expanded menu. Desktop spacing, sizing, and the two-column hero layout remain
+unchanged at the desktop breakpoint.
+
 ---
 
 ## 🧭 Shokhi's focus

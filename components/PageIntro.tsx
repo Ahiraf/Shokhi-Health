@@ -34,7 +34,7 @@ export default function PageIntro({
       }`}
     >
       <div className="shrink-0">
-        <Mascot3D variant={variant} size={size} className={mascotClassName} />
+        <Mascot3D variant={variant} size={size} className={`${mascotClassName} max-w-[120px] sm:max-w-none`} />
       </div>
       <div className={`max-w-md text-center ${side === "right" ? "sm:text-right" : "sm:text-left"}`}>
         <h1 className={`flex items-center justify-center gap-2.5 font-display text-3xl font-bold text-plum ${side === "right" ? "sm:justify-end" : "sm:justify-start"}`}>

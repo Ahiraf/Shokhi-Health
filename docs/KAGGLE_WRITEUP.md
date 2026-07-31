@@ -36,6 +36,17 @@ Two well-known tools exist — and both leave this population behind:
 
 **Shokhi closes this gap for phone-only, low-literacy women affected by these conditions.**
 
+### Mobile-first access
+
+Because most intended users will open Shokhi on a phone, the responsive experience is optimized
+for a small screen without changing the desktop presentation. The mobile home view shows the
+Bangla/English welcome message, short explanation, and the two main actions before the mascot,
+so a user immediately understands what to do. The mascot remains as a smaller, friendly visual
+welcome rather than occupying the first screen alone. The compact mobile header keeps language,
+theme, notifications, and the menu reachable, while the expanded menu makes every page and
+profile action easy to reach with large tap targets. Desktop keeps its original hero layout and
+navigation spacing.
+
 ## Our solution
 
 **Shokhi (সখী — "a woman's trusted confidante")** lets any woman describe how she feels —
