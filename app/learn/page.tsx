@@ -3,16 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { getGuides, getKnowledge } from "@/lib/api";
-import type { Condition, GuideCard } from "@/lib/types";
+import { getGuides, getKnowledge, getLearnSuggestions } from "@/lib/api";
+import type { Condition, GuideCard, LearnSuggestion } from "@/lib/types";
 import type { SourceTopic } from "@/lib/source-topics";
-import { UNIQUE_SOURCE_TOPICS, matchesSourceTopic, SOURCE_GUIDE_IDS } from "@/lib/source-topics";
+import { UNIQUE_SOURCE_TOPICS, SOURCE_GUIDE_IDS } from "@/lib/source-topics";
 import { conditionJourneys, getJourney, guideJourney, type JourneyKey, conditionsForJourney } from "@/lib/journeys";
 import PageIntro from "@/components/PageIntro";
 import { useLang } from "@/components/LanguageProvider";
 import Icon from "@/components/Icon";
 import type { StringKey } from "@/lib/i18n";
 import { mascotImageFor } from "@/lib/mascot-images";
+import { matchesLearnSearch } from "@/lib/learn-search";
+import { rankLearnSuggestions } from "@/lib/learn-suggestions";
 
 const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
   emergency: { key: "urgency.emergency.short", cls: "bg-red-100 text-red-700" },
@@ -66,6 +68,9 @@ export default function LearnPage() {
   const [guides, setGuides] = useState<GuideCard[]>([]);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState<LearnSuggestion[]>([]);
+  const [suggesting, setSuggesting] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedJourney, setSelectedJourney] = useState<JourneyKey | null>(null);
 
@@ -77,6 +82,58 @@ export default function LearnPage() {
       .then(setGuides)
       .catch(() => setError(true));
   }, []);
+
+  const suggestionCandidates = useMemo<LearnSuggestion[]>(() => [
+    ...guides.map((guide) => ({
+      id: guide.id,
+      kind: "guide" as const,
+      label_bn: guide.title_bn,
+      label_en: guide.title_en,
+      keywords: guide.keywords,
+    })),
+    ...conditions
+      .filter((condition) => condition.id !== "primary_dysmenorrhea")
+      .map((condition) => ({
+        id: condition.id,
+        kind: "condition" as const,
+        label_bn: condition.name_bn,
+        label_en: condition.name_en ?? condition.name_bn,
+        keywords: [condition.about_bn, condition.about_en].filter((value): value is string => Boolean(value)),
+      })),
+    ...UNIQUE_SOURCE_TOPICS.map((topic) => ({
+      id: topic.id,
+      kind: "source" as const,
+      label_bn: topic.title_bn,
+      label_en: topic.title_en,
+      keywords: topic.terms,
+    })),
+  ], [conditions, guides]);
+
+  useEffect(() => {
+    const query = search.trim();
+    if (query.length < 2) {
+      setSuggestions([]);
+      setSuggesting(false);
+      return;
+    }
+    setSuggestions(rankLearnSuggestions(query, suggestionCandidates, 6));
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      setSuggesting(true);
+      try {
+        const remote = await getLearnSuggestions(query, lang);
+        if (active && remote.length) setSuggestions(remote);
+      } catch {
+        // The local bilingual suggestions remain visible when Gemma is unavailable.
+      } finally {
+        if (active) setSuggesting(false);
+      }
+    }, 450);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [lang, search, suggestionCandidates]);
 
   useEffect(() => {
     const key = new URLSearchParams(window.location.search).get("journey");
@@ -92,9 +149,7 @@ export default function LearnPage() {
         if (selectedCategory !== "all" && selectedCategory !== "conditions") return false;
         if (selectedJourney && !conditionsForJourney(condition.id, selectedJourney)) return false;
         if (!normalizedSearch) return true;
-        return [condition.name_bn, condition.name_en, condition.about_bn, condition.about_en, ...conditionJourneys(condition.id)]
-          .filter((value): value is string => Boolean(value))
-          .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
+        return matchesLearnSearch(normalizedSearch, [condition.name_bn, condition.name_en ?? "", condition.about_bn, condition.about_en ?? "", ...conditionJourneys(condition.id)]);
       })
       .map((condition) => ({ kind: "condition" as const, condition }));
 
@@ -107,9 +162,7 @@ export default function LearnPage() {
         if (selectedCategory !== "all" && selectedCategory !== category) return false;
         if (selectedJourney && guideJourney(guide.id) !== selectedJourney) return false;
         if (!normalizedSearch) return true;
-        return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source, ...(guide.keywords ?? [])]
-          .filter((value): value is string => Boolean(value))
-          .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
+        return matchesLearnSearch(normalizedSearch, [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en ?? "", category, guide.source ?? "", ...(guide.keywords ?? [])]);
       })
       .map((guide) => ({ kind: "guide" as const, guide }));
 
@@ -117,7 +170,7 @@ export default function LearnPage() {
       .filter((topic) => {
         if (selectedCategory !== "all" && selectedCategory !== "health") return false;
         if (selectedJourney && !sourceTopicMatchesJourney(topic, selectedJourney)) return false;
-        return matchesSourceTopic(topic, search);
+        return matchesLearnSearch(normalizedSearch, [topic.title_bn, topic.title_en, topic.desc_bn, topic.desc_en, topic.source, ...topic.terms]);
       })
       .map((topic) => ({ kind: "source" as const, topic }));
 
@@ -134,25 +187,50 @@ export default function LearnPage() {
       if (!journey && selectedJourney !== "understand_symptoms") return false;
     }
     if (!normalizedSearch) return true;
-    return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source, ...(guide.keywords ?? [])]
-      .filter((value): value is string => Boolean(value))
-      .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
+    return matchesLearnSearch(normalizedSearch, [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en ?? "", category, guide.source ?? "", ...(guide.keywords ?? [])]);
   }), [guides, normalizedSearch, selectedCategory, selectedJourney]);
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
 
-      <label className="relative mt-6 block">
+      <div className="relative mt-6">
+      <label className="relative block">
         <span className="sr-only">{t("learn.searchLabel")}</span>
         <Icon name="search" size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-plum/40" />
         <input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onKeyDown={(event) => { if (event.key === "Escape") setSearchFocused(false); }}
+          aria-autocomplete="list"
+          aria-controls="learn-search-suggestions"
           placeholder={t("learn.searchPlaceholder")}
           className="w-full rounded-2xl bg-surface/80 py-3 pl-11 pr-4 text-sm text-plum outline-none ring-1 ring-rose-soft placeholder:text-plum/40 focus:ring-2 focus:ring-rose/40"
         />
       </label>
+      {searchFocused && search.trim().length >= 2 && (suggestions.length > 0 || suggesting) && (
+        <div id="learn-search-suggestions" role="listbox" className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl bg-surface/98 p-2 shadow-lift ring-1 ring-rose-soft backdrop-blur">
+          {suggestions.map((suggestion) => (
+            <button
+              key={`${suggestion.kind}-${suggestion.id}`}
+              type="button"
+              role="option"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => { setSearch(lang === "en" ? suggestion.label_en : suggestion.label_bn); setSearchFocused(false); }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-blush"
+            >
+              <Icon name="search" size={16} className="shrink-0 text-rose-deep/65" />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-plum">{lang === "en" ? suggestion.label_en : suggestion.label_bn}</span>
+                <span className="block text-xs text-plum/45">{lang === "en" ? suggestion.label_bn : suggestion.label_en}</span>
+              </span>
+            </button>
+          ))}
+          {suggesting && <p className="px-3 py-2 text-xs text-plum/45">{lang === "en" ? "Finding more suggestions…" : "আরও পরামর্শ খোঁজা হচ্ছে…"}</p>}
+        </div>
+      )}
+      </div>
 
       {mascotGuides.length > 0 && (
         <section className="mt-6 rounded-3xl bg-panel/95 p-4 text-white shadow-card sm:p-5" aria-labelledby="illustrated-topics-heading">

@@ -9,6 +9,9 @@ import type { Lang } from "./prompts";
 import type { JourneyIntent } from "../journeys";
 import type { PersonalizationContext } from "../personalization";
 import { GUIDE_MASCOT_IMAGES, mascotImageFor } from "../mascot-images";
+import { UNIQUE_SOURCE_TOPICS } from "../source-topics";
+import { rankLearnSuggestions, type LearnSuggestion } from "../learn-suggestions";
+import type { TopicSuggestionCandidate } from "./gemma";
 
 type Citation = { source: string; url: string; section?: string; pub_year?: string };
 
@@ -222,6 +225,46 @@ export class Assistant {
       reviewed: g.reviewed ?? "",
       image: GUIDE_MASCOT_IMAGES[g.id],
     }));
+  }
+
+  async suggestLearnTopics(query: string, lang: Lang): Promise<LearnSuggestion[]> {
+    const candidates: TopicSuggestionCandidate[] = [
+      ...(knowledge.guides ?? []).map((guide: any) => ({
+        id: guide.id,
+        kind: "guide" as const,
+        label_bn: guide.title_bn ?? "",
+        label_en: guide.title_en ?? "",
+        keywords: Array.isArray(guide.keywords) ? guide.keywords : [],
+      })),
+      ...(knowledge.conditions ?? [])
+        .filter((condition: any) => condition.id !== "primary_dysmenorrhea")
+        .map((condition: any) => ({
+          id: condition.id,
+          kind: "condition" as const,
+          label_bn: condition.name_bn ?? "",
+          label_en: condition.name_en ?? "",
+          keywords: [condition.about_bn, condition.about_en].filter(Boolean),
+        })),
+      ...UNIQUE_SOURCE_TOPICS.map((topic) => ({
+        id: topic.id,
+        kind: "source" as const,
+        label_bn: topic.title_bn,
+        label_en: topic.title_en,
+        keywords: topic.terms,
+      })),
+    ];
+    const local = rankLearnSuggestions(query, candidates, 6);
+    if (this.backend.name === "mock") return local;
+    try {
+      const ids = await this.backend.suggestTopics(query, lang, candidates);
+      const byId = new Map(candidates.map((candidate) => [candidate.id, candidate]));
+      const model = ids.map((id) => byId.get(id)).filter((candidate): candidate is TopicSuggestionCandidate => Boolean(candidate));
+      const merged = new Map<string, TopicSuggestionCandidate>();
+      for (const candidate of [...model, ...local]) merged.set(candidate.id, candidate);
+      return Array.from(merged.values()).slice(0, 6) as LearnSuggestion[];
+    } catch {
+      return local;
+    }
   }
 
   /** Let Gemma choose a situation-based educational starting point; never a diagnosis or triage decision. */

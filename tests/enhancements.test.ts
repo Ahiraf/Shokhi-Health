@@ -6,9 +6,10 @@ process.env.SHOKHI_BACKEND = "mock";
 import { describe, it, expect } from "vitest";
 import { retrieve, corpusInfo } from "../lib/server/rag";
 import { applySafetyNet, Assistant } from "../lib/server/assistant";
-import { getBackend } from "../lib/server/gemma";
+import { getBackend, ensureDualGreeting } from "../lib/server/gemma";
 import { detectCrisis, crisisResponse } from "../lib/server/crisis";
 import { guideJourney } from "../lib/journeys";
+import { matchesLearnSearch } from "../lib/learn-search";
 
 describe("#5 escalate-only LLM safety net", () => {
   it("ESCALATES an 'info' result to emergency when the classifier flags one", () => {
@@ -96,5 +97,25 @@ describe("situation-first learning journeys", () => {
     expect(guideJourney("period_cramps")).toBe("period_pain");
     expect(guideJourney("first_pregnancy")).toBe("pregnant_now");
     expect(guideJourney("missed_pill")).toBe("avoid_pregnancy");
+  });
+});
+
+describe("bilingual Learn search and suggestions", () => {
+  it("matches natural English symptom sentences to topic cards", () => {
+    expect(matchesLearnSearch("I have severe periodic cramp", ["Period cramps", "Mild-to-moderate cramping may happen."])).toBe(true);
+  });
+
+  it("matches natural Bangla queries to topic cards", () => {
+    expect(matchesLearnSearch("আমার মাসিকের ব্যথা", ["মাসিকের ব্যথা", "গরম সেঁক ও বিশ্রাম"])).toBe(true);
+  });
+
+  it("returns a relevant offline suggestion when Gemma is unavailable", async () => {
+    const suggestions = await new Assistant().suggestLearnTopics("severe periodic cramp", "en");
+    expect(suggestions.some((item) => item.id === "period_cramps")).toBe(true);
+  });
+
+  it("normalizes model greetings to the inclusive bilingual form", () => {
+    expect(ensureDualGreeting("নমস্কার। আপনার কথা বুঝেছি।", "bn")).toMatch(/^আসসালামু আলাইকুম \/ নমস্কার।/);
+    expect(ensureDualGreeting("Namaskar. I understand.", "en")).toMatch(/^Assalamu alaikum \/ Namaskar\./);
   });
 });

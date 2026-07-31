@@ -7,6 +7,7 @@ import type {
   CycleLog,
   CycleAnalysis,
   Wellness,
+  LearnSuggestion,
 } from "./types";
 import type { PersonalizationContext } from "./personalization";
 
@@ -211,6 +212,11 @@ export async function getKnowledge(): Promise<KnowledgeResponse> {
   const res = await fetch(`${BASE}/api/knowledge`);
   if (!res.ok) throw new Error("knowledge failed");
   return res.json();
+}
+
+export async function getLearnSuggestions(query: string, lang: "bn" | "en" = "bn"): Promise<LearnSuggestion[]> {
+  const result = await post<{ suggestions: LearnSuggestion[] }>("/api/learn/suggestions", { query, lang });
+  return Array.isArray(result.suggestions) ? result.suggestions : [];
 }
 
 export async function getWellness(): Promise<Wellness> {

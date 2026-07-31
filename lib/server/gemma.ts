@@ -9,6 +9,7 @@ import type { Lang } from "./prompts";
 import { detectCriticalLab } from "./personal";
 import { JOURNEY_KEYS, validJourney, type JourneyIntent } from "../journeys";
 import type { PersonalizationContext } from "../personalization";
+import { learnSearchScore } from "../learn-search";
 
 type Profile = Record<string, unknown>;
 
@@ -39,6 +40,7 @@ export interface Backend {
   explainGuide(guide: any, question: string, lang: Lang): Promise<string>;
   /** RAG: answer a question grounded ONLY in the retrieved context passages. */
   answerGrounded(question: string, context: string, lang: Lang): Promise<string>;
+  suggestTopics(query: string, lang: Lang, candidates: TopicSuggestionCandidate[]): Promise<string[]>;
   /** Escalate-only safety net: does this message look like an emergency? Never downgrades. */
   safetyCheck(message: string): Promise<SafetyResult>;
   /** Streaming variant of explainTriage — yields the guidance in chunks for a live feel. */
@@ -48,6 +50,14 @@ export interface Backend {
   /** Read and explain a medical report image using Gemma's multimodal input. */
   analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang, mode?: "standard" | "specialist"): Promise<string>;
 }
+
+export type TopicSuggestionCandidate = {
+  id: string;
+  kind: "guide" | "condition" | "source";
+  label_bn: string;
+  label_en: string;
+  keywords?: string[];
+};
 
 const pickField = (obj: any, base: string, lang: Lang) =>
   (lang === "en" ? obj?.[`${base}_en`] : undefined) ?? obj?.[`${base}_bn`];
@@ -123,7 +133,7 @@ const CLAUSE_SEP = [",", "।", ";", "\n", "কিন্তু", "তবে", " 
 
 const T = {
   bn: {
-    greeting: "আসসালামু আলাইকুম। ",
+    greeting: "আসসালামু আলাইকুম / নমস্কার। ",
     emergency: "⚠️ **এটি জরুরি অবস্থা হতে পারে।**\n",
     call: (n: string) => `\n📞 জরুরি প্রয়োজনে কল করুন: **${n}**`,
     discuss: "আপনার বর্ণনা শুনে নিচের বিষয়গুলো একজন ডাক্তারের সাথে আলোচনা করা ভালো (এটি নিশ্চিত রোগ নির্ণয় নয়):\n",
@@ -136,7 +146,7 @@ const T = {
     mythGeneric: "এই বিষয়ে অনেক ভুল ধারণা প্রচলিত আছে। নির্ভরযোগ্য তথ্যের জন্য একজন স্বাস্থ্যকর্মী বা ডাক্তারের সাথে কথা বলুন — লজ্জার কিছু নেই।",
   },
   en: {
-    greeting: "Assalamu alaikum. ",
+    greeting: "Assalamu alaikum / Namaskar. ",
     emergency: "⚠️ **This may be an emergency.**\n",
     call: (n: string) => `\n📞 In an emergency, call: **${n}**`,
     discuss: "From what you've described, it's worth discussing the following with a doctor (this is not a confirmed diagnosis):\n",
@@ -268,11 +278,11 @@ class MockBackend implements Backend {
 
   async bustMyth(_belief: string, fact: string, lang: Lang): Promise<string> {
     const t = T[lang] ?? T.bn;
-    return fact ? t.mythFact(fact) : t.mythGeneric;
+    return ensureDualGreeting(fact ? t.mythFact(fact) : t.mythGeneric, lang);
   }
 
   async explainGuide(guide: any, _q: string, lang: Lang): Promise<string> {
-    return renderGuide(guide, lang);
+    return ensureDualGreeting(renderGuide(guide, lang), lang);
   }
 
   // Offline grounded answer: no LLM, so return the retrieved context wrapped in a
@@ -284,7 +294,19 @@ class MockBackend implements Backend {
     const outro = lang === "en"
       ? "\n\nThis is general information — please check with a doctor or health worker for what is right for you."
       : "\n\nএটি সাধারণ তথ্য — আপনার জন্য সঠিকটি জানতে একজন ডাক্তার বা স্বাস্থ্যকর্মীর পরামর্শ নিন।";
-    return `${intro}\n\n${context}${outro}`;
+    return ensureDualGreeting(`${intro}\n\n${context}${outro}`, lang);
+  }
+
+  async suggestTopics(query: string, _lang: Lang, candidates: TopicSuggestionCandidate[]): Promise<string[]> {
+    return candidates
+      .map((candidate) => ({
+        id: candidate.id,
+        score: learnSearchScore(query, [candidate.label_bn, candidate.label_en, ...(candidate.keywords ?? [])]),
+      }))
+      .filter((candidate) => candidate.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6)
+      .map((candidate) => candidate.id);
   }
 
   // Offline safety net: deterministic keyword scan for clear emergency phrasing. Escalate-only
@@ -380,6 +402,61 @@ const parseJson = (text: string): Profile => {
   if (m) { try { return JSON.parse(m[0]); } catch { return {}; } }
   return {};
 };
+
+function parseStringArray(text: string): string[] {
+  try {
+    const value = JSON.parse(text);
+    if (Array.isArray(value)) return value.filter((item): item is string => typeof item === "string");
+  } catch { /* fall through to a conservative bracket extraction */ }
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) return [];
+  try {
+    const value = JSON.parse(match[0]);
+    return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+const DUAL_GREETING = {
+  bn: "আসসালামু আলাইকুম / নমস্কার।",
+  en: "Assalamu alaikum / Namaskar.",
+} as const;
+
+/** Keep every human-facing model reply inclusive even when a model ignores the prompt. */
+export function ensureDualGreeting(text: string, lang: Lang): string {
+  const greeting = DUAL_GREETING[lang] ?? DUAL_GREETING.bn;
+  const cleaned = String(text ?? "")
+    .trim()
+    .replace(/^(?:\*\*)?(?:আসসালামু আলাইকুম|নমস্কার|হ্যালো|assalamu alaikum|namaskar|hello)(?:\s*\/\s*(?:আসসালামু আলাইকুম|নমস্কার|assalamu alaikum|namaskar|হ্যালো|hello))?[।.!,:\-]?\s*/i, "")
+    .trim();
+  return cleaned ? `${greeting}\n\n${cleaned}` : greeting;
+}
+
+function stripLeadingGreeting(text: string): string {
+  return String(text ?? "")
+    .replace(/^(?:\s|\*)*(?:আসসালামু আলাইকুম|নমস্কার|হ্যালো|assalamu alaikum|namaskar|hello)(?:\s*\/\s*(?:আসসালামু আলাইকুম|নমস্কার|assalamu alaikum|namaskar|হ্যালো|hello))?[।.!,:\-]?\s*/i, "")
+    .trimStart();
+}
+
+async function* withDualGreetingStream(source: AsyncIterable<string>, lang: Lang): AsyncGenerator<string> {
+  yield `${DUAL_GREETING[lang] ?? DUAL_GREETING.bn}\n\n`;
+  let pending = "";
+  let flushed = false;
+  for await (const chunk of source) {
+    if (flushed) { yield chunk; continue; }
+    pending += chunk;
+    if (pending.length < 100) continue;
+    const cleaned = stripLeadingGreeting(pending);
+    if (cleaned) yield cleaned;
+    pending = "";
+    flushed = true;
+  }
+  if (!flushed) {
+    const cleaned = stripLeadingGreeting(pending);
+    if (cleaned) yield cleaned;
+  }
+}
 
 const EXTRACTION_TOOL = {
   name: "record_symptoms",
@@ -734,18 +811,21 @@ class GeminiBackend implements Backend {
     return normaliseJourney(raw.functionCalls?.[0]?.args ?? parseJson(raw.text ?? ""));
   }
 
-  explainTriage(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
+  async explainTriage(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
     const system = P.withLanguage(P.EXPLAIN_SYSTEM, lang);
     const user = P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization));
     const kind = tr.urgency === "emergency" || tr.urgency === "see_doctor_soon" ? "ambiguous" : "routine";
-    return this.generateWithSafeTools(system, user, 0.4, kind);
+    return ensureDualGreeting(await this.generateWithSafeTools(system, user, 0.4, kind), lang);
   }
   explainTriageStream(tr: any, lang: Lang, personalization: PersonalizationContext = {}) {
     const ambiguous = tr.urgency === "emergency" || (tr.outstanding_questions && Object.keys(tr.outstanding_questions).length > 0);
-    return this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization)), 0.4, ambiguous ? "ambiguous" : "routine");
+    return withDualGreetingStream(
+      this.generateStream(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization)), 0.4, ambiguous ? "ambiguous" : "routine"),
+      lang,
+    );
   }
   composeStream(system: string, user: string, lang: Lang, _fallback: string) {
-    return this.generateStream(P.withLanguage(system, lang), user, 0.5);
+    return withDualGreetingStream(this.generateStream(P.withLanguage(system, lang), user, 0.5), lang);
   }
   async analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang, mode: "standard" | "specialist" = "standard"): Promise<string> {
     const response: any = await this.withFallback((c) => c.models.generateContent({
@@ -770,11 +850,11 @@ class GeminiBackend implements Backend {
       const structured = renderReportReview(call.args, lang);
       // Keep the deterministic report guard independent of the model's wording.
       const critical = detectCriticalLab(structured);
-      return critical.level ? `${structured}\n\n${lang === "en" ? critical.note_en : critical.note_bn}` : structured;
+      return ensureDualGreeting(critical.level ? `${structured}\n\n${lang === "en" ? critical.note_en : critical.note_bn}` : structured, lang);
     }
     const text = (response.text ?? "").trim();
     if (!text) throw new Error("Gemma returned no report analysis.");
-    return text;
+    return ensureDualGreeting(text, lang);
   }
   async safetyCheck(message: string): Promise<SafetyResult> {
     try {
@@ -788,14 +868,18 @@ class GeminiBackend implements Backend {
     }
   }
   bustMyth(belief: string, fact: string, lang: Lang) {
-    return this.generate(P.withLanguage(P.MYTH_SYSTEM, lang), P.mythUser(belief, fact), 0.4);
+    return this.generate(P.withLanguage(P.MYTH_SYSTEM, lang), P.mythUser(belief, fact), 0.4).then((text) => ensureDualGreeting(text, lang));
   }
   explainGuide(guide: any, question: string, lang: Lang) {
-    return this.generate(P.withLanguage(P.GUIDE_SYSTEM, lang), P.guideUser(JSON.stringify(guide), question), 0.4);
+    return this.generate(P.withLanguage(P.GUIDE_SYSTEM, lang), P.guideUser(JSON.stringify(guide), question), 0.4).then((text) => ensureDualGreeting(text, lang));
   }
   answerGrounded(question: string, context: string, lang: Lang) {
     // Low temperature: stay faithful to the retrieved context (RAG).
-    return this.generate(P.withLanguage(P.GROUNDED_SYSTEM, lang), P.groundedUser(context, question), 0.2);
+    return this.generate(P.withLanguage(P.GROUNDED_SYSTEM, lang), P.groundedUser(context, question), 0.2).then((text) => ensureDualGreeting(text, lang));
+  }
+  async suggestTopics(query: string, lang: Lang, candidates: TopicSuggestionCandidate[]): Promise<string[]> {
+    const compact = JSON.stringify(candidates.map(({ id, label_bn, label_en, keywords }) => ({ id, label_bn, label_en, keywords: keywords?.slice(0, 8) })));
+    return parseStringArray(await this.generate(P.withLanguage(P.SUGGEST_SYSTEM, lang), P.suggestUser(query, compact), 0.1));
   }
 
 }
@@ -849,23 +933,32 @@ class LocalGemmaBackend implements Backend {
   }
 
   async explainTriage(tr: any, lang: Lang, personalization: PersonalizationContext = {}): Promise<string> {
-    try { return await this.chat(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization))); }
+    try { return ensureDualGreeting(await this.chat(P.withLanguage(P.EXPLAIN_SYSTEM, lang), P.explainUserWithContext(JSON.stringify(tr), JSON.stringify(personalization))), lang); }
     catch { return this.fallback.explainTriage(tr, lang, personalization); }
   }
 
   async bustMyth(belief: string, fact: string, lang: Lang): Promise<string> {
-    try { return await this.chat(P.withLanguage(P.MYTH_SYSTEM, lang), P.mythUser(belief, fact)); }
+    try { return ensureDualGreeting(await this.chat(P.withLanguage(P.MYTH_SYSTEM, lang), P.mythUser(belief, fact)), lang); }
     catch { return this.fallback.bustMyth(belief, fact, lang); }
   }
 
   async explainGuide(guide: any, question: string, lang: Lang): Promise<string> {
-    try { return await this.chat(P.withLanguage(P.GUIDE_SYSTEM, lang), P.guideUser(JSON.stringify(guide), question)); }
+    try { return ensureDualGreeting(await this.chat(P.withLanguage(P.GUIDE_SYSTEM, lang), P.guideUser(JSON.stringify(guide), question)), lang); }
     catch { return this.fallback.explainGuide(guide, question, lang); }
   }
 
   async answerGrounded(question: string, context: string, lang: Lang): Promise<string> {
-    try { return await this.chat(P.withLanguage(P.GROUNDED_SYSTEM, lang), P.groundedUser(context, question)); }
+    try { return ensureDualGreeting(await this.chat(P.withLanguage(P.GROUNDED_SYSTEM, lang), P.groundedUser(context, question)), lang); }
     catch { return this.fallback.answerGrounded(question, context, lang); }
+  }
+
+  async suggestTopics(query: string, lang: Lang, candidates: TopicSuggestionCandidate[]): Promise<string[]> {
+    try {
+      const compact = JSON.stringify(candidates.map(({ id, label_bn, label_en, keywords }) => ({ id, label_bn, label_en, keywords: keywords?.slice(0, 8) })));
+      return parseStringArray(await this.chat(P.withLanguage(P.SUGGEST_SYSTEM, lang), P.suggestUser(query, compact)));
+    } catch {
+      return this.fallback.suggestTopics(query, lang, candidates);
+    }
   }
 
   async safetyCheck(message: string): Promise<SafetyResult> {
@@ -882,13 +975,13 @@ class LocalGemmaBackend implements Backend {
 
   async *composeStream(system: string, user: string, lang: Lang, fallback: string): AsyncGenerator<string> {
     let full = fallback;
-    try { full = await this.chat(P.withLanguage(system, lang), user); } catch { /* fallback stays local */ }
+    try { full = ensureDualGreeting(await this.chat(P.withLanguage(system, lang), user), lang); } catch { full = ensureDualGreeting(full, lang); }
     for (const line of (full || "").split("\n")) yield line + "\n";
   }
 
   async analyzeReportImage(bytes: ArrayBuffer, mime: string, lang: Lang, mode: "standard" | "specialist" = "standard"): Promise<string> {
     try {
-      return await this.chat(reportPrompt(lang, mode), lang === "en" ? "Read the attached report image and return the four requested sections." : "সংযুক্ত রিপোর্টের ছবিটি পড়ে চারটি চাওয়া অংশে উত্তর দিন।", { bytes, mime: mime.split(";")[0] });
+      return ensureDualGreeting(await this.chat(reportPrompt(lang, mode), lang === "en" ? "Read the attached report image and return the four requested sections." : "সংযুক্ত রিপোর্টের ছবিটি পড়ে চারটি চাওয়া অংশে উত্তর দিন।", { bytes, mime: mime.split(";")[0] }), lang);
     } catch {
       return this.fallback.analyzeReportImage(bytes, mime, lang, mode);
     }

@@ -428,7 +428,7 @@ export const STRINGS = {
   },
 
   // chat greeting when a name is saved ({name} is replaced)
-  "chat.greeting": { bn: "আসসালামু আলাইকুম, {name}", en: "Assalamu alaikum, {name}" },
+  "chat.greeting": { bn: "আসসালামু আলাইকুম / নমস্কার, {name}", en: "Assalamu alaikum / Namaskar, {name}" },
 
   // --- wellness ------------------------------------------------------------
   "wellness.title": { bn: "সুস্থতা — চলাফেরা ও খাবার", en: "Wellness — Movement & Food" },

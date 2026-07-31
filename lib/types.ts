@@ -94,6 +94,14 @@ export interface GuideResponse {
   guidance: string;
 }
 
+export interface LearnSuggestion {
+  id: string;
+  kind: "guide" | "condition" | "source";
+  label_bn: string;
+  label_en: string;
+  keywords?: string[];
+}
+
 export interface GuideFull {
   id: string;
   icon: string;
