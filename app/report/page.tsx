@@ -130,15 +130,6 @@ export default function ReportPage() {
         </div>
       )}
 
-      {text && (
-        <ReportAdvice
-          text={text}
-          loading={loading}
-          en={en}
-          onDoctorSummary={() => setShowDoctorSummary(true)}
-        />
-      )}
-
       {doctorRecord && showDoctorSummary && !loading && <DoctorSummary record={doctorRecord} en={en} />}
       {error && <p className="mt-4 text-sm text-red-500">{en ? "Couldn't read that just now. Please try again." : "এখন পড়া গেল না। আবার চেষ্টা করুন।"}</p>}
 
@@ -205,6 +196,15 @@ export default function ReportPage() {
             : (en ? "Your report history stays on this phone only." : "আপনার রিপোর্টের ইতিহাস শুধু এই ফোনেই থাকে।")}
         </p>
       </section>
+
+      {text && (
+        <ReportAdvice
+          text={text}
+          loading={loading}
+          en={en}
+          onDoctorSummary={() => setShowDoctorSummary(true)}
+        />
+      )}
 
       <ReportHistory history={history} en={en} onClear={() => { clearReportHistory(); setHistory([]); setDoctorRecord(null); setShowDoctorSummary(false); }} />
 
