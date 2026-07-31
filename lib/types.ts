@@ -79,6 +79,7 @@ export interface GuideCard {
   title_en: string;
   summary_bn: string;
   summary_en?: string;
+  keywords?: string[];
   category?: string;
   audience?: string[];
   learn?: boolean;
@@ -100,6 +101,7 @@ export interface GuideFull {
   title_en: string;
   summary_bn: string;
   summary_en?: string;
+  keywords?: string[];
   points_bn: string[];
   points_en?: string[];
   when_see_doctor_bn: string;

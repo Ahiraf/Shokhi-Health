@@ -8,7 +8,7 @@ import { retrieve, type Retrieved } from "./rag";
 import type { Lang } from "./prompts";
 import type { JourneyIntent } from "../journeys";
 import type { PersonalizationContext } from "../personalization";
-import { GUIDE_MASCOT_IMAGES } from "../mascot-images";
+import { GUIDE_MASCOT_IMAGES, mascotImageFor } from "../mascot-images";
 
 type Citation = { source: string; url: string; section?: string; pub_year?: string };
 
@@ -148,6 +148,10 @@ function topicForGuide(g: any): string | undefined {
     family_planning: "contraception",
     period_cramps: "menstruation",
     first_period: "menstruation",
+    emergency_contraception: "contraception",
+    pre_eclampsia_warning_signs: "pregnancy",
+    gestational_diabetes: "pregnancy",
+    pelvic_infection_and_pain: "infection",
   };
   return topics[id];
 }
@@ -209,6 +213,7 @@ export class Assistant {
       id: g.id, icon: g.icon ?? "🌸",
       title_bn: g.title_bn ?? "", title_en: g.title_en ?? "",
       summary_bn: g.summary_bn ?? "", summary_en: g.summary_en ?? "",
+      keywords: Array.isArray(g.keywords) ? g.keywords : [],
       category: g.category ?? "health",
       audience: Array.isArray(g.audience) ? g.audience : [],
       learn: g.learn === true,
@@ -269,7 +274,7 @@ export class Assistant {
     if (!g && !hits.length) return null;
 
     const guideMeta = g
-      ? { id: g.id, icon: g.icon ?? "🌸", title_bn: g.title_bn ?? "", title_en: g.title_en ?? "", image: GUIDE_MASCOT_IMAGES[g.id] }
+      ? { id: g.id, icon: g.icon ?? "🌸", title_bn: g.title_bn ?? "", title_en: g.title_en ?? "", image: mascotImageFor(g.id) }
       : { id: "topic", icon: "🌸", title_bn: topic, title_en: topic };
 
     if (hits.length) {

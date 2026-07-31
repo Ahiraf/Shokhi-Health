@@ -931,6 +931,122 @@
       "when_see_doctor_en": "After birth, go to a hospital now or call 999 for heavy bleeding, fainting, severe pain, or fever."
     },
     {
+      "id": "emergency_contraception",
+      "icon": "🛡️",
+      "category": "health",
+      "audience": ["teen", "adult"],
+      "learn": true,
+      "source": "WHO — Emergency contraception",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/emergency-contraception",
+      "reviewed": "2026-07-31",
+      "title_bn": "জরুরি গর্ভনিরোধ",
+      "title_en": "Emergency contraception",
+      "keywords": ["জরুরি পিল", "জরুরি গর্ভনিরোধ", "emergency contraception", "morning after pill", "unprotected sex"],
+      "summary_bn": "অসুরক্ষিত সহবাস বা জন্মনিয়ন্ত্রণে ভুলের পর নিরাপদ বিকল্প ও কোথায় পরামর্শ পাবেন।",
+      "summary_en": "Options and support after unprotected sex or a contraception mistake.",
+      "points_bn": [
+        "কনডম ছিঁড়ে গেলে, পিল ভুলে গেলে বা অসুরক্ষিত সহবাস হলে জরুরি গর্ভনিরোধের কথা ভাবা যায়।",
+        "যত তাড়াতাড়ি নেওয়া যায় তত ভালো; কোন পদ্ধতি আপনার জন্য ঠিক তা স্বাস্থ্যকর্মী বা ফার্মাসিস্টের সঙ্গে ঠিক করুন।",
+        "এটি গর্ভপাত ঘটায় না এবং যৌনবাহিত সংক্রমণ থেকে সুরক্ষা দেয় না — কনডম সংক্রমণের ঝুঁকি কমায়।",
+        "জরুরি পদ্ধতির পর নিয়মিত পরিবার পরিকল্পনা পদ্ধতি ও পরবর্তী মাসিক নিয়ে পরামর্শ নিন।"
+      ],
+      "points_en": [
+        "Emergency contraception can be considered after a broken condom, missed pills, or unprotected sex.",
+        "It works best as soon as possible; a health worker or pharmacist can help choose an option.",
+        "It does not end an established pregnancy and does not protect against STIs; condoms reduce STI risk.",
+        "Afterward, ask about a regular family-planning method and what to expect with your next period."
+      ],
+      "when_see_doctor_bn": "অসুরক্ষিত সহবাসের পর গর্ভধারণ নিয়ে দুশ্চিন্তা, তীব্র পেটব্যথা, অস্বাভাবিক রক্তপাত বা জোরপূর্বক সহবাস হলে দ্রুত স্বাস্থ্যকর্মীর সাহায্য নিন।",
+      "when_see_doctor_en": "After unprotected sex, seek care for pregnancy concerns, severe abdominal pain, unusual bleeding, or sexual violence."
+    },
+    {
+      "id": "pre_eclampsia_warning_signs",
+      "icon": "🚨",
+      "category": "health",
+      "audience": ["pregnant", "adult", "caregiver"],
+      "learn": true,
+      "source": "WHO — Pre-eclampsia",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/pre-eclampsia",
+      "reviewed": "2026-07-31",
+      "title_bn": "গর্ভাবস্থায় উচ্চ রক্তচাপের বিপদচিহ্ন",
+      "title_en": "Pregnancy blood-pressure warning signs",
+      "keywords": ["প্রি-এক্ল্যাম্পসিয়া", "উচ্চ রক্তচাপ", "গর্ভাবস্থায় মাথাব্যথা", "pre-eclampsia", "pregnancy headache", "vision changes"],
+      "summary_bn": "গর্ভাবস্থায় তীব্র মাথাব্যথা, ঝাপসা দেখা বা হঠাৎ ফোলা হলে কেন দ্রুত সাহায্য দরকার।",
+      "summary_en": "Why severe headache, vision changes, or sudden swelling in pregnancy need prompt care.",
+      "points_bn": [
+        "প্রি-এক্ল্যাম্পসিয়া গর্ভাবস্থার একটি গুরুতর উচ্চ রক্তচাপের সমস্যা; নিয়মিত চেকআপে রক্তচাপ ও প্রস্রাব পরীক্ষা গুরুত্বপূর্ণ।",
+        "তীব্র মাথাব্যথা, ঝাপসা দেখা বা আলো ঝলকানো, পেটের ওপরের অংশে ব্যথা এবং হঠাৎ মুখ-হাত ফুলে যাওয়া সতর্কতার লক্ষণ হতে পারে।",
+        "কখনো কোনো লক্ষণ না থাকলেও সমস্যা হতে পারে, তাই নির্ধারিত গর্ভকালীন চেকআপ বাদ দেবেন না।",
+        "খিঁচুনি বা খুব অসুস্থ লাগলে অপেক্ষা না করে জরুরি হাসপাতালে যান।"
+      ],
+      "points_en": [
+        "Pre-eclampsia is a serious high-blood-pressure problem in pregnancy; regular blood-pressure and urine checks matter.",
+        "Severe headache, blurred vision or flashing lights, upper-abdominal pain, and sudden face or hand swelling can be warning signs.",
+        "It can sometimes have no obvious symptoms, so keep scheduled antenatal visits.",
+        "Go to emergency care without waiting for seizures or severe illness."
+      ],
+      "when_see_doctor_bn": "গর্ভাবস্থায় তীব্র মাথাব্যথা, ঝাপসা দেখা, ওপরের পেটে ব্যথা, হঠাৎ ফোলা বা খিঁচুনি হলে এখনই হাসপাতালে যান।",
+      "when_see_doctor_en": "Go to a hospital now for severe headache, vision changes, upper-abdominal pain, sudden swelling, or seizures during pregnancy."
+    },
+    {
+      "id": "gestational_diabetes",
+      "icon": "🩺",
+      "category": "nutrition",
+      "audience": ["pregnant", "adult", "caregiver"],
+      "learn": true,
+      "source": "WHO — Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+      "reviewed": "2026-07-31",
+      "title_bn": "গর্ভকালীন ডায়াবেটিস",
+      "title_en": "Diabetes during pregnancy",
+      "keywords": ["গর্ভকালীন ডায়াবেটিস", "ডায়াবেটিস", "gestational diabetes", "pregnancy diabetes", "blood sugar"],
+      "summary_bn": "গর্ভাবস্থায় রক্তে শর্করা বেড়ে গেলে পরীক্ষা, খাবার ও স্বাস্থ্যকর্মীর সহায়তা কেন জরুরি।",
+      "summary_en": "Why screening and health-worker support matter when blood sugar rises in pregnancy.",
+      "points_bn": [
+        "গর্ভকালীন ডায়াবেটিসে অনেক সময় স্পষ্ট কোনো লক্ষণ থাকে না, তাই স্বাস্থ্যকর্মীর বলা সময়ে পরীক্ষা করা গুরুত্বপূর্ণ।",
+        "রক্তে শর্করা বেশি হলে মা ও শিশুর ঝুঁকি বাড়তে পারে; রিপোর্ট নিয়ে স্বাস্থ্যকর্মীর সঙ্গে পরিকল্পনা করুন।",
+        "খাবার, নড়াচড়া, পরীক্ষা ও ওষুধের পরামর্শ ব্যক্তি অনুযায়ী বদলায় — নিজে থেকে ওষুধ শুরু বা বন্ধ করবেন না।",
+        "গর্ভাবস্থার পরও ভবিষ্যতে ডায়াবেটিসের ঝুঁকি থাকতে পারে, তাই ফলো-আপের কথা জেনে নিন।"
+      ],
+      "points_en": [
+        "Gestational diabetes may have no clear symptoms, so attend screening when your health worker recommends it.",
+        "High blood sugar can raise risks for mother and baby; discuss a plan using your test results.",
+        "Food, activity, monitoring, and medicine advice are personal — do not start or stop medicine on your own.",
+        "It can increase future diabetes risk, so ask about follow-up after pregnancy."
+      ],
+      "when_see_doctor_bn": "গর্ভাবস্থায় অতিরিক্ত তৃষ্ণা, বারবার প্রস্রাব, দুর্বলতা বা পরীক্ষায় শর্করা বেশি এলে স্বাস্থ্যকর্মীর সঙ্গে দ্রুত কথা বলুন।",
+      "when_see_doctor_en": "Talk with a health worker promptly about excessive thirst, frequent urination, weakness, or a high pregnancy blood-sugar result."
+    },
+    {
+      "id": "pelvic_infection_and_pain",
+      "icon": "🩺",
+      "category": "conditions",
+      "audience": ["teen", "adult", "pregnant"],
+      "learn": true,
+      "source": "WHO — Sexually transmitted infections",
+      "source_url": "https://www.who.int/en/news-room/fact-sheets/detail/sexually-transmitted-infections-%28stis%29",
+      "reviewed": "2026-07-31",
+      "title_bn": "তলপেটের ব্যথা, স্রাব ও সংক্রমণ",
+      "title_en": "Pelvic pain, discharge, and infection",
+      "keywords": ["তলপেট ব্যথা", "স্রাব", "সংক্রমণ", "pelvic pain", "discharge", "STI", "sexually transmitted infection"],
+      "summary_bn": "তলপেট ব্যথা, দুর্গন্ধযুক্ত স্রাব, জ্বর বা প্রস্রাবে জ্বালার অনেক কারণ থাকতে পারে — পরীক্ষা করানোই নিরাপদ।",
+      "summary_en": "Pelvic pain, discharge, fever, or burning urine can have several causes; testing is the safer next step.",
+      "points_bn": [
+        "দুর্গন্ধযুক্ত স্রাব, প্রস্রাবে জ্বালা, যৌনমিলনে ব্যথা, তলপেটে ব্যথা বা জ্বর হলে সংক্রমণসহ নানা কারণ থাকতে পারে।",
+        "লক্ষণ দেখে নিজে রোগ বা ওষুধ ঠিক করবেন না; স্বাস্থ্যকেন্দ্রে গিয়ে গোপনীয়ভাবে পরীক্ষা ও পরামর্শ নিন।",
+        "সঙ্গীরও পরীক্ষা বা চিকিৎসা লাগতে পারে; চিকিৎসা শেষ না হওয়া পর্যন্ত কনডম ব্যবহার বা বিরতি নিয়ে স্বাস্থ্যকর্মীর পরামর্শ নিন।",
+        "গর্ভাবস্থায় জ্বর, তলপেটে ব্যথা বা অস্বাভাবিক স্রাব হলে দ্রুত জানানো জরুরি।"
+      ],
+      "points_en": [
+        "Foul discharge, painful urination, pain during sex, pelvic pain, or fever can have several causes, including infection.",
+        "Do not diagnose or choose antibiotics from symptoms alone; seek confidential testing and advice.",
+        "A partner may also need testing or treatment; ask about condoms or pausing sex until care is complete.",
+        "During pregnancy, report fever, pelvic pain, or unusual discharge promptly."
+      ],
+      "when_see_doctor_bn": "তীব্র তলপেট ব্যথা, জ্বর, গর্ভাবস্থা, অজ্ঞানভাব বা দুর্গন্ধযুক্ত স্রাব হলে দ্রুত স্বাস্থ্যকেন্দ্রে যান।",
+      "when_see_doctor_en": "Seek prompt care for severe pelvic pain, fever, pregnancy, fainting, or foul-smelling discharge."
+    },
+    {
       "id": "period_emotions",
       "icon": "🫂",
       "title_bn": "মাসিকের সময় মন ও অনুভূতি",

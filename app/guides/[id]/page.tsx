@@ -24,6 +24,7 @@ export default function GuideDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [guide, setGuide] = useState<GuideFull | null>(null);
   const [selfCheckCondition, setSelfCheckCondition] = useState<Condition | null>(null);
+  const [relatedConditions, setRelatedConditions] = useState<Condition[]>([]);
   const [schema, setSchema] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
   const journey = guide ? guideJourney(guide.id) : undefined;
@@ -32,6 +33,7 @@ export default function GuideDetailPage() {
     Promise.all([getGuide(id), getKnowledge()])
       .then(([g, knowledge]) => {
         setGuide(g);
+        setRelatedConditions(knowledge.conditions);
         const conditionId = GUIDE_SELF_CHECK_CONDITIONS[g.id];
         setSelfCheckCondition(knowledge.conditions.find((condition) => condition.id === conditionId) ?? null);
         setSchema((knowledge.symptom_schema as Record<string, any>) ?? {});
@@ -106,7 +108,7 @@ export default function GuideDetailPage() {
             </div>
           )}
 
-          {selfCheckCondition && <ConditionSelfCheck condition={selfCheckCondition as unknown as Record<string, unknown>} schema={schema} />}
+          {selfCheckCondition && <ConditionSelfCheck condition={selfCheckCondition as unknown as Record<string, unknown>} schema={schema} relatedConditions={relatedConditions} />}
 
           <div className="mt-8 rounded-2xl bg-blush/70 px-4 py-4 text-center">
             <p className="text-sm text-plum/70">{t("guides.moreQuestion")}</p>

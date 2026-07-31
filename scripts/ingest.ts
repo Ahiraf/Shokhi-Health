@@ -12,7 +12,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvConfig } from "@next/env";
 import {
-  embed,
+  embedMany,
   chunkWithHeadings,
   activeEmbedder,
   EMBED_MODEL,
@@ -89,17 +89,36 @@ async function main() {
   const chunks: any[] = [];
   let dim = 0;
 
+  // Reuse embeddings for unchanged passages. This keeps refreshes under provider
+  // quotas and makes adding a few new sources inexpensive.
+  const existingById = new Map<string, any>();
+  try {
+    const previous = JSON.parse(readFileSync(OUT, "utf-8"));
+    for (const chunk of previous.chunks ?? []) existingById.set(chunk.id, chunk);
+  } catch {
+    // No previous corpus is normal on a fresh clone.
+  }
+
   for (const file of files) {
     const { meta, body } = parseDoc(readFileSync(join(SOURCES_DIR, file), "utf-8"));
     const topic = inferTopic(file, meta);
     const pieces = chunkWithHeadings(body);
     console.log(`[ingest] ${file}: ${pieces.length} chunks (topic=${topic})`);
+    const ids = pieces.map((_, i) => `${file.replace(/\.md$/, "")}-${i}`);
+    const missing = pieces
+      .map(({ text }, i) => ({ i, text }))
+      .filter(({ i }) => !existingById.has(ids[i]));
+    if (missing.length) console.log(`[ingest] embedding ${missing.length} new passages`);
+    const embeddings = await embedMany(missing.map(({ text }) => `${meta.title}\n${text}`), embedder);
+    const embeddingByIndex = new Map(missing.map(({ i }, position) => [i, embeddings[position]]));
     for (let i = 0; i < pieces.length; i++) {
       const { text, section } = pieces[i];
-      const embedding = await embed(`${meta.title}\n${text}`, embedder);
+      const previous = existingById.get(ids[i]);
+      const embedding = previous?.embedding ?? embeddingByIndex.get(i);
+      if (!embedding) throw new Error(`Missing embedding for ${ids[i]}`);
       dim = embedding.length;
       chunks.push({
-        id: `${file.replace(/\.md$/, "")}-${i}`,
+        id: ids[i],
         text,
         title: meta.title,
         source: meta.source,

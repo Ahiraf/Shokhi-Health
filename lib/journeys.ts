@@ -129,6 +129,10 @@ const GUIDE_JOURNEYS: Record<string, JourneyKey> = {
   sleep_stress_and_self_care: "understand_symptoms",
   pregnancy_test_and_first_visit: "pregnant_now",
   postpartum_recovery_and_breastfeeding: "after_birth",
+  emergency_contraception: "avoid_pregnancy",
+  pre_eclampsia_warning_signs: "pregnant_now",
+  gestational_diabetes: "pregnant_now",
+  pelvic_infection_and_pain: "understand_symptoms",
 };
 
 const CONDITION_JOURNEYS: Record<string, JourneyKey[]> = {

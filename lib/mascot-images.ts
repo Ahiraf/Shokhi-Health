@@ -56,6 +56,10 @@ export const RELATED_MASCOT_IMAGES: Record<string, string> = {
   cloth_pad: GUIDE_MASCOT_IMAGES.first_period,
   how_to_use_pad: GUIDE_MASCOT_IMAGES.first_period,
   no_pad_emergency: GUIDE_MASCOT_IMAGES.first_period,
+  emergency_contraception: GUIDE_MASCOT_IMAGES.contraception,
+  pre_eclampsia_warning_signs: GUIDE_MASCOT_IMAGES.first_pregnancy,
+  gestational_diabetes: GUIDE_MASCOT_IMAGES.first_pregnancy,
+  pelvic_infection_and_pain: GUIDE_MASCOT_IMAGES.safe_help,
 };
 
 export function mascotImageFor(id: string): string {

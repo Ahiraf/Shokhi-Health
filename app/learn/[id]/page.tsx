@@ -22,6 +22,7 @@ export default function ConditionDetailPage() {
   const { t, lang } = useLang();
   const { id } = useParams<{ id: string }>();
   const [cond, setCond] = useState<Condition | null>(null);
+  const [relatedConditions, setRelatedConditions] = useState<Condition[]>([]);
   const [schema, setSchema] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
 
@@ -30,6 +31,7 @@ export default function ConditionDetailPage() {
       .then((k) => {
         const c = k.conditions.find((x) => x.id === id) || null;
         setCond(c);
+        setRelatedConditions(k.conditions);
         setSchema((k.symptom_schema as Record<string, any>) ?? {});
         setStatus(c ? "ok" : "error");
       })
@@ -97,7 +99,7 @@ export default function ConditionDetailPage() {
           )}
 
           {/* interactive "Am I at risk?" self-check — makes Learn an assessment tool */}
-          <ConditionSelfCheck condition={cond as unknown as Record<string, unknown>} schema={schema} />
+          <ConditionSelfCheck condition={cond as unknown as Record<string, unknown>} schema={schema} relatedConditions={relatedConditions} />
 
           <div className="mt-8 rounded-2xl bg-blush/70 px-4 py-4 text-center">
             <p className="text-sm text-plum/70">{t("learn.haveThis")}</p>

@@ -107,7 +107,7 @@ export default function LearnPage() {
         if (selectedCategory !== "all" && selectedCategory !== category) return false;
         if (selectedJourney && guideJourney(guide.id) !== selectedJourney) return false;
         if (!normalizedSearch) return true;
-        return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source]
+        return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source, ...(guide.keywords ?? [])]
           .filter((value): value is string => Boolean(value))
           .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
       })
@@ -134,7 +134,7 @@ export default function LearnPage() {
       if (!journey && selectedJourney !== "understand_symptoms") return false;
     }
     if (!normalizedSearch) return true;
-    return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source]
+    return [guide.title_bn, guide.title_en, guide.summary_bn, guide.summary_en, category, guide.source, ...(guide.keywords ?? [])]
       .filter((value): value is string => Boolean(value))
       .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
   }), [guides, normalizedSearch, selectedCategory, selectedJourney]);
@@ -142,6 +142,17 @@ export default function LearnPage() {
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
+
+      <label className="relative mt-6 block">
+        <span className="sr-only">{t("learn.searchLabel")}</span>
+        <Icon name="search" size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-plum/40" />
+        <input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder={t("learn.searchPlaceholder")}
+          className="w-full rounded-2xl bg-surface/80 py-3 pl-11 pr-4 text-sm text-plum outline-none ring-1 ring-rose-soft placeholder:text-plum/40 focus:ring-2 focus:ring-rose/40"
+        />
+      </label>
 
       {mascotGuides.length > 0 && (
         <section className="mt-6 rounded-3xl bg-panel/95 p-4 text-white shadow-card sm:p-5" aria-labelledby="illustrated-topics-heading">
@@ -176,17 +187,6 @@ export default function LearnPage() {
           </div>
         </section>
       )}
-
-      <label className="relative mt-8 block">
-        <span className="sr-only">{t("learn.searchLabel")}</span>
-        <Icon name="search" size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-plum/40" />
-        <input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder={t("learn.searchPlaceholder")}
-          className="w-full rounded-2xl bg-surface/80 py-3 pl-11 pr-4 text-sm text-plum outline-none ring-1 ring-rose-soft placeholder:text-plum/40 focus:ring-2 focus:ring-rose/40"
-        />
-      </label>
 
       <div className="mt-4" aria-label={t("guides.filterLabel")}>
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-plum/45">{t("guides.filterLabel")}</p>

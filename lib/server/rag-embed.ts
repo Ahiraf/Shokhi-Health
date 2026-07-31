@@ -79,6 +79,28 @@ export async function googleEmbed(text: string): Promise<number[]> {
   return values;
 }
 
+/** Embed a document's passages in one provider request when using Google. */
+export async function googleEmbedMany(texts: string[]): Promise<number[][]> {
+  if (!texts.length) return [];
+  const key = embedKey();
+  if (!key) throw new Error("No GOOGLE_API_KEY for embeddings.");
+  const { GoogleGenAI } = await import("@google/genai");
+  const ai = new GoogleGenAI({ apiKey: key });
+  const resp: any = await ai.models.embedContent({
+    model: EMBED_MODEL,
+    contents: texts.map((text) => ({ parts: [{ text }] })),
+    config: { outputDimensionality: EMBED_OUTPUT_DIM },
+  });
+  const embeddings = Array.isArray(resp?.embeddings)
+    ? resp.embeddings
+    : resp?.embedding
+      ? [resp.embedding]
+      : [];
+  const values = embeddings.map((embedding: any) => embedding?.values).filter((value: any) => Array.isArray(value) && value.length);
+  if (values.length !== texts.length) throw new Error(`Expected ${texts.length} embeddings, received ${values.length}.`);
+  return values;
+}
+
 // --- bge-m3 via transformers.js (optional, non-generative) --------------------
 // Lazily import @xenova/transformers so the app never pays for it unless bge-m3 is
 // actually selected (the embedder benchmark, or a corpus re-ingested with EMBEDDER=bge-m3).
@@ -114,6 +136,11 @@ export async function embed(text: string, embedder: Embedder): Promise<number[]>
   if (embedder === "google") return googleEmbed(text);
   if (embedder === "bge-m3") return bgeEmbed(text);
   return mockEmbed(text);
+}
+
+export async function embedMany(texts: string[], embedder: Embedder): Promise<number[][]> {
+  if (embedder === "google") return googleEmbedMany(texts);
+  return Promise.all(texts.map((text) => embed(text, embedder)));
 }
 
 /** Split a document into small, self-contained passages along blank lines / headings. */
