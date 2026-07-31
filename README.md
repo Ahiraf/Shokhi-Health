@@ -6,11 +6,9 @@
   <h1>🌸 সখী · Shokhi</h1>
   <p><strong>A Bangla-first AI health and wellbeing companion for girls, women, and families in Bangladesh.</strong></p>
   <p>Private, simple guidance for periods, PCOS, pregnancy, postpartum health, and menopause — powered by Gemma 4.</p>
-  <p>🌐 <a href="#demo">Demo</a> · 📖 <a href="docs/KAGGLE_WRITEUP.md">Kaggle writeup</a> · 🛡️ <a href="#safety-first-design">Safety-first design</a></p>
-</div>
 
 
-[![Next.js](https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+  [![Next.js](https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
@@ -19,6 +17,10 @@
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+
+
+  <p>🌐 <a href="#demo">Demo</a> · 📖 <a href="docs/KAGGLE_WRITEUP.md">Kaggle writeup</a> · 🛡️ <a href="#safety-first-design">Safety-first design</a></p>
+</div>
 
 
 Shokhi (সখী — *"a trusted confidante"*) lets girls and women **type in Bangla or English**,
