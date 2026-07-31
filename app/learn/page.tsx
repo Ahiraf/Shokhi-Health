@@ -9,7 +9,6 @@ import type { SourceTopic } from "@/lib/source-topics";
 import { UNIQUE_SOURCE_TOPICS, matchesSourceTopic, SOURCE_GUIDE_IDS } from "@/lib/source-topics";
 import { conditionJourneys, getJourney, guideJourney, type JourneyKey, conditionsForJourney } from "@/lib/journeys";
 import PageIntro from "@/components/PageIntro";
-import JourneyPicker from "@/components/JourneyPicker";
 import { useLang } from "@/components/LanguageProvider";
 import Icon from "@/components/Icon";
 import type { StringKey } from "@/lib/i18n";
@@ -144,25 +143,15 @@ export default function LearnPage() {
     <main className="mx-auto max-w-5xl px-5 py-10">
       <PageIntro icon="🧠" title={t("learn.title")} sub={t("learn.sub")} variant="learn" side="left" size={165} />
 
-      <JourneyPicker page="learn" selected={selectedJourney} onSelect={setSelectedJourney} showJourneys={false} />
-
       {mascotGuides.length > 0 && (
         <section className="mt-6 rounded-3xl bg-panel/95 p-4 text-white shadow-card sm:p-5" aria-labelledby="illustrated-topics-heading">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/55">
-                {lang === "en" ? "Learn by topic" : "বিষয় ধরে শিখুন"}
-              </p>
-              <h2 id="illustrated-topics-heading" className="mt-1 font-display text-xl font-bold">
-                {lang === "en" ? "More topics, in one place" : "আরও বিষয় — এক জায়গায়"}
-              </h2>
-              <p className="mt-1 text-sm text-white/70">
-                {lang === "en" ? "Choose any topic to open a simple, trusted guide." : "যে কোনো বিষয় বেছে সহজ ও নির্ভরযোগ্য গাইড পড়ুন।"}
-              </p>
-            </div>
-            <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/75">
-              {mascotGuides.length} {lang === "en" ? "topics" : "টি বিষয়"}
-            </span>
+          <div>
+            <p id="illustrated-topics-heading" className="text-xs font-semibold uppercase tracking-[0.14em] text-white/55">
+              {lang === "en" ? "Learn by topic" : "বিষয় ধরে শিখুন"}
+            </p>
+            <p className="mt-1 text-sm text-white/70">
+              {lang === "en" ? "Choose a topic to open a simple, trusted guide." : "যে কোনো বিষয় বেছে সহজ ও নির্ভরযোগ্য গাইড পড়ুন।"}
+            </p>
           </div>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {mascotGuides.map((guide) => (
