@@ -86,6 +86,20 @@ const COVERED_TOPIC_IDS = new Set([
 
 export const UNIQUE_SOURCE_TOPICS = SOURCE_TOPICS.filter((topic) => !COVERED_TOPIC_IDS.has(topic.id));
 
+// These source entries are aliases for richer, already-reviewed pages. Keeping one
+// canonical destination prevents a topic from opening two different experiences.
+export const SOURCE_GUIDE_IDS: Record<string, string> = {
+  "pregnancy-care": "pregnancy_test_and_first_visit",
+  "after-pregnancy": "postpartum_recovery_and_breastfeeding",
+  "hiv-services": "sti_and_hiv_safety",
+  "menopause-care": "menopause_care",
+};
+
+export const SOURCE_CONDITION_IDS: Record<string, string> = {
+  "pcos-care": "pcos",
+  "endometriosis-care": "endometriosis",
+};
+
 export function getSourceTopic(id: string): SourceTopic | undefined {
   return SOURCE_TOPICS.find((topic) => topic.id === id);
 }

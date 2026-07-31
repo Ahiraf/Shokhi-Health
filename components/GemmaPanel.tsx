@@ -64,7 +64,7 @@ export default function GemmaPanel({
             {en ? "Shokhi’s note" : "সখীর কথা"}
             {loading && <span className="ml-1 animate-pulse">…</span>}
           </div>
-          <div className="whitespace-pre-wrap break-words text-[15px] leading-[1.85] text-plum/90 sm:text-base">{text}</div>
+          <div className="whitespace-pre-wrap break-words text-[17px] leading-[1.9] text-plum/90 sm:text-lg">{text}</div>
           <div className="mt-5 flex items-center justify-end gap-3 border-t border-rose-soft/60 pt-3">
             {!loading && (
               <button onClick={run} className="text-xs font-semibold text-rose-deep/70 hover:text-rose-deep">

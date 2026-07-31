@@ -6,14 +6,14 @@ import { useEffect, useMemo, useState } from "react";
 import { getGuides, getKnowledge } from "@/lib/api";
 import type { Condition, GuideCard } from "@/lib/types";
 import type { SourceTopic } from "@/lib/source-topics";
-import { UNIQUE_SOURCE_TOPICS, matchesSourceTopic } from "@/lib/source-topics";
+import { UNIQUE_SOURCE_TOPICS, matchesSourceTopic, SOURCE_GUIDE_IDS } from "@/lib/source-topics";
 import { conditionJourneys, getJourney, guideJourney, type JourneyKey, conditionsForJourney } from "@/lib/journeys";
 import PageIntro from "@/components/PageIntro";
 import JourneyPicker from "@/components/JourneyPicker";
 import { useLang } from "@/components/LanguageProvider";
 import Icon from "@/components/Icon";
 import type { StringKey } from "@/lib/i18n";
-import { GUIDE_MASCOT_IMAGES } from "@/lib/mascot-images";
+import { mascotImageFor } from "@/lib/mascot-images";
 
 const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
   emergency: { key: "urgency.emergency.short", cls: "bg-red-100 text-red-700" },
@@ -49,38 +49,6 @@ const CATEGORY_LABELS: Record<string, { bn: string; en: string }> = {
 
 // Search results use the same illustrations as the 15-topic shelf, so every card
 // has a visual cue without creating another copy of the illustrated topic section.
-const RELATED_MASCOTS: Record<string, string> = {
-  pcos: GUIDE_MASCOT_IMAGES.mental_wellbeing,
-  "pcos-care": GUIDE_MASCOT_IMAGES.mental_wellbeing,
-  endometriosis: GUIDE_MASCOT_IMAGES.period_cramps,
-  "endometriosis-care": GUIDE_MASCOT_IMAGES.period_cramps,
-  primary_dysmenorrhea: GUIDE_MASCOT_IMAGES.period_cramps,
-  pms: GUIDE_MASCOT_IMAGES.period_cramps,
-  anemia: GUIDE_MASCOT_IMAGES.nutrition_for_families,
-  menopause: GUIDE_MASCOT_IMAGES.mental_wellbeing,
-  "menopause-care": GUIDE_MASCOT_IMAGES.mental_wellbeing,
-  postpartum_depression: GUIDE_MASCOT_IMAGES.after_birth,
-  uti: GUIDE_MASCOT_IMAGES.safe_help,
-  vaginal_infection: GUIDE_MASCOT_IMAGES.safe_help,
-  "menstrual-health": GUIDE_MASCOT_IMAGES.period_cramps,
-  "pregnancy-care": GUIDE_MASCOT_IMAGES.first_pregnancy,
-  "family-planning": GUIDE_MASCOT_IMAGES.family_planning,
-  "after-pregnancy": GUIDE_MASCOT_IMAGES.after_birth,
-  "menstrual-regulation": GUIDE_MASCOT_IMAGES.safe_help,
-  "hiv-services": GUIDE_MASCOT_IMAGES.safe_help,
-  period_emotions: GUIDE_MASCOT_IMAGES.period_cramps,
-  missed_pill: GUIDE_MASCOT_IMAGES.contraception,
-  nutrition_anemia: GUIDE_MASCOT_IMAGES.nutrition_for_families,
-  menstrual_hygiene: GUIDE_MASCOT_IMAGES.first_period,
-  cloth_pad: GUIDE_MASCOT_IMAGES.first_period,
-  how_to_use_pad: GUIDE_MASCOT_IMAGES.first_period,
-  no_pad_emergency: GUIDE_MASCOT_IMAGES.first_period,
-};
-
-function mascotFor(id: string): string {
-  return RELATED_MASCOTS[id] ?? GUIDE_MASCOT_IMAGES.safe_help;
-}
-
 type LibraryItem =
   | { kind: "condition"; condition: Condition }
   | { kind: "guide"; guide: GuideCard }
@@ -120,6 +88,8 @@ export default function LearnPage() {
   const items = useMemo<LibraryItem[]>(() => {
     const conditionItems: LibraryItem[] = conditions
       .filter((condition) => {
+        // Period cramps has a richer illustrated guide and self-check below.
+        if (condition.id === "primary_dysmenorrhea") return false;
         if (selectedCategory !== "all" && selectedCategory !== "conditions") return false;
         if (selectedJourney && !conditionsForJourney(condition.id, selectedJourney)) return false;
         if (!normalizedSearch) return true;
@@ -269,7 +239,7 @@ export default function LearnPage() {
               >
                 <div className="flex items-start gap-3">
                   <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-blush">
-                    <Image src={mascotFor(condition.id)} alt="" fill sizes="56px" className="object-cover" />
+                    <Image src={mascotImageFor(condition.id)} alt="" fill sizes="56px" className="object-cover" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
@@ -301,7 +271,7 @@ export default function LearnPage() {
                 className="group flex flex-col rounded-2xl bg-surface/80 p-5 ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:shadow-card"
               >
                 <span className="relative block h-24 w-full overflow-hidden rounded-xl bg-blush">
-                  <Image src={guide.image ?? mascotFor(guide.id)} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
+                  <Image src={guide.image ?? mascotImageFor(guide.id)} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
                 </span>
                 <h2 className="mt-3 font-display text-base font-bold text-plum">
                   {lang === "en" ? guide.title_en || guide.title_bn : guide.title_bn}
@@ -322,11 +292,11 @@ export default function LearnPage() {
           return (
             <Link
               key={`source-${topic.id}`}
-              href={`/guides/topic/${topic.id}`}
+              href={SOURCE_GUIDE_IDS[topic.id] ? `/guides/${SOURCE_GUIDE_IDS[topic.id]}` : `/guides/topic/${topic.id}`}
               className="group flex flex-col rounded-2xl bg-surface/80 p-5 ring-1 ring-rose-soft transition hover:-translate-y-0.5 hover:shadow-card"
             >
               <span className="relative block h-24 w-full overflow-hidden rounded-xl bg-blush">
-                <Image src={mascotFor(topic.id)} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
+                <Image src={mascotImageFor(topic.id)} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
               </span>
               <p className="mt-3 text-xs font-semibold text-rose-deep">{topic.source}</p>
               <h2 className="mt-1 font-display text-base font-bold text-plum">

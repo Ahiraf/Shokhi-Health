@@ -50,7 +50,7 @@ export default function Message({ item }: { item: ChatItem }) {
           </div>
         ))}
 
-        <div className="whitespace-pre-wrap leading-relaxed text-plum">
+        <div className="whitespace-pre-wrap text-[17px] leading-[1.85] text-plum sm:text-lg">
           {item.text}
         </div>
 

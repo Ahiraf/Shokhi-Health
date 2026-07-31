@@ -3,28 +3,38 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getGuide } from "@/lib/api";
-import type { GuideFull } from "@/lib/types";
+import { getGuide, getKnowledge } from "@/lib/api";
+import type { Condition, GuideFull } from "@/lib/types";
 import { useLang } from "@/components/LanguageProvider";
 import { EmojiIcon } from "@/components/Icon";
 import MethodFinder from "@/components/MethodFinder";
 import { pickField } from "@/lib/i18n";
 import GuideJourneyPath from "@/components/GuideJourneyPath";
+import ConditionSelfCheck from "@/components/ConditionSelfCheck";
 import PillHelper from "@/components/PillHelper";
 import { guideJourney } from "@/lib/journeys";
 import Image from "next/image";
+
+const GUIDE_SELF_CHECK_CONDITIONS: Record<string, string> = {
+  period_cramps: "primary_dysmenorrhea",
+};
 
 export default function GuideDetailPage() {
   const { t, lang } = useLang();
   const { id } = useParams<{ id: string }>();
   const [guide, setGuide] = useState<GuideFull | null>(null);
+  const [selfCheckCondition, setSelfCheckCondition] = useState<Condition | null>(null);
+  const [schema, setSchema] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
   const journey = guide ? guideJourney(guide.id) : undefined;
 
   useEffect(() => {
-    getGuide(id)
-      .then((g) => {
+    Promise.all([getGuide(id), getKnowledge()])
+      .then(([g, knowledge]) => {
         setGuide(g);
+        const conditionId = GUIDE_SELF_CHECK_CONDITIONS[g.id];
+        setSelfCheckCondition(knowledge.conditions.find((condition) => condition.id === conditionId) ?? null);
+        setSchema((knowledge.symptom_schema as Record<string, any>) ?? {});
         setStatus("ok");
       })
       .catch(() => setStatus("error"));
@@ -42,8 +52,8 @@ export default function GuideDetailPage() {
       {guide && (
         <article className="mt-4">
           {guide.image && (
-            <div className="relative mb-5 h-56 overflow-hidden rounded-3xl bg-blush sm:h-64">
-              <Image src={guide.image} alt="" fill sizes="(max-width: 640px) 100vw, 672px" className="object-cover" priority />
+            <div className="relative mb-5 flex min-h-72 items-center justify-center overflow-hidden rounded-3xl bg-blush p-3 sm:min-h-[26rem]">
+              <Image src={guide.image} alt="" fill sizes="(max-width: 640px) 100vw, 672px" className="object-contain" priority />
             </div>
           )}
           <div className="flex items-center gap-3">
@@ -55,7 +65,7 @@ export default function GuideDetailPage() {
             </h1>
           </div>
 
-          <p className="mt-4 text-[15px] leading-relaxed text-plum/75">
+            <p className="mt-4 text-[17px] leading-[1.9] text-plum/80 sm:text-lg">
             {pickField<string>(lang, guide as unknown as Record<string, unknown>, "summary")}
           </p>
 
@@ -82,7 +92,7 @@ export default function GuideDetailPage() {
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-soft text-xs font-bold text-rose-deep">
                   {i + 1}
                 </span>
-                <span className="text-sm leading-relaxed text-plum/80">{p}</span>
+                <span className="text-[17px] leading-[1.85] text-plum/85">{p}</span>
               </li>
             ))}
           </ul>
@@ -90,11 +100,13 @@ export default function GuideDetailPage() {
           {guide.when_see_doctor_bn && (
             <div className="mt-6 rounded-2xl bg-sage-soft px-4 py-3.5">
               <p className="text-sm font-semibold text-sage-deep">{t("common.seeDoctorHeading")}</p>
-              <p className="mt-1 text-sm leading-relaxed text-plum/75">
+              <p className="mt-1 text-[17px] leading-[1.85] text-plum/80">
                 {pickField<string>(lang, guide as unknown as Record<string, unknown>, "when_see_doctor")}
               </p>
             </div>
           )}
+
+          {selfCheckCondition && <ConditionSelfCheck condition={selfCheckCondition as unknown as Record<string, unknown>} schema={schema} />}
 
           <div className="mt-8 rounded-2xl bg-blush/70 px-4 py-4 text-center">
             <p className="text-sm text-plum/70">{t("guides.moreQuestion")}</p>

@@ -47,7 +47,7 @@ export default function ReportAdvice({
         {sections.map((section, index) => (
           <article key={`${section.title}-${index}`} className={`rounded-2xl bg-rose-mist/65 p-5 ${index === 0 ? "sm:col-span-2" : ""}`}>
             <h3 className="font-display text-base font-bold text-rose-deep">{section.title}</h3>
-            <p className="mt-2 whitespace-pre-wrap break-words text-[15px] leading-[1.85] text-plum/90 sm:text-base">{section.body}</p>
+            <p className="mt-2 whitespace-pre-wrap break-words text-[17px] leading-[1.9] text-plum/90 sm:text-lg">{section.body}</p>
           </article>
         ))}
       </div>

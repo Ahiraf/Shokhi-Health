@@ -27,3 +27,37 @@ export const JOURNEY_MASCOT_IMAGES: Record<string, string> = {
   pregnant_now: "/First Pregnency.png",
   after_birth: "/After Birth.png",
 };
+
+// Reuse the same 15 topic illustrations on condition and source-result cards/pages.
+// This keeps a topic visually consistent from the library through its detail view.
+export const RELATED_MASCOT_IMAGES: Record<string, string> = {
+  pcos: GUIDE_MASCOT_IMAGES.mental_wellbeing,
+  "pcos-care": GUIDE_MASCOT_IMAGES.mental_wellbeing,
+  endometriosis: GUIDE_MASCOT_IMAGES.period_cramps,
+  "endometriosis-care": GUIDE_MASCOT_IMAGES.period_cramps,
+  primary_dysmenorrhea: GUIDE_MASCOT_IMAGES.period_cramps,
+  pms: GUIDE_MASCOT_IMAGES.period_cramps,
+  anemia: GUIDE_MASCOT_IMAGES.nutrition_for_families,
+  menopause: GUIDE_MASCOT_IMAGES.mental_wellbeing,
+  "menopause-care": GUIDE_MASCOT_IMAGES.mental_wellbeing,
+  postpartum_depression: GUIDE_MASCOT_IMAGES.after_birth,
+  uti: GUIDE_MASCOT_IMAGES.safe_help,
+  vaginal_infection: GUIDE_MASCOT_IMAGES.safe_help,
+  "menstrual-health": GUIDE_MASCOT_IMAGES.period_cramps,
+  "pregnancy-care": GUIDE_MASCOT_IMAGES.first_pregnancy,
+  "family-planning": GUIDE_MASCOT_IMAGES.family_planning,
+  "after-pregnancy": GUIDE_MASCOT_IMAGES.after_birth,
+  "menstrual-regulation": GUIDE_MASCOT_IMAGES.safe_help,
+  "hiv-services": GUIDE_MASCOT_IMAGES.safe_help,
+  period_emotions: GUIDE_MASCOT_IMAGES.period_cramps,
+  missed_pill: GUIDE_MASCOT_IMAGES.contraception,
+  nutrition_anemia: GUIDE_MASCOT_IMAGES.nutrition_for_families,
+  menstrual_hygiene: GUIDE_MASCOT_IMAGES.first_period,
+  cloth_pad: GUIDE_MASCOT_IMAGES.first_period,
+  how_to_use_pad: GUIDE_MASCOT_IMAGES.first_period,
+  no_pad_emergency: GUIDE_MASCOT_IMAGES.first_period,
+};
+
+export function mascotImageFor(id: string): string {
+  return RELATED_MASCOT_IMAGES[id] ?? GUIDE_MASCOT_IMAGES.safe_help;
+}

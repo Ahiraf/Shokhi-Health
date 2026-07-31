@@ -8,6 +8,8 @@ import type { Condition } from "@/lib/types";
 import { useLang } from "@/components/LanguageProvider";
 import ConditionSelfCheck from "@/components/ConditionSelfCheck";
 import { pickField, type StringKey } from "@/lib/i18n";
+import Image from "next/image";
+import { mascotImageFor } from "@/lib/mascot-images";
 
 const URGENCY_TAG: Record<string, { key: StringKey; cls: string }> = {
   emergency: { key: "urgency.emergency.long", cls: "bg-red-100 text-red-700" },
@@ -47,6 +49,9 @@ export default function ConditionDetailPage() {
 
       {cond && (
         <article className="mt-4">
+          <div className="relative mb-5 flex min-h-64 items-center justify-center overflow-hidden rounded-3xl bg-blush p-3 sm:min-h-80">
+            <Image src={mascotImageFor(cond.id)} alt="" fill sizes="(max-width: 640px) 100vw, 672px" className="object-contain" priority />
+          </div>
           <div>
             <h1 className="font-display text-2xl font-bold leading-tight text-plum">
               {lang === "en" ? cond.name_en || cond.name_bn : cond.name_bn}
@@ -61,7 +66,7 @@ export default function ConditionDetailPage() {
             </span>
           )}
 
-          <p className="mt-5 text-[15px] leading-relaxed text-plum/75">
+          <p className="mt-5 text-[17px] leading-[1.9] text-plum/80 sm:text-lg">
             {lang === "en" ? cond.about_en || cond.about_bn : cond.about_bn}
           </p>
 
@@ -72,7 +77,7 @@ export default function ConditionDetailPage() {
                 {(pickField<string[]>(lang, cond as unknown as Record<string, unknown>, "self_care") ?? []).map((s, i) => (
                   <li
                     key={i}
-                    className="flex gap-2.5 rounded-xl bg-surface/80 px-4 py-2.5 text-sm text-plum/80 ring-1 ring-rose-soft"
+                    className="flex gap-2.5 rounded-xl bg-surface/80 px-4 py-3 text-[17px] leading-[1.8] text-plum/85 ring-1 ring-rose-soft"
                   >
                     <span className="text-rose">•</span>
                     {s}
